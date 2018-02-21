@@ -1,6 +1,0 @@
-VLAN				First addr		Mask
-10 Accounting			197.7.7.1		255.255.255.224
-20 Office			197.7.7.33		255.255.255.224
-30 Design			197.7.7.65
-40 Production			197.7.7.129
-50 Management			197.7.7.161

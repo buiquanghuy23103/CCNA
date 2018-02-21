@@ -1,0 +1,60 @@
+\chapter{EtherChannel}
+\section{Introduction}
+\subsection{Advantages}
+EtherChannel technology has many advantages:
+\begin{itemize}
+\item Most configuration tasks can be done on the EtherChannel interface instead of on each individual port, ensuring configuration consistency throughout the links.
+\item EtherChannel creates an aggregation that is seen as one logical link. 
+\item EtherChannel provides redundancy.
+\item Load balancing takes place between links that are part of the same EtherChannel. 
+\item EtherChannel relies on existing switch ports. There is no need to upgrade the link to a faster and more expensive connection to have more bandwidth.
+\end{itemize}
+\subsection{Implementation restrictions}
+The EtherChannel provides full-duplex bandwidth between one switch and another switch or host. Currently each EtherChannel can consist of up to eight compatibly-configured Ethernet ports. However, interface types cannot be mixed. For example, Fast Ethernet and Gigabit Ethernet cannot be mixed within a single EtherChannel.\par 
+EtherChannel creates a one-to-one relationship; that is, one EtherChannel link connects only two devices. The individual EtherChannel group member port configuration must be consistent on both devices. It is mandatory that all ports have the same speed, duplex setting, and VLAN information. Any port modification after the creation of the channel also changes all other channel ports. If the physical ports of one side are configured as trunks, the physical ports of the other side must also be configured as trunks within the same native VLAN. Additionally, all ports in each EtherChannel link must be configured as Layer 2 ports. 
+
+\section{Port Aggregation Protocol (PagP)}
+PAgP (pronounced “Pag – P”) is a Cisco-proprietary protocol that aids in the Passivematic creation of EtherChannel links. PAgP helps create the EtherChannel link by detecting the configuration of each side and ensuring that links are compatible so that the EtherChannel link can be enabled when needed. PAgP can be configured in one of three models:
+\begin{itemize}
+\item \textbf{On} -- This mode forces the interface to channel without PAgP. Interfaces configured in the on mode do not exchange PAgP packets.
+\item \textbf{PAgP Active} -- This PAgP mode places an interface in an active negotiating state in which the interface initiates negotiations with other interfaces by sending PAgP packets.
+\item \textbf{PAgP Passive} -- This PAgP mode places an interface in a passive negotiating state in which the interface responds to the PAgP packets that it receives, but does not initiate PAgP negotiation.
+\end{itemize}
+The modes must be compatible on each side as shown in table \ref{PAgP-mode}.
+\begin{table}[htbp]
+\caption{PAgP Establishment}
+\label{PAgP-mode}
+\begin{tabular}{|l|l|l|}
+\hline
+S1             & S2                & EtherChannel establishment \\ \hline
+Active      & Passive/Active    & Yes                        \\ \hline
+On             & On                & Yes                        \\ \hline
+Passive           & Passive/On           & No                         \\ \hline
+Not configured & Passive/Active/On & No                         \\ \hline
+Active      & on                & No                         \\ \hline
+\end{tabular}
+\end{table}
+\section{Link Aggregation Control Protocol (LACP)}
+LACP is part of an IEEE specification (802.3ad) that allows several physical ports to be bundled to form a single logical channel. Because LACP is an IEEE standard, it can be used to facilitate EtherChannels in multivendor environments, including Cisco devices. LACP allows for eight active links, and also eight standby links. A standby link will become active should one of the current active links fail.
+PAgP can be configured in one of three models:
+\begin{itemize}
+\item \textbf{On} -- This mode forces the interface to channel without LACP. Interfaces configured in the on mode do not exchange LACP packets.
+\item \textbf{LACP active} -- Similar to PAgP Active mode.
+\item \textbf{LACP passive} -- Similar to PAgP Passive mode. negotiation.
+\end{itemize}
+The modes must be compatible on each side as shown in table \ref{PAgP-mode}.
+\begin{table}[htbp]
+\caption{LACP Establishment}
+\label{LACP-mode}
+\begin{tabular}{|l|l|l|}
+\hline
+S1             & S2                & EtherChannel establishment \\ \hline
+Active      & Passive/Active    & Yes                        \\ \hline
+On             & On                & Yes                        \\ \hline
+Passive           & Passive/On           & No                         \\ \hline
+Not configured & Passive/Active/On & No                         \\ \hline
+Active      & on                & No                         \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Configuration}
