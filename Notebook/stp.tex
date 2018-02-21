@@ -9,7 +9,7 @@ Multiple cabled paths between switches provide physical redundancy in a switched
 \subsection{Multiple-frame transmission}
 Broadcast frames are not the only type of frames that are affected by loops. Unknown unicast frames sent onto a looped network can result in duplicate frames arriving at the destination device. An unknown unicast frame is when the switch does not have the destination MAC address in its MAC address table and must forward the frame out all ports, except the ingress port.
 \subsection{MAC Database Instability}
-Ethernet frames do not have a time to live (TTL) attribute. As a result, if there is no mechanism enabled to block continued propagation of these frames on a switched network, they continue to propagate between switches endlessly. \par 
+Copies of the same frame are received on different ports of the switch \par 
 Broadcast frames are forwarded out all switch ports, except the original ingress port. If there is more than one path to the destination, the frames may be forwarded back to the original switch, and create an endless loop. When a loop occurs, the MAC address table on a switch to constantly change with the updates from the broadcast frames, which results in MAC database instability. \par 
 See this \href{https://ccnav6.com/s3/course/module2/2.1.1.2/2.1.1.2.html}{link} for more explanation.
 \subsection{Broadcast storm}

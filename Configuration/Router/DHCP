@@ -1,0 +1,6 @@
+ip dhcp excluded-address 172.16.1.10
+
+ip dhcp pool LANC
+ network 172.16.1.0 255.255.255.0
+ default-router 172.16.1.1
+ dns-server 209.165.200.5
