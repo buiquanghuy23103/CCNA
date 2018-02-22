@@ -7,6 +7,7 @@ router eigrp 1
  #passive-interface default 
  #no passive-interface s0/0/0
  passive-interface g0/0
+ #redistribute static 
  exit
 
 =============================================
@@ -15,6 +16,8 @@ ipv6 unicast-routing
 ipv6 router eigrp 1
  no shutdown
  #eigrp router-id 1.1.1.1
+ passive-interface g0/0
+ #redistribute static 
  exit
 
 interface s0/0/0
