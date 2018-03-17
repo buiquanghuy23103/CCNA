@@ -1,4 +1,5 @@
 router ospf 10
+ log-adjacency-changes
  network 10.10.10.0 0.0.0.3 area 0
  network 172.16.10.0 0.0.0.3 area 10
  router-id 10.20.0.0
@@ -19,6 +20,7 @@ interface s0/0/0
 ipv6 unicast-routing 
 
 ipv6 router ospf 10
+ log-adjacency-changes
  router-id 10.0.0.0
  passive-interface g0/0
  do clear ipv6 ospf process
