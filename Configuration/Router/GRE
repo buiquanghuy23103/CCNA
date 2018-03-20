@@ -12,7 +12,10 @@ Step 1:Configure the Tunnel 0 interface of RA.
       RA(config-if)# no shutdown
 Step 2:Configure the Tunnel 0 interface of RB.
 Step 3:Configure a route for private IP traffic.
-  Establish a route between the 192.168.X.X networks using the 10.10.10.0/30 network as the destination.
+  If dynamic routing protocol is available (OSPF, EIGRP, RIPng), add the network:
+      RA(config)# router ospf 1
+      RA(config-router)# network 10.10.10.1 0.0.0.255 area 0
+  Otherwise, Establish a static route:
       RA(config)# ip route 192.168.2.0 255.255.255.0 10.10.10.2
       RB(config)# ip route 192.168.1.0 255.255.255.0 10.10.10.1
 Step 4: Verification
