@@ -15,3 +15,6 @@ Step 3:Configure a route for private IP traffic.
   Establish a route between the 192.168.X.X networks using the 10.10.10.0/30 network as the destination.
       RA(config)# ip route 192.168.2.0 255.255.255.0 10.10.10.2
       RB(config)# ip route 192.168.1.0 255.255.255.0 10.10.10.1
+Step 4: Verification
+      show ip interface brief
+      show interface tunnel 0
