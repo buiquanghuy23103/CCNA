@@ -11,7 +11,7 @@ interface s0/0/0
   
 #Verify
 show ipv6 interface s0/0/0
-show access-lists
+show ipv6 access-list
 
 #Apply an ACL to VTY ports
 line vty 0 15
