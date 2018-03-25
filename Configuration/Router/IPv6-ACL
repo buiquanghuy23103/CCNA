@@ -16,3 +16,11 @@ show ipv6 access-list
 #Apply an ACL to VTY ports
 line vty 0 15
   access-class CCNA in
+
+#Troubleshoot
+1. Check the criteria of ACE rules
+2. Check the order of ACE rules
+3. Check the direction of ACL (inbound, outbound)
+4. Check the location of ACL (which router, which interface)
+  a. Extended - Source
+  b. Standard - Destination
