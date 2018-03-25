@@ -4,14 +4,11 @@ The holder <network> stands for one of the following cases:
     host 192.168.10.0
     any
     
-#Standard numbered ACL
+#Extended numbered ACL
 access-list 10 remark <description>
 access-list 10 permit <network>
-
-#Standard named ACL
-ip access-list standard <name>
-  deny <network>
-  
+    The number should be 100-199 or 2000-2699
+ 
 #Extended named ACLs
 ip access-list extended <name>
   deny tcp <network> <network> eq <port-number | protocol-name>
