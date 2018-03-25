@@ -1,4 +1,3 @@
-===IPv4====
 The holder <network> stands for one of the following cases:
     192.168.10.0 0.0.0.255
     host 192.168.10.0
@@ -11,7 +10,7 @@ access-list 10 permit <network>
  
 #Extended named ACLs
 ip access-list extended <name>
-  deny tcp <network> <network> eq <port-number | protocol-name>
+  deny tcp <network> <network> eq <protocol>
     deny tcp host 172.31.1.101 192.168.10.0 0.0.0.255 eq 80
     deny tcp host 172.31.1.101 host 64.101.255.254 eq ftp-data
   deny icmp <network> <network>
