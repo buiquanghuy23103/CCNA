@@ -1,0 +1,18 @@
+#Create IPv6 ACL
+ipv6 access-list CCNA
+  remark Permit PINK LAN
+  deny ipv6 <network> <network> 
+  deny ipv6 2001:db8:cafe:30::/64 any eq ftp
+  permit ipv6 any any
+
+#Apply ACL to interface
+interface s0/0/0
+  ipv6 traffic-filter CCNA in
+  
+#Verify
+show ipv6 interface s0/0/0
+show access-lists
+
+#Apply an ACL to VTY ports
+line vty 0 15
+  access-class CCNA in
