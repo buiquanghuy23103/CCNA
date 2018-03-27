@@ -45,7 +45,7 @@ The OSPF routing protocol has three main components:
 Data structures are the tables or databases that OSPF builds in order to operate. OSPF creates and maintains three databases. These databases are kept and maintained in RAM.
 \begin{itemize}
 	\item \textbf{Adjacency database} (neighbor table) is a list of all neighbor routers, and unique for each router. It can be viewed using \texttt{show ip ospf neigbor} command.
-	\item \textbf{Link-state database or LSDB} (topology table) shows the network topology and is identical for all routers in one area. It can be viewed using \cisco{show ip ospf database} command.
+	\item \textbf{Link-state database or LSDB} (topology table) shows the network topology and is identical for all routers in one area. It can be viewed using \texttt{show ip ospf database} command.
 	\item \textbf{Forwarding database} (Routing table) is a list of best routes to reach networks.
 \end{itemize}
 \subsection{Messages}
@@ -95,7 +95,7 @@ When an OSPF router is initially connected to a network, it goes through the fol
 \section{DR election}
 \begin{description}
 	\item[Multiaccess network] Multiaccess networks can create challenges the flooding of LSAs. Ethernet network interconnects routers over a common link, therefore each router considers all counterparts in multiaccess network are its neighbors and establish adjacency to each of them (see figure \ref{multiple-adjacencies}). This could lead to extensive flooding of LSPs when OSPF is initialized or when topology changes occur.
-	\item[Designated Router (DR)] The solution to managing the number of adjacencies and the flooding of LSAs on a multiaccess network is the Designated Router (DR). On multiaccess networks, OSPF elects a DR to be the collection and distribution point for LSAs sent and received. The router ID of DR can be viewed using \cisco{show ip ospf interface} command on any routers within the multiaccess network.
+	\item[Designated Router (DR)] The solution to managing the number of adjacencies and the flooding of LSAs on a multiaccess network is the Designated Router (DR). On multiaccess networks, OSPF elects a DR to be the collection and distribution point for LSAs sent and received. The router ID of DR can be viewed using \texttt{show ip ospf interface} command on any routers within the multiaccess network.
 	\item[Backup Designated Router (BDR)] A BDR is also elected in case the DR fails. The BDR listens passively to this exchange and maintains a relationship with all the routers. If the DR stops producing Hello packets, the BDR promotes itself and assumes the role of DR.
 	\item[DROTHER] All other routers become DROTHER (a router that is neither the DR nor the BDR). DROTHERs only form full adjacencies with the DR and BDR in the network (see figure \ref{DR-adjacency}). Instead of flooding LSAs to all routers in the network, DROTHERs only send their LSAs to the DR and BDR using the multicast address 224.0.0.6 (all DR routers). \\
 	To ``keep in touch'' with neighbor routers, DROTHER still form 2-way adjacencies with any DROTHERs that join the multiaccess network. This means that all DROTHER routers in the multiaccess network still receive Hello packets from all other DROTHER routers. In this way, they are aware of all routers in the network.

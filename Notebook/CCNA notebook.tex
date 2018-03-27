@@ -1,13 +1,18 @@
-\documentclass[a4paper]{report}
-\usepackage{huy}
+\documentclass[]{report}
+\usepackage{huy,math,titlepage}
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newenvironment{solution}{\begin{proof}}{\end{proof}}
 \pagestyle{headings}
+\usepackage[margin=2cm]{geometry}
 %===============
 \author{Huy Bui}
 \title{CCNA notebook}
 \date{\today}
 \begin{document}
-\maketitle
-\tableofcontents
+\titleAT{CCNA}
+\thispagestyle{empty}{\tableofcontents}
 \include{LANdesign}
 \include{vtp}
 \include{Layer3switching}
@@ -15,5 +20,7 @@
 \include{EtherChannel}
 \include{hsrp}
 \include{eigrp}
-%\include{ospf}
+\include{ospf}
+\include{ACL}
+\include{Monitoring}
 \end{document}
