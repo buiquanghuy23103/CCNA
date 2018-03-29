@@ -129,9 +129,51 @@ The network administrator configured an ACL to allow users from the 192.168.10.0
 	\begin{figure}[hbtp]
 	\caption{Extended ACL example}\label{example4}
 	\centering
-	\includegraphics[ width=0.6\textwidth ]{pictures/example4-1.PNG}
+	\subfigure[]{ \includegraphics[ width=0.7\textwidth ]{pictures/example4-1.PNG} }
+	\subfigure[]{ \includegraphics[ scale=1 ]{pictures/example4-2.PNG} }
 	\end{figure}
 Web request traffic from users on the 192.168.10.0/24 LAN is inbound to the G0/0 interface. Return traffic from established connections to users on the LAN is outbound from the G0/0 interface. The example applies the ACL to the G0/0 interface in both directions. The inbound ACL, 103, checks for the type of traffic. The outbound ACL, 104, checks for return traffic from established connections. This will restrict 192.168.10.0 Internet access to allow only website browsing.
+\end{example}
+\begin{example}
+Configure an extended IPv4 ACL named INTOHQ such that: 
+\begin{itemize}
+\item Allow any hosts from the Internet to access the County DNS Svr. There should be two ACEs, one for TCP and the other UDP. Both use port 53.
+\item Allow any hosts from the Internet to access the County Web Svr. Only port 80 is needed.
+\item Allow return TCP traffic from the Internet that was initiated from the hosts in the Central networks to pass (with the established keyword).
+\item Apply the ACL to the Central S0/0/0 interface.
+\end{itemize}
+\begin{verbatim}
+ip access-list extended INTOHQ
+	permit tcp any host 172.16.10.5 eq 53
+	permit udp any host 172.16.10.5 eq 53
+	permit tcp any host 172.16.10.10 eq 80
+	permit tcp any any established
+	exit
+interface s0/0/0
+	ip access-group INTOHQ IN
+exit
+\end{verbatim}
+\end{example}
+\begin{example}
+Configure an extended ACL named SNMPACCESS such that 
+\begin{itemize}
+\item The SNMP operation runs UDP on port 161.
+\item Allow only the County-Admin-PC to access the Central router for the SNMP connection.
+\item SNMP connections from other hosts on the Central LAN should fail.
+\item Allow all other IP traffic.
+\item Apply this ACL on the Central router, G0/0 interface.
+\end{itemize}
+\begin{verbatim}
+ip access-list extended SNMPACCESS
+	permit udp host 192.168.10.5 host 192.168.10.1 eq 161
+	deny udp any host 192.168.10.1 eq 161
+	permit ip any any
+	exit
+interface g0/0
+	ip access-group SNMPACCESS in
+exit
+
+\end{verbatim}
 \end{example}
 \section{Troubleshoot}
 Using the \texttt{show access-lists} command to reveal most of the common ACL errors. The most common errors are entering ACEs in the wrong order and not applying adequate criteria to the ACL rules. Following these steps to troubleshoot ACL:
@@ -149,7 +191,7 @@ The 192.168.10.0/24 network cannot use TFTP to connect to the 192.168.30.0/24 ne
 Solution: The 192.168.10.0/24 network cannot use TFTP to connect to the 192.168.30.0/24 network because TFTP uses the transport protocol UDP. Statement 30 in access list 120 allows all other TCP traffic. However, because TFTP uses UDP instead of TCP, it is implicitly denied. Recall that the implied deny any statement does not appear in show access-lists output and therefore matches are not shown. Statement 30 should be \texttt{permit ip any any}.
 \end{example}
 \begin{example}
-Problem:  the 192.168.11.0/24 network can use Telnet to connect to 192.168.30.0/24, but according to company policy, this connection should not be allowed. The results of the show access-lists 130 command indicate that the permit statement has been matched.\\
+The 192.168.11.0/24 network can use Telnet to connect to 192.168.30.0/24, but according to company policy, this connection should not be allowed. The results of the show access-lists 130 command indicate that the permit statement has been matched.\\
 \begin{listing}
 \includegraphics[scale=1]{pictures/example3.PNG} 
 \end{listing}\\
