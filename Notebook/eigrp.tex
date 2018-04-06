@@ -1,19 +1,37 @@
 \chapter{EIGRP}
+
 \section{Basic features}
-\subsection{Protocol Dependent Modules (PDM)}
-EIGRP has the capability for routing different protocols, including IPv4 and IPv6. EIGRP does so by using protocol-dependent modules (PDMs). PDMs are responsible for network layer protocol-specific tasks. 
-\subsection{Reliable Transport Protocol (RTP)}
-EIGRP was designed as a network layer independent routing protocol. Because of this design, EIGRP cannot use the services of UDP or TCP. Instead, EIGRP uses the Reliable Transport Protocol (RTP) for the delivery and reception of EIGRP packets. \par 
-RTP includes both reliable delivery and unreliable delivery of EIGRP packets, similar to TCP and UDP, respectively. For example, an EIGRP update packet is sent reliably over RTP and requires an acknowledgment. An EIGRP Hello packet is also sent over RTP, but unreliably. This means that EIGRP Hello packets do not require an acknowledgment.\par 
-RTP can send EIGRP packets as unicast or multicast. Multicast EIGRP packets use the multicast address 224.0.0.10 for IPv4 and  FF02::A for IPv6.
+
+Features of EIGRP:
+
+\begin{itemize}
+\item Use DUAL algorithm
+\item Use RTP  instead of TCP or UDP
+\item Partial and Bounded Updates -- Sends updates only when there is a change and only to the routers that need the information
+\item Supports Equal and Unequal cost load balancing
+\item Does not encrypt the routing updates
+\item \textbf{Authentication:} Only accepts routing information from other routers with the same authentication information 
+\end{itemize}
+
+\paragraph{Protocol Dependent Modules (PDM)}sends and receives EIGRP packets that are encapsulated in IPv4 or IPv6.
+
+\paragraph{Reliable Transport Protocol (RTP)}EIGRP was designed as a network layer independent routing protocol. Because of this design, EIGRP cannot use UDP or TCP, but use RTP instead. RTP includes both reliable and unreliable delivery of EIGRP packets, similar to TCP and UDP, respectively. RTP can send EIGRP packets as unicast or multicast. EIGRP multicast address is 224.0.0.10 for IPv4 and  FF02::A for IPv6.
+
 \section{Packet types}
+
 \subsection{Hello packets}
-EIGRP uses small Hello packets to discover other EIGRP-enabled routers on directly connected links. Hello packets are used by routers to form EIGRP neighbor adjacencies.\par 
-On most modern networks, EIGRP Hello packets are sent as multicast packets every five seconds. However, on multipoint, non-broadcast multiple access (NBMA) networks with access links of T1 (1.544 Mb/s) or slower, Hello packets are sent as unicast packets every 60 seconds.\par 
-EIGRP uses a Hold timer to determine the maximum time the router should wait to receive the next Hello before declaring that neighbor as unreachable. By default, the hold time is three times the Hello interval, or 15 seconds on most networks and 180 seconds on low-speed NBMA networks. If the hold time expires, EIGRP declares the route as down and DUAL searches for a new path by sending out queries.
+
+EIGRP uses small Hello packets to discover other EIGRP-enabled routers on directly connected links. Hello packets are used by routers to form EIGRP neighbor adjacencies.\\
+ 
+Hello packets are sent as multicast packets \emph{every five seconds}. However, on slow network (e.g. multipoint, NBMA networks with access links of T1), Hello packets are sent as unicast packets every 60 seconds.\\
+ 
+EIGRP uses a Hold timer to determine the maximum time the router should wait to receive the next Hello before declaring that neighbor as unreachable. By default, the hold time is \emph{three times the Hello interval}. If the hold time expires, EIGRP declares the route as down and DUAL searches for a new path by sending out queries.
+
 \subsection{Update packets}
-EIGRP sends Update packets to propagate routing information. Update packets are sent only when necessary. EIGRP updates contain only the routing information needed and are sent only to those routers that require it.\par 
-EIGRP uses the terms \emph{partial update} and \emph{bounded update} when referring to its updates. A partial update means that the update only includes information about route changes. A bounded update refers to the sending of partial updates only to the routers that are affected by the changes. Bounded updates help EIGRP minimize the bandwidth that is required to send EIGRP updates.
+EIGRP sends Update packets to propagate routing information. Update packets are sent only when necessary. EIGRP updates contain only the routing information needed and are sent only to those routers that require it.\\
+ 
+EIGRP uses \emph{partial update} and \emph{bounded update}. A partial update means that the update only includes information about route changes. A bounded update refers to the sending of partial updates only to the routers that are affected by the changes. Bounded updates help EIGRP minimize the bandwidth that is required to send EIGRP updates.
+
 \subsection{Acknowledgment packets}
 EIGRP sends Acknowledgment (ACK) packets when reliable delivery is used. An EIGRP acknowledgment is an EIGRP Hello packet without any data. RTP uses reliable delivery for Update, Query, and Reply packets.
 \subsection{Query and reply packets}
