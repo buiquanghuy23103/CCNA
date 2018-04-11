@@ -139,13 +139,19 @@ Instead of using ping manually, a network engineer can use the IP SLA ICMP Echo 
 To create an IP SLA operation and enter IP SLA configuration mode, use the \verb|ip sla <operation-number>| global configuration command. From IP SLA configuration mode, you can configure the IP SLA operation as an ICMP Echo operation and enter ICMP echo configuration mode using the following command:
 
 \begin{verbatim}
-Router(config-ip-sla)# icmp-echo { dest-ip-address | dest-hostname } [ source-ip { ip-address | hostname } | source-interface interface-id ] 
+Router(config-ip-sla)# icmp-echo { dest-ip-address | dest-hostname } 
+						[ source-ip { ip-address | hostname } 
+						| source-interface interface-id ] 
 \end{verbatim}
 
 Next, set the rate at which a specified IP SLA operation repeats using the \verb|frequency <seconds>| command. To schedule the IP SLA operation, use the following global configuration command:
 
 \begin{verbatim}
-Router(config)# ip sla schedule operation-number [ life { forever | seconds }] [ start-time { hh : mm [: ss ] [ month day | day month ] | pending | now | after hh:mm:ss ] [ ageout seconds ] [ recurring ] 
+Router(config)# ip sla schedule operation-number 
+                [ life { forever | seconds }] 
+                [ start-time { hh : mm [: ss ] [ month day | day month ] 
+                | pending | now | after hh:mm:ss ] [ ageout seconds ] 
+                [ recurring ] 
 \end{verbatim}
 
 \subsection{Sample}
@@ -163,8 +169,6 @@ R1(config)# ip sla schedule 1 start-time now life forever
 \section{Troubleshooting tools}
 
 \subsection{Software}
-
-Common software troubleshooting tools include \emph{network management system}, \emph{knowledge base}, protocol analyzer and \emph{baselining tools}.
 
 \paragraph{Network management system (NMS)}includes device-level monitoring, configuration, and fault-management tools.  These tools can be used to investigate and correct network problems.
 
@@ -235,7 +239,3 @@ An internal corporate server can be accessed by internal PCs, but not by externa
 \begin{solution}
 NAT/PAT allows a private IP address to be translated into a public address so that external users can access internal devices. Static NAT assigns one public address to a private address and is used with internal servers.
 \end{solution}
-
-\begin{example}
-
-\end{example}

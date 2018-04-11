@@ -1,0 +1,41 @@
+\chapter{Dynamic routing}
+
+\section{General operation}
+
+All routing protocols are designed to learn about remote networks and to quickly adapt whenever there is a change in the topology. In general, the operations of a dynamic routing protocol can be described as follows:
+
+\begin{enumerate}
+\item The router sends and receives routing messages on its interfaces. 
+\item The router shares routing messages and routing information with other routers that are using the same routing protocol. 
+\item Routers exchange routing information to learn about remote networks. 
+\item When a router detects a topology change, the routing protocol can advertise this change to other routers. 
+\end{enumerate}
+
+\section{Distance vector routing protocol}
+
+Distance vector routing protocols share updates between neighbors\footnote{Neighbors are routers that share a link and are configured to use the same routing protocol}. The router is only aware of the network addresses of its own interfaces and the remote network addresses it can reach through its neighbors. Routers using distance vector routing are not aware of the network topology.\\
+
+The modern IPv4 distance vector routing protocols are RIPv2, RIPng, and EIGRP.\\
+
+Distance Vector routing protocol uses algorithm to calculate the best paths and then send that information to the neighbors. RIP uses the Bellman-Ford algorithm; IGRP and EIGRP use the Diffusing Update Algorithm (DUAL). 
+
+\section{Link-state routing protocol}
+
+Link-state routing protocols are also known as shortest path first protocols and are built around Edsger Dijkstra's shortest path first (SPF) algorithm. There are only two link-state routing protocols, OSPF and IS-IS. Open Shortest Path First (OSPF) is the most popular implementation.\\
+
+There are several advantages of link-state routing protocols compared to distance vector routing protocols: 
+
+\begin{itemize}
+\item Build a complete map of the topology, each router can independently determine the shortest path to every network
+\item Fast convergence
+\item Event-driven updates
+\item Hierarchical design (multi-area), allowing for better route aggregation (summarization) and the isolation of routing issues within an area
+\end{itemize}
+
+Link-state protocols also have a few disadvantages compared to distance vector routing protocols:
+
+\begin{itemize}
+\item High memory requirement (maintain LSDB and SPF tree)
+\item High CPU processing requirement (SPF algorithm)
+\item Bandwidth requirement (flooding of LSPs)
+\end{itemize}

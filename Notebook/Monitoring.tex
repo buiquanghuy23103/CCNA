@@ -75,7 +75,7 @@ The SNMP system consists of three elements:
 \item \textbf{SNMP agents} (managed node):  responsible for providing access to the local MIB. The SNMP agent and MIB reside on SNMP client devices.
 \item \textbf{MIB} (Management Information Base): store data about the device and operational statistics 
 \end{itemize}
-\subsection{SNMP operation}
+\subsection{Operation}
 \subsubsection{SNMP requests}
 The SNMP manager uses the get and set actions to perform the operations described in the table in Figure \ref{SNMPoperation}.
 	\begin{figure}[hbtp]
@@ -98,8 +98,8 @@ MIB saves data in variables and organizes them hierarchically. Formally, the MIB
 	\end{figure}
 For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
 The data is retrieved via the snmpget utility, issued on the NMS. Using the snmpget utility, one can manually retrieve real-time data or have the NMS run a report which would give you a period of time that you could use the data to get the average. 
-\section{SNMP configuration}
-\subsection{SNMPv2}
+\subsection{Configuration}
+\subsubsection{SNMPv2}
 \begin{listing}
 \includegraphics[scale=1]{pictures/SNMPv2.PNG} 
 \end{listing}
@@ -118,7 +118,7 @@ The data is retrieved via the snmpget utility, issued on the NMS. Using the snmp
 \end{enumerate}
 \note To verify SNMP configuration, use any of the variations of the \texttt{show snmp} command.\\ \note Only the first step is required, the rest are optional.\\
 \note By default, SNMP does not have any traps set. Without this command, SNMP managers must poll for all relevant information. 
-\subsection{SNMPv3}
+\subsubsection{SNMPv3}
 SNMPv3 provides three security features: Message integrity and authentication, Encryption, Access control. SNMPv3 can be secured with the four steps.\\
 \begin{listing}
 \includegraphics[scale=1]{pictures/SNMPv3steps.PNG} 

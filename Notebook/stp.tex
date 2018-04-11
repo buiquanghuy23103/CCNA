@@ -1,101 +1,311 @@
 \chapter{STP}
-\section{Issues with redundancy}
-Multiple cabled paths between switches provide physical redundancy in a switched network. This improves the reliability and availability of the network. However, when there is no spanning tree implementation on the switches, a Layer 2 loop occurs. A Layer 2 loop can result in the three primary issues:
+
+\section{Layer 2 loop}
+
+Multiple cabled paths between switches provide physical redundancy. However, when  redundancy is introduced into a design, loops and duplicate frames occur. Loops and duplicate frames have severe consequences for network:
+
 \begin{itemize}
 \item Duplicate unicast frames
 \item MAC database instability
 \item Broadcast storm
 \end{itemize}
-\subsection{Multiple-frame transmission}
-Broadcast frames are not the only type of frames that are affected by loops. Unknown unicast frames sent onto a looped network can result in duplicate frames arriving at the destination device. An unknown unicast frame is when the switch does not have the destination MAC address in its MAC address table and must forward the frame out all ports, except the ingress port.
-\subsection{MAC Database Instability}
-Copies of the same frame are received on different ports of the switch \par 
-Broadcast frames are forwarded out all switch ports, except the original ingress port. If there is more than one path to the destination, the frames may be forwarded back to the original switch, and create an endless loop. When a loop occurs, the MAC address table on a switch to constantly change with the updates from the broadcast frames, which results in MAC database instability. \par 
+
+\paragraph{MAC Database Instability}Broadcast frames are forwarded out all switch ports, except the original ingress port. If there is more than one path to the destination, the frames may be forwarded back to the original switch, and create an endless loop. When a loop occurs, the MAC address table constantly changes with the updates from the broadcast frames, which results in MAC database instability.
 See this \href{https://ccnav6.com/s3/course/module2/2.1.1.2/2.1.1.2.html}{link} for more explanation.
-\subsection{Broadcast storm}
-A broadcast storm occurs when there are so many broadcast frames caught in a Layer 2 loop that all available bandwidth is consumed. Consequently, no bandwidth is available for legitimate traffic and the network becomes unavailable for data communication. This is an effective denial of service (DoS).\par 
-There are other consequences of broadcast storms. Because broadcast traffic is forwarded out every port on a switch, all connected devices have to process all the broadcast traffic that is being flooded endlessly around the looped network. This can cause the end device to malfunction because of the processing requirements needed to sustain such a high traffic load on the NIC.
-\section{Operation}
-\subsection{Port Roles}
-IEEE 802.1D STP and RSTP use the Spanning Tree Algorithm (STA) to determine which switch ports on a network must be put in blocking state to prevent loops from occurring. The STA designates a single switch as the root bridge and uses it as the reference point for all path calculations (see figure \ref{STP-operation}). \par 
-\begin{figure}[hbtp]
-\centering
-\includegraphics[width=0.8\textwidth]{pictures/STP-operation.png}
-\caption{The STA designates a single switch as the root bridge and uses it as the reference point for all path calculations.}
-\label{STP-operation}
-\end{figure}
-After  the root bridge has been determined, the STA calculates the shortest path to the root bridge, while each switch uses the STA to determine which ports to block.  When the STA has determined which paths are most desirable relative to each switch, it assigns port roles to the participating switch ports:
+
+\paragraph{Duplicate unicast frame}MAC Database Instability makes the switch overwhelming and confused. It does not know destination MAC address and must forward the frame out all ports.  Consequently, unicast frames arrive at the destination device more than once.
+
+\paragraph{Broadcast storm}occurs when there are so many broadcast frames caught in a Layer 2 loop. Consequently, all available bandwidth is consumed. No bandwidth is available for legitimate traffic and the network becomes unavailable for data communication. This is an effective denial of service (DoS). Broadcast storm also cause the end device to malfunction because of the processing requirements needed to sustain such a high traffic load on the NIC.
+
+\section{STP overview}
+
+\subsection{Operation}
+
+The Spanning Tree Protocol (STP) was developed to prevent loops and duplicate frames. STP ensures that there is only one logical path between all destinations on the network by blocking redundant paths that could cause a loop. If failure occurs, STP recalculates the paths and unblocks the necessary ports to allow the redundant path to become active.\\
+
+There is a root bridge elected for each spanning tree instance. It is possible to have multiple distinct root bridges for different sets of VLANs.\\
+
+\subsection{Types of STP}
+
 \begin{itemize}
-\item \textbf{Root port} -- Switch ports closest to the root bridge in terms of overall cost to the root bridge.
-\item \textbf{Designated port} -- All non-root ports that are still permitted to forward traffic on the network.
-\item \textbf{Alternate port} -- Alternate ports and backup ports are in discarding or blocking state to prevent loops. 
+\item \textbf{802.1D} -- The first STP version, provide one spanning tree instance for the entire bridged network.
+\item \textbf{PVST+} -- Cisco enhancement of STP, provide a separate spanning tree instance for each VLAN.
+\item \textbf{RSTP or 802.1w} -- An evolution of STP.
+\item \textbf{Rapid PVST+} -- Cisco enhancement of RSTP.
+\item \textbf{MSTP} -- Multiple Spanning Tree Protocol, an IEEE standard, map multiple VLANs into the same spanning tree instance.
+\item \textbf{MST} -- Cisco implementation of MSTP, provide up to 16 instances of RSTP.
 \end{itemize}
-Sometimes, the administrator wants to determine port roles without calculating port cost. He/She should keep in mind the following tips:
-\begin{itemize}
-\item There can only be one root port per non-root switch
-\item If one end of a segment (the link between two switches) is a root port, then the other end is a designated port.
-\item All ports on the root bridge are designated ports.
-\item Alternate ports are selected only on segments where neither end is a root port.
-\end{itemize}
-\subsection{Root bridge}
-Every switch has its own BID and a root ID:
-\subsection{Bridge ID (BID)}
-This field is used to uniquely identify the switch in the election process. It includes the priority, extended system ID, and MAC address (see figure \ref{BID}). The bridge priority value is automatically assigned, but can be modified by the administrator. The extended system ID is used to specify a VLAN ID or a multiple spanning tree protocol (MSTP) instance ID. 
+
+\section{Bridge ID}
+
+Bridge ID (BID) uniquely identifies a switch. The BID contains a bridge priority, the MAC address of the sending switch, and an extended system ID. The BID value is determined by the combination of these three fields.\\
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=0.6\textwidth]{pictures/BID.png}
 \caption{BID fields}
 \label{BID}
 \end{figure}
-The bridge priority is a customizable value that can be used to influence which switch becomes the root bridge. The switch with the lowest priority, which implies the lowest BID, becomes the root bridge because a lower priority value takes precedence. The default priority value for all Cisco switches is the decimal value 32768. The range is 0 to 61440 in increments of 4096.\par 
-The extended system ID reserves the rightmost 12 bits for the VLAN ID and the far left 4 bits for the bridge priority. This explains why the bridge priority value can only be configured in multiples of 4096, or $2^12$.\par 
-When two switches are configured with the same priority and have the same extended system ID, the switch having the MAC address with the lowest value, expressed in hexadecimal, will have the lower BID. Initially, all switches are configured with the same default priority value. The MAC address is then the deciding factor as to which switch is going to become the root bridge. 
-\subsubsection{root ID}
-This field indicates the BID of the root bridge. When a switch first boots, the root ID is the same as the bridge ID (BID). However, as the election occurs, the lowest BID replaces the local root ID to identify the root bridge.
-\subsubsection{Election process}
-All switches in the broadcast domain participate in the election process. After a switch boots, it begins to send out BPDU frames every two seconds. These BPDUs contain the switch BID and the root ID.\par 
-Assuming that switch A,B,C,D resides in the same STP domain. As the switch A forward its BPDU frames, adjacent switch B reads the root ID information from the BPDU frames. If the root ID from the BPDU received is lower than the root ID on B, then the B updates its root ID, identifying the A as the root bridge. Switch B then forwards new BPDU frames with the lower root ID to switch C.\par 
-The same process repeats, switch C compares its current root ID with the root ID identified in the frames, and then updates its current root ID if needed. Eventually, the switch with the lowest BID ends up being identified as the root bridge for the spanning tree instance.
-\subsection{Port role decision}
-After the root bridge is elected, the STA determines port roles on interconnecting links.\par 
-The root bridge automatically configures all of its switch ports in the designated role. Non-root switches transition ports with the lowest root path cost to root ports, and the other to either  designated or alternate port (because there can only be one root port per non-root switch). \par 
-Next step is to decide which port to configure as a designated or alternative port. On the segment, where root ports have already been defined, two switches exchange BPDU frames, which contain the BID. Generally, the switch with the lower BID has its port configured as a designated port while the other has its port configured as an alternate port. However, keep in mind that the first priority is the lowest path cost to the root bridge and that the sender’s BID is used only if the port costs are equal.
-\subsection{Root path cost}
-The STA considers both path and port costs when determining which ports to block.The path information, known as the internal root path cost, is determined by summing up the individual port costs along the path from the switch to the root bridge. The default port costs are defined by the speed at which the port operates. 10 Gb/s Ethernet ports have a port cost of 2, 1 Gb/s Ethernet ports have a port cost of 4, 100 Mb/s Fast Ethernet ports have a port cost of 19, and 10 Mb/s Ethernet ports have a port cost of 100.\par 
-Switches send BPDUs, which include the root path cost. This is the cost of the path from the sending switch to the root bridge. When a switch receives the BPDU, it adds the ingress port cost of the segment to determine its internal root path cost.
-\subsection{BPDU frame}
-A Bridge Protocol Data Units (BPDU) is a frame exchanged by switches for STP. The spanning tree algorithm depends on the exchange of BPDUs to determine a root bridge. BPDUs have a destination MAC address of 01:80:C2:00:00:00, which is a multicast address for the spanning tree group.  A BPDU frame contains 12 distinct fields:
+
+The extended system ID reserves the rightmost 12 bits for the VLAN ID and the far left 4 bits for the bridge priority. Therefore, the bridge priority value can only be the multiples of 4096 ($2^12$). If we consider BID as a hexadecimal number, the lowest left-most 4 bits (meaning lowest priority) always leads to lowest BID value.\\
+
+To be more accurate, the root bridge election is based on the following criteria, in sequential order:
+
+\begin{enumerate}
+\item The switch with the lowest priority is the root bridge.
+\item If the priorities are equal, then the switch with the lowest MAC address is elected the root bridge.
+\end{enumerate}
+
+\section{BPDU frame}
+
+A Bridge Protocol Data Units (BPDU) is a frame exchanged by switches for STP. BPDUs have a destination MAC address of \textbf{01:80:C2:00:00:00}, which is a multicast address for the spanning tree group. A BPDU frame contains 12 distinct fields:
+
 \begin{itemize}
 \item The first four fields identify the protocol, version, message type, and status flags.
-\item The next four fields are \textit{root ID}, \textit{bridge ID (BID)}, root path cost. They are  used to identify the root bridge and the root path cost to the root bridge.
-\item The last four fields are all timer fields that determine how frequently BPDU messages are sent and how long the information received through the BPDU process is retained.
+\item The next four fields are \textit{root ID}, \textit{bridge ID (BID)}, path cost.
+\item The last four fields are all timer fields. They determine how frequently BPDU messages are sent and how long the information received through the BPDU process is retained.
 \end{itemize}
-\section{Types of STP}
+
+\paragraph{Root ID} indicates the BID of the root bridge. When a switch first boots, the root ID is the same as the BID. However, as the election occurs, the lowest BID replaces the root ID to identify the root bridge.
+
+\paragraph{Path cost}is the cost of the path from the sending switch to the root bridge. When a switch receives the BPDU, it adds the ingress port cost of the segment to determine its internal root path cost. The path cost is determined by summing up the individual port costs along the path from the switch to the root bridge. The default port costs are defined by the speed at which the port operates.
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{ll}
+\toprule
+\head{Port and speed} & \head{Cost} \\
+\midrule
+10 Gb/s Ethernet & 2 \\
+1 Gb/s Ethernet & 4 \\
+100 Mb/s Ethernet & 19 \\
+10 Mb/s Ethernet & 100\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Root bridge election}
+
+All switches in the broadcast domain participate in the election process. After a switch boots, it begins to send out BPDU frames every two seconds. These BPDUs contain the switch BID and the root ID.\\
+
+\begin{figure}[hbtp]
+\caption{Root bridge selection}\label{RootBridge}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/RootBridge.PNG}
+\end{figure}
+
+ 
+Assuming that switch A, B, C resides in the same broadcast domain (figure \ref{RootBridge}). As the switch A forward its BPDU frames, adjacent switch B reads the root ID information from the BPDU frames. If the root ID from the BPDU received is lower than the root ID on B, then the B updates its root ID, identifying the A as the root bridge. Switch B then forwards new BPDU frames with the lower root ID to switch C. The same process repeats, switch C compares its current root ID with the root ID identified in the frames, and then updates its current root ID if needed. \\
+
+Eventually, the root ID of all switches equals the lowest BID. Therefore, all switches know exactly which one is the root bridge, based on the root ID. At this point, the election is terminated.
+
+\section{Port Roles}
+
+\subsection{What is port role?}
+Spanning Tree Algorithm (STA) determines which switch ports on a network must be blocked to prevent loops. It designates a single switch as the root bridge and uses it as the reference point for all path calculations (see figure \ref{STP-operation}).\\
+ 
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{pictures/STP-operation.png}
+\caption{The STA designates a single switch as the root bridge}
+\label{STP-operation}
+\end{figure}
+
+After the root bridge has been determined, STA assigns port roles to the switch ports:
+
 \begin{itemize}
-\item \textbf{STP} -- This is the original IEEE 802.1D version. The protocol assumes one spanning tree instance for the entire bridged network.
-\item \textbf{PVST+} -- This is a Cisco enhancement of STP that provides a separate 802.1D spanning tree instance for each VLAN configured in the network.
-\item \textbf{802.1D-2004} -- This is an updated version of the STP standard, incorporating IEEE 802.1w.
-\item \textbf{RSTP or IEEE 802.1w} -- This is an evolution of STP.
-\item \textbf{Rapid PVST+} -- This is a Cisco enhancement of RSTP that uses PVST+.
-\item \textbf{MSTP} -- Multiple Spanning Tree Protocol. This is an IEEE standard inspired by the earlier Cisco proprietary Multiple Instance STP (MISTP) implementation. MSTP maps multiple VLANs into the same spanning tree instance. The Cisco implementation of MSTP is MST, which provides up to 16 instances of RSTP
+\item \textbf{Root port} -- Switch ports closest to the root bridge in terms of overall cost to the root bridge.
+\item \textbf{Designated port} -- All non-root ports that are still permitted to forward traffic on the network.
+\item \textbf{Alternate and backup ports} -- Alternate ports and backup ports are blocked to prevent loops. 
 \end{itemize}
-\subsection{Port states and PVST+ Operation}
-To facilitate the learning of the logical spanning tree, each switch port transitions through five possible port states and three BPDU timers:
+
+\subsection{Port role rules}
+
+\begin{itemize}
+\item There can only be one root port per non-root switch
+\item If one end of a segment (the link between two switches) is a root port, then the other end is a designated port.
+\item All ports on the root bridge are designated ports.
+\item Alternate ports are elected only on segments where neither end is a root port.
+\end{itemize}
+
+\subsection{Port role decision}
+
+After the root bridge is elected, the STA determines port roles (figure \ref{PortRole}) on the following steps in sequential order:
+
+\begin{enumerate}
+\item The root bridge automatically configures all of its switch ports in the designated role.
+\item STP determines root port role. On each non-root switch, the port with lowest path cost to root bridge will become root port.
+\item Non-root switches configure their non-root ports as designated or alternate ports.
+\end{enumerate}
+
+\begin{figure}[hbtp]
+\caption{Port role assignment}\label{PortRole}
+\centering
+\includegraphics[ width=0.6\textwidth ]{pictures/PortRole.PNG}
+\end{figure}
+
+
+In the last step, two ports on the same segment will negotiate with each other. If one end of a segment is a root port, then the other end is a designated port. In figure \ref{PortRole}, the segment between S1(F0/1) and S2(F0/1) is an example.\\
+
+However, when neither end of a segment cannot be a root port, the two switches on that segment exchange BPDU frames to decide which port to configure as a designated port. The switch with the lower path cost to the root bridge will have its port configured as a designated port. The other port will become an alternate port. If the path costs are equal, then the switch with the lower BID has its port configured as a designated port while the other has its port configured as an alternate port.\\
+
+\begin{figure}[hbtp]
+\caption{Redundant links}\label{Redundancy}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/Redundancy.PNG}
+\end{figure}
+ 
+If there are more than two paths in a segment (figure \ref{Redundancy}), then the port with the lower number (e.g. port number of F0/3 is lower than F0/4) will become active, while the other will be blocked.
+
+\section{PVST+}
+
+\subsection{Port state}
+
+To facilitate the learning of the logical spanning tree, each switch port transitions through five possible port states:
+
 \begin{table}[h!]
 \centering
 \caption{Five port states in PVST+}
 \label{PVST-port-state}
-\begin{tabular}{|p{0.25\textwidth}|l|l|l|l|l|}
+\begin{tabular}{|p{0.25\textwidth}|l|c|c|c|c|}
 \hline
-                                                    & \multicolumn{5}{c|}{Port states}                        \\ \hline
-Operation allowed                                   & Blocking & Listening & Learning & Forwarding & Disabled \\ \hline
-Learn MAC addresses                                 & YES      & YES       & YES      & YES        & NO       \\ \hline
-Forward data frames received on interface           & NO       & NO        & YES      & YES        & NO       \\ \hline
-Forward data frames switched from another interface & NO       & NO        & NO       & YES        & NO       \\ \hline
-Receive and process BPDUs                           & NO       & NO        & NO       & YES        & NO       \\ \hline
+
+& \multicolumn{5}{c|}{Port states} \\ \hline
+ 
+\head{Operation allowed}                           
+& \head{Blocking} & \head{Listening} & \head{Learning} & \head{Forwarding} & \head{Disabled} \\ \hline
+
+Receive BPDUs                                 
+& *        & *         & *        & *          &        \\ \hline
+
+Process BPDUs                                 
+&          & *         & *        & *          &        \\ \hline
+
+Learn MAC addresses                            
+&          &           & *        & *          &        \\ \hline
+
+Forward data frames           
+&          &           &          & *          &        \\ \hline
+
 \end{tabular}
 \end{table}
-\subsection{Rapid PVST+}
-Rapid PVST+ is the Cisco implementation of RSTP on a per-VLAN basis. An independent instance of RSTP runs for each VLAN.\par 
-RSTP does not have a blocking port state. Port states are defined as discarding, learning, or forwarding. RSTP also speeds the recalculation of the spanning tree when the Layer 2 network topology changes. If a port is configured to be an alternate port or a backup port, it can immediately change to a forwarding state without waiting for the network to converge.\par 
-RSTP introduces new types of port: edge port. An RSTP edge port is a switch port that is never intended to be connected to another switch. It immediately transitions to the forwarding state when enabled. The RSTP edge port concept corresponds to the PVST+ PortFast feature. An edge port is directly connected to an end station and assumes that no switch device is connected to it.
+
+\paragraph{Blocking} -- The port is an alternate port and does not participate in frame forwarding. The port receives BPDU frames to determine the location and root ID of the root bridge switch and which port roles each switch port should assume in the final active STP topology.
+
+
+\paragraph{Listening} -- The port is preparing to participate in frame forwarding. It listens for the path to the root. It also processes its own BPDU frames, and broadcast them to inform adjacent switches that the switch port is about to join the active topology.
+
+
+\paragraph{Learning} -- The port learns the MAC addresses and populates the MAC address table. 
+
+
+\paragraph{Forwarding} -- The port is considered part of the active topology. It forwards data frames and sends and receives BPDU frames. 
+
+
+\paragraph{Disabled} -- The Layer 2 port does not participate in spanning tree and does not forward frames. The disabled state is set when the switch port is administratively disabled.
+
+\subsection{PortFast and BPDU guard}
+
+When a switch port is configured with PortFast that port transitions from blocking to forwarding state immediately, bypassing the usual transition states (the listening and learning states). You can use PortFast on \emph{access ports}\footnote{Access ports are ports which are connected to an end device such as a PC or a server.} to help devices connect to the network immediately, rather than waiting for STP to converge on each VLAN. \\
+
+\begin{figure}[hbtp]
+\caption{PortFast and BPDU guard}
+\centering
+\includegraphics[ width=0.6\textwidth ]{pictures/PortFast.PNG}
+\end{figure}
+
+Because a PortFast-configured port is not connected to a switch, BPDUs should never be received. Otherwise, the broadcast domain will ``think'' that the port is connected to a switch. This consumption potentially causes layer 2 loops. To address this issue, Cisco switches support a feature called BPDU guard. This will effectively shut down the port. The BPDU guard feature provides a secure response to invalid configurations because you must manually put the interface back into service.\\
+
+Cisco PortFast technology is useful for DHCP. Because PortFast immediately changes the state to forwarding, the PC always gets a usable IP address from DHCP server.
+
+
+\section{RSTP and Rapid PVST+}
+
+Rapid PVST+ is Cisco enhancement of RSTP. In this section, only the common features of these two protocols are discussed.
+
+\subsection{BPDU}
+RSTP uses BPDU version 2, while 802.1D uses version 0. Protocol information can be immediately aged on a port if Hello packets are not received for three consecutive Hello times (six seconds, by default) or if the max age timer expires. BPDUs are used as a keepalive mechanism. Therefore, three consecutively missed BPDUs indicate lost connectivity between a bridge and its neighboring.\\
+
+\subsection{Port state}
+RSTP does not have a blocking port state. Port states are defined as \emph{discarding}, \emph{learning}, or \emph{forwarding}. RSTP discarding state is equivalent to PVST+ blocking and disabled state. RSTP learning state is equivalent to PVST+ listening and learning state.\\
+
+RSTP speeds the recalculation of the spanning tree when the Layer 2 network topology changes. If a port is configured to be an alternate port, it can immediately change to a forwarding state without waiting for the network to converge.\\
+
+\subsection{Edge port}
+RSTP introduces new types of port: edge port. An RSTP edge port is a switch port that is never intended to be connected to another switch. It immediately transitions to the forwarding state when enabled. An edge port is any port that does not have a switch connected to it.
+
+\begin{figure}[hbtp]
+\caption{Edge ports}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/EdgePort.PNG}
+\end{figure}
+
+\section{Configuration}
+
+\subsection{STP type}
+
+You can enable either PVST+ or Rapid PVST+ on a switch:
+
+\begin{verbatim}
+S1(config)# spanning-tree mode pvst
+S1(config)# spanning-tree mode rapid-pvst
+\end{verbatim}
+
+\subsection{Priority}
+
+The default priority value of a switch is 32,768. When an administrator wants a specific switch to become a root bridge, the bridge priority value must be adjusted to ensure it is lower than the bridge priority values of all the other switches on the network. There are two different methods to configure the bridge priority value:
+
+\subsubsection{Method 1}
+
+To ensure that the switch has the lowest bridge priority value, use the following command.
+    \begin{verbatim}
+    S1(config)# spanning-tree vlan 10 root primary
+    \end{verbatim}
+This command dynamically makes priority of the switch to be the lowest in the broadcast domain. By default, the priority for the switch is 24,576. If an alternate root bridge is desired, use the following command. 
+    \begin{verbatim}
+    S1(config)# spanning-tree vlan 10 root secondary
+    \end{verbatim}   
+This command ensures that the alternate switch becomes the root bridge if the primary root bridge fails.  This command, by default, sets the priority to 28,672.
+
+\subsubsection{Method 2}
+
+Another method for configuring the bridge priority value is using the following command
+    \begin{verbatim}
+    S1(config)# spanning-tree vlan 10 priority 24576
+    \end{verbatim}
+This command gives more granular control over the bridge priority value. Remember the priority value is configured in increments of 4,096 between 0 and 61,440. Cisco recommends caution when using this command.   
+
+\subsection{PortFast and BPDU guard} 
+
+To configure PortFast and BPDU guard on a switch port, enter the following command:
+
+\begin{verbatim}
+S1(config)# interface F0/1
+S1(config-if)# spanning-tree portfast
+S1(config-if)# spanning-tree bpduguard enable
+\end{verbatim}
+
+To enable PortFast on all nontrunking interfaces, and enable BPDU guard on all PortFast-enabled ports, use the following command:
+
+\begin{verbatim}
+S1(config)# spanning-tree portfast default
+S1(config)# spanning-tree portfast bpduguard default
+\end{verbatim}
+
+To verify that PortFast and BPDU guard has been enabled for a switch port, use the show command, as shown in Figure \ref{VerifyPortFast}. \note PortFast and BPDU guard are disabled, by default, on all interfaces.
+
+\begin{figure}[hbtp]
+\caption{Verify PortFast and BPDU guard}\label{VerifyPortFast}
+\centering
+\includegraphics[scale=0.8]{pictures/VerifyPortFast.PNG}
+\end{figure}
+
+\subsection{Verification}
+
+Using the \verb|show spanning-tree| command without specifying any additional options provides a quick overview of the status of STP for all VLANs that are defined on a switch. Use the show \verb|spanning-tree vlan <vlan_id>| command to get STP information for a particular VLAN (figure \ref{VerifyPortFast}). 
+
+\begin{figure}[hbtp]
+\caption{Analyze STP status}\label{STPverify}
+\centering
+\includegraphics[ width=0.8\textwidth ]{pictures/STPverify.PNG}
+\end{figure}

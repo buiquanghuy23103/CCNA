@@ -1,21 +1,31 @@
 \chapter{HSRP}
+
 \section{Operations}
-One way to prevent a single point of failure at the default gateway, is to implement a virtual router. To implement this type of router redundancy, multiple routers are configured by First Hop Redundancy Protocol (FHRP) to work together as an illusion of a single router to the hosts on the LAN. One the most popular options for FHRP is Hot Standby Router Protocol (HSRP). HSRP was designed by Cisco to allow for gateway redundancy without any additional configuration on end devices.\par 
-One of the routers is selected by HSRP to be the active router. The active router will act as the default gateway for end devices. The other router will become the standby router. The default gateway address is a virtual IPv4 address along with a virtual MAC address that is shared amongst both HSRP routers. End devices use this virtual IPv4 address as their default gateway address.(See figure \ref{HSRP-topology}) \par 
-The HSRP virtual IPv4 address is configured by the network administrator. The virtual MAC address is created automatically.
+
+One way to prevent a single point of failure at the default gateway, is to implement a virtual router. To implement this type of router redundancy, multiple routers are configured by First Hop Redundancy Protocol (FHRP) to work together as an illusion of a single router to the hosts on the LAN. One the most popular options for FHRP is Hot Standby Router Protocol (HSRP). HSRP was designed by Cisco to allow for gateway redundancy without any additional configuration on end devices.\\
+ 
+One of the routers is selected by HSRP to be the active router. The active router will act as the default gateway for end devices. The other router will become the standby router. The default gateway address is a virtual IPv4 address along with a virtual MAC address that is shared amongst both HSRP routers. End devices use this virtual IPv4 address as their default gateway address.(See figure \ref{HSRP-topology}). The virtual IPv4 address is configured by the network administrator. The virtual MAC address is created automatically.
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=0.6\textwidth]{pictures/HSRP.png}
 \caption{HSRP topology}
 \label{HSRP-topology}
 \end{figure}
-\subsection{Priority}
+
+\section{Priority}
+
 HSRP priority can be used to determine the active router. The router with the highest HSRP priority will become the active router. By default, the HSRP priority is 100. If the priorities are equal, the router with the numerically highest IPv4 address is elected as the active router.
-\subsection{Preemption}
-By default, after a router becomes the active router, it will remain the active router even if another router comes online with a higher HSRP priority. This means that the router which boots up first will become the active router if there are no other routers online during the election process. To force a new HSRP election process, preemption must be enabled. Preemption is the ability of an HSRP router to trigger the re-election process. \par 
-With preemption enabled, a router that comes online with a higher HSRP priority will assume the role of the active router. Preemption only allows a router to become the active router if it has a higher priority. A router enabled for preemption, with equal priority but a higher IPv4 address will not preempt an active router.
-\subsection{States and timers}
-When an interface is configured with HSRP or is first activated with an existing HSRP configuration, the router sends and receives HSRP hello packets to begin the process of determining which state it will assume in the HSRP group. The active and standby HSRP routers send hello packets to the HSRP group multicast address every 3 seconds, by default. The standby router will become active if it does not receive a hello message from the active router after 10 seconds. However, to avoid increased CPU usage and unnecessary standby state changes, do not set the hello timer below 1 second or the hold timer below 4 seconds.
+
+\section{Preemption}
+
+By default, after a router becomes the active router, it will remain the active router even if another router comes online with a higher HSRP priority. This means that the router which boots up first will become the active router if there are no other routers online during the election process.\\
+
+To force a new HSRP election process, preemption must be enabled. Preemption is the ability of an HSRP router to trigger the re-election process. With preemption enabled, a router that comes online with a higher HSRP priority will assume the role of the active router. Preemption only allows a router to become the active router if it has a higher priority. However, a router with equal priority will not preempt an active router, even if it has higher IPv4 address.
+
+\section{States and timers}
+
+When an interface is configured with HSRP, it exchanges HSRP hello packets to determine which router is active. Hello packets are sent to the HSRP group multicast address every 3 seconds (hello timer), by default. The standby router will become active if it does not receive a hello message from the active router after 10 seconds (hold timer). To avoid increased CPU usage and unnecessary standby state changes, do not set the hello timer below 1 second or the hold timer below 4 seconds.
 
 \section{Configuration}
 Complete the following steps to configure HSRP (see figure \ref{HSRP-config} for example):
