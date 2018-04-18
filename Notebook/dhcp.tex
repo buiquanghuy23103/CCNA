@@ -119,15 +119,14 @@ R1(config)# interface g0/0
 R1(config-if)# ip helper-address 192.168.11.6
 \end{verbatim}
 
-\item[Step 4 (Optional). Other DHCP specifics]
+\item[Step 4 (Optional). Other DHCP specifics]\\
 
 \begin{verbatim}
 R1(dhcp-config)# dns-server 192.168.11.5
 R1(dhcp-config)# domain-name example.com
 \end{verbatim}
 
-\item[Step 5. Verification] The \verb|show ip dhcp binding| command displays a list of all IPv4 address to MACaddress bindings that have been provided by the DHCPv4 service. The \verb|show ip dhcp server statistics| command verifies that messages are being
-received or sent by the router. This command displays count information regarding the number of DHCPv4 messages that have been sent and received.
+\item[Step 5. Verification] The \verb|show ip dhcp binding| command displays a list of all IPv4 address to MACaddress bindings that have been provided by the DHCPv4 service. The \verb|show ip dhcp server statistics| command verifies that messages are being received or sent by the router. This command displays count information regarding the number of DHCPv4 messages that have been sent and received.
 
 \begin{verbatim}
 R1# show run | sec dhcp
@@ -135,3 +134,95 @@ R1# show ip dhcp binding
 R1# show ip dhcp statistics
 \end{verbatim}
 \end{description}
+
+\subsection{DHCPv4 client}
+
+\begin{verbatim}
+SOHO(config)# interface g0/1
+SOHO(config-if)# ip address dhc
+SOHO(config-if)# no shutdown
+\end{verbatim}
+
+
+\chapter{DHCPv6}
+
+\section{Operation}
+
+\subsection{SLAAC}
+
+Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M flag and the O flag are set to 0 in the RA. In SLAAC, a host automatically obtains its IP configuration from an IPv6-enabled router. The host generates its own unique IPv6 address. A DHCPv6 server is not required. SLAAC operation includes the following steps:
+
+\begin{enumerate}
+\item Client asks for IPv6 configuration by sending an RS to the router R1.
+\item R1 receives the RS message and responds with an RA message.
+\item PC1 receives the RA, and uses the information in the message to create its own IPv6 global unicast address. 
+\item Because SLAAC is a stateless process, PC1 must verify that this newly created IPv6 address is unique using DAD process.
+\end{enumerate}
+
+\subsection{SLAAC and Stateless DHCPv6}
+
+A host obtains IP configuration (prefix, prefix-length, default gateway) using SLAAC and additional information (DNS server, domain name, etc.) from a stateless DHCPv6 server. The host generates its own unique IPv6 address. 
+
+\subsection{Stateful DHCPv6}
+
+In stateful DHCPv6, the RA message informs the client not to use the information in the RA message. All addressing information and configuration information must be obtained from a stateful DHCPv6 server. This is known as \emph{stateful} DHCPv6 because the DHCPv6 server maintains IPv6 state information.\\
+
+DHCPv6 messages from the server to the client use UDP destination port 546. The client sends DHCPv6 messages to the server using UDP destination port 547.
+
+\section{Message}
+
+\begin{itemize}
+\item \textbf{Router solicitation (RS):} The client sends an RS message to the router. The destination address of the message is \textbf{all-routers} multicast address \textbf{FF02::2}.
+
+\item \textbf{Router advertisement (RA):} RAs are sent by routers to provide IP configuration to clients. The RA message includes IPv6 configuration for clients (prefix, prefix-length, DNS server, MTU, and default gateway information). A router sends an RA message periodically (every 200s) or in response to an RS message. RA messages are always sent to the IPv6 \textbf{all-nodes} multicast address \textbf{FF02::1}.
+\end{itemize}
+
+The two flags are the Managed Address Configuration flag (M flag) and the
+Other Configuration flag (O flag).
+Using different combinations of the M and O flags, RA messages have one of three
+addressing options for the IPv6 device, as shown in Figure 8-13:
+■ SLAAC (Router Advertisement only)
+■ Stateless DHCPv6 (Router Advertisement and DHCPv6)
+■ Stateful DHCPv6 (DHCPv6 only)
+
+
+\subsection{Client IPv6}
+
+The
+IPv6 global unicast address is created by combining the prefix from RA and an
+Interface ID using either EUI-64 or a randomly generated value.
+
+PC1 now has a 64-bit network prefix but needs a 64-bit interface ID
+(IID) to create a global unicast address.
+PC1 can create its own unique IID in two ways:
+● EUI-64—Using the EUI-64 process, PC1 creates an IID using its 48-bit MAC
+address.
+● Randomly generated—The 64-bit IID can be a random number that the client
+operating system generates.
+PC1 can create a 128-bit IPv6 global unicast address by combining the 64-bit
+prefix with the 64-bit ID. PC1 uses the link-local address of the router as its IPv6
+
+\subsection{DAD process}
+
+PC1 sends an ICMPv6 neighbor
+solicitation (NS) message with a specially constructed multicast address, called
+a solicited-node multicast address, which duplicates the last 24 bits of PC1’s
+IPv6 address. If no other devices respond with a neighbor advertisement (NA)
+message, then the address is virtually guaranteed to be unique and can be used
+by PC1. If PC1 receives an NA, the address is not unique and the operating system has to determine a new IID to use.
+
+\section{Configuration}
+
+\paragraph{SLAAC}
+
+To do so, use the no ipv6 nd
+managed-config-flag and ipv6 nd other-config-flag interface configuration mode
+commands.
+
+\paragraph{Stateless DHCPv6}For stateless DHCPv6, the O flag is set to 1 and the M flag is left at the default
+setting of 0. To modify the RA message sent on the interface of a router to indicate stateless
+DHCPv6, use the ipv6 nd other-config-flag interface configuration command.
+
+\paragraph{Stateful DHCPv6}The M flag indicates whether or not to use stateful DHCPv6. The O flag is not involved.
+To signify stateful DHCPv6 and change the M flag from 0 to 1, use the ipv6 nd
+managed-config-flag interface configuration command.
