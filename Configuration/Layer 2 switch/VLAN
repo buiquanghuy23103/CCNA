@@ -3,6 +3,7 @@ vlan 5
 vlan 10
  name TEACH
 
+**IF F0/23 CONNECT TO ROUTER, THEN IT MUST BE TRUNK****
 int f0/23
  switchport mode trunk 
  #switchport trunk allowed vlan 5,10
