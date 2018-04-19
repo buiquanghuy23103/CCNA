@@ -14,3 +14,5 @@ ip address 172.16.99.1 255.255.255.0
 **TURN ON INTERFACE***
 int g0/0
 no shutdown
+
+***Remember to include these interfaces in ROUTING PROTOCOL (EIGRP, OSPF, RIP, etc.)
