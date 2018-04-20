@@ -19,7 +19,7 @@ When the client boots (or otherwise wants to join a network), it begins DORA\foo
 
 \item On receiving the DHCP-REQUEST message, the server verifies the lease information with an ICMP ping to that address to ensure it is not being used already. If there is \emph{no} ICMP echo reply, then the address is is not being used by any client. Otherwise, that address is being used and the server has to send DHCP-OFFER again.
 
-\item DHCP server sends  unicast DHCP-ACK message to the client. The DHCP-ACK message informs the client that the IP address is valid. Because The DHCP-ACK message is a duplicate of the DHCP-OFFER, it also provides IP information for the client.
+\item DHCP server sends  unicast \textbf{DHCP-ACK} message to the client. The DHCP-ACK message informs the client that the IP address is valid. Because The DHCP-ACK message is a duplicate of the DHCP-OFFER, it also provides IP information for the client.
 
 \item When the client receives the DHCPACK message, performs an ARP lookup for the assigned address.
 If there is no reply to the ARP, the client knows that the IPv4 address is valid and starts using it as its own.
@@ -86,7 +86,7 @@ for the client: IPv4 address for client, subnet mask, lease duration, and IPv4 a
 \subsection{DHCPv4 server}
 
 \begin{description}
-\item[Step 1. Exclude addresses]Some IPv4 addresses in a pool are assigned to network devices that require static address assignments. Therefore, these IPv4 addresses should not be assigned to other devices.
+\item[Step 1.] \textbf{Exclude addresses:} Some IPv4 addresses in a pool are assigned to network devices that require static address assignments. Therefore, these IPv4 addresses should not be assigned to other devices.
 
 \begin{verbatim}
 R1(config)# ip dhcp excluded-address <ip-address>
@@ -96,7 +96,7 @@ R1(config)# ip dhcp excluded-address <range-of-address>
 R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
 \end{verbatim}
 
-\item[Step 2. Configure address pool]Define a pool of addresses to assign to clients.
+\item[Step 2.] \textbf{Configure address pool:} Define a pool of addresses to assign to clients.
 
 \begin{verbatim}
 R1(config)# ip dhcp pool <pool-name>
@@ -106,20 +106,20 @@ R1(config)# ip dhcp pool LAN-POOL-1
 R1(dhcp-config)# network 192.168.10.0 255.255.255.0
 \end{verbatim}
 
-\item[Step 3. Default gateway]Define the default gateway router for clients. 
+\item[Step 3.] Define the default gateway router for clients. 
 
 \begin{verbatim}
 R1(dhcp-config)# default-router 192.168.10.1
 \end{verbatim}
 
-\item[Step 4. Relay agent]If network clients are not on the same subnet as DHCP servers, configure the default gateway as a relay agent.
+\item[Step 4.] \textbf{Relay agent:} If network clients are not on the same subnet as DHCP servers, configure the default gateway as a relay agent.
 
 \begin{verbatim}
 R1(config)# interface g0/0
 R1(config-if)# ip helper-address 192.168.11.6
 \end{verbatim}
 
-\item[Step 4 (Optional). Other DHCP specifics]\\
+\item[Step 4 (Optional)] Other DHCP specifics
 
 \begin{verbatim}
 R1(dhcp-config)# dns-server 192.168.11.5
@@ -139,16 +139,25 @@ R1# show ip dhcp statistics
 
 \begin{verbatim}
 SOHO(config)# interface g0/1
-SOHO(config-if)# ip address dhc
+SOHO(config-if)# ip address dhcp
 SOHO(config-if)# no shutdown
 \end{verbatim}
 
 
 \chapter{DHCPv6}
 
-\section{Operation}
+\section{General Operation}
 
-\subsection{SLAAC}
+When the client boots up, it sends DHCPv6 SOLICIT message to FF02::1:2, which is the multicast all-DHCPv6-server address. One or more servers respond with a DHCPv6 ADVERTISE unicast message to inform the client that the server is available for DHCPv6 service. The client responds with either a DHCPv6 REQUEST or a DHCPv6 INFORMATION-REQUEST unicast message: 
+
+\begin{itemize}
+\item DHCPv6 INFORMATION-REQUEST unicast message is used for Stateless DHCPv6 (i.e. SLAAC, Stateless DHCPv6 and SLAAC) to request only additional information, such as DNS server addresses, domain name.
+\item DHCPv6 REQUEST unicast message is used for Stateful DHCPv6 to ask for IP configuration parameters from the server.
+\end{itemize}
+
+The server sends a DHCPv6 REPLY unicast message to the client containing the information requested in the DHCPv6 REQUEST or DHCPv6 INFORMATION REQUEST message.
+
+\section{SLAAC}
 
 Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M flag and the O flag are set to 0 in the RA. In SLAAC, a host automatically obtains its IP configuration from an IPv6-enabled router. The host generates its own unique IPv6 address. A DHCPv6 server is not required. SLAAC operation includes the following steps:
 
@@ -159,70 +168,127 @@ Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M fl
 \item Because SLAAC is a stateless process, PC1 must verify that this newly created IPv6 address is unique using DAD process.
 \end{enumerate}
 
-\subsection{SLAAC and Stateless DHCPv6}
+\begin{figure}[hbtp]
+\caption{Verify SLAAC method}
+\centering
+\includegraphics[scale=0.8]{pictures/SLAAC.PNG}
+\end{figure}
 
-A host obtains IP configuration (prefix, prefix-length, default gateway) using SLAAC and additional information (DNS server, domain name, etc.) from a stateless DHCPv6 server. The host generates its own unique IPv6 address. 
 
-\subsection{Stateful DHCPv6}
+To configure SLAAC, use the \verb|no ipv6 nd managed-config-flag| and \verb|ipv6 nd other-config-flag| in router interface configuration mode.
 
-In stateful DHCPv6, the RA message informs the client not to use the information in the RA message. All addressing information and configuration information must be obtained from a stateful DHCPv6 server. This is known as \emph{stateful} DHCPv6 because the DHCPv6 server maintains IPv6 state information.\\
+\section{SLAAC and Stateless DHCPv6}
 
-DHCPv6 messages from the server to the client use UDP destination port 546. The client sends DHCPv6 messages to the server using UDP destination port 547.
+A host obtains IP configuration (prefix, prefix-length, default gateway) using SLAAC and additional information (DNS server, domain name, etc.) from a stateless DHCPv6 server. The host generates its own unique IPv6 address. \\
+
+There are four steps to configure a router as a DHCPv6 server:
+
+\begin{enumerate}
+\item Enable IPv6 Routing using \verb|ipv6 unicast-routing| command
+\item Use \verb|ipv6 dhcp pool <pool-name>| command to create a pool and enter the router in DHCPv6 configuration mode
+\item (Optional) In DHCPv6 configuration mode, configure DNS server address (\verb|dns-server <ip-address>|) and domain name (\verb|domain-name <name>|).
+\item In the interface configuration mode, we bind the DHCPv6 pool to the interface using \verb|ipv6 dhcp server <pool-name>|
+\item For stateless DHCPv6, the O flag is 1 and the M flag is 0, therefore, to indicate stateless DHCPv6, use the \verb|ipv6 nd other-config-flag| in router interface configuration mode.
+\end{enumerate}
+
+\begin{figure}[hbtp]
+\caption{Verify Stateless DHCPv6 method}
+\centering
+\includegraphics[scale=0.8]{pictures/Stateless-DHCPv6.PNG}
+\end{figure}
+
+
+\begin{verbatim}
+R1(config)# ipv6 unicast-routing
+R1(config)#
+R1(config)# ipv6 dhcp pool IPV6-STATELESS
+R1(config-dhcpv6)# dns-server 2001:db8:cafe:aaaa::5
+R1(config-dhcpv6)# domain-name example.com
+R1(config-dhcpv6)# exit
+R1(config)#
+R1(config)# interface g0/1
+R1(config-if)# ipv6 address 2001:db8:cafe:1::1/64
+R1(config-if)# ipv6 dhcp server IPV6-STATELESS
+R1(config-if)# ipv6 nd other-config-flag
+R1(config-if)# end
+R1# show ipv6 dhcp pool 
+R1# show ipv6 interface
+R1# debug ipv6 dhcp detail
+\end{verbatim}
+
+The \verb|show ipv6 dhcp pool| command verifies the name of the DHCPv6 pool and its parameters. The \verb|show ipv6 interface| command  confirms that the interface has ``Stateless address autoconfig enabled'' and has an IPv6 global unicast address. 
+
+\section{Stateful DHCPv6}
+
+In stateful DHCPv6, all IP information information must be obtained from a stateful DHCPv6 server. However, the default router information is not from the DHCPv6 server, but
+it was determined by using the source IPv6 address from the RA message. This is known as \emph{stateful} DHCPv6 because the DHCPv6 server maintains IPv6 state information.\\
+
+DHCPv6 messages from the server to the client use \textbf{UDP} destination port \textbf{546}. The client sends DHCPv6 messages to the server using \textbf{UDP} destination port \textbf{547}.\\
+
+There are four steps to configure a router as a DHCPv6 server:
+
+\begin{enumerate}
+\item Enable IPv6 Routing using \verb|ipv6 unicast-routing| command
+\item Use \verb|ipv6 dhcp pool <pool-name>| command to create a pool and enter the router in DHCPv6 configuration mode
+\item In DHCPv6 configuration mode, \verb|address prefix <prefix/length> lifetime <time> <preferred-time>|. The \verb|lifetime| option indicates the valid and preferred lease times in seconds.
+\item (Optional) Configure DNS server address (\verb|dns-server <ip-address>|) and domain name (\verb|domain-name <name>|).
+\item In the interface configuration mode, we bind the DHCPv6 pool to the interface using \verb|ipv6 dhcp server <pool-name>|
+\item Because the M flag indicates whether or not to use stateful DHCPv6 and the O flag is not involved, to signify stateful DHCPv6, we set the M flag as 1 using \verb|ipv6 nd managed-config-flag| in router interface configuration mode.
+\end{enumerate}
+
+\begin{figure}[hbtp]
+\caption{Verify stateful DHCPv6}
+\centering
+\includegraphics[scale=0.8]{pictures/Stateful-DHCPv6.PNG}
+\end{figure}
+
+
+\begin{verbatim}
+R1(config)# ipv6 unicast-routing
+R1(config)#
+R1(config)# ipv6 dhcp pool IPV6-STATEFUL
+R1(config-dhcpv6)# address prefix 2001:DB8:CAFE:1::/64 lifetime infinite infinite
+R1(config-dhcpv6)# dns-server 2001:db8:cafe:aaaa::5
+R1(config-dhcpv6)# domain-name example.com
+R1(config-dhcpv6)# exit
+R1(config)#
+R1(config)# interface g0/1
+R1(config-if)# ipv6 address 2001:db8:cafe:1::1/64
+R1(config-if)# ipv6 dhcp server IPV6-STATEFUL
+R1(config-if)# ipv6 nd managed-config-flag
+R1(config-if)# end
+\end{verbatim}
+
+The \verb|show ipv6 dhcp pool| command verifies the name of the DHCPv6 pool and its parameters. The \verb|show ipv6 dhcp binding| command in Example 8-22 displays the automatic
+binding between the link-local address of the client and the address that the server assigns. 
+
+\section{Router as DHCPv6 client}
+
+In the following commands, a Cisco router is used as the stateless DHCPv6 client. The \verb|ipv6 enable| command is used because the router does not yet have a global unicast address. The \verb|ipv6 address autoconfig| command enables automatic configuration of IPv6 addressing using SLAAC. By assumption, the server router is configured for stateless DHCPv6, so it sends an RA message to inform the client router to use stateless DHCPv6 to obtain DNS information.
+
+\begin{verbatim}
+R3(config)# interface g0/1
+R3(config-if)# ipv6 enable
+R3(config-if)# ipv6 address autoconfig
+R3(config-if)# end
+\end{verbatim}
+
+\section{Relay agent}
+
+If the DHCPv6 server is located on a different network than the client, the IPv6 router can be configured as a DHCPv6 relay agent using \verb|ipv6 dhcp relay destination 2001:db8:cafe:1::6| command in interface configuration mode.
 
 \section{Message}
 
-\begin{itemize}
-\item \textbf{Router solicitation (RS):} The client sends an RS message to the router. The destination address of the message is \textbf{all-routers} multicast address \textbf{FF02::2}.
+\paragraph{Router solicitation (RS)} The client sends an RS message to the router. The destination address of the message is \textbf{all-routers} multicast address \textbf{FF02::2}.
 
-\item \textbf{Router advertisement (RA):} RAs are sent by routers to provide IP configuration to clients. The RA message includes IPv6 configuration for clients (prefix, prefix-length, DNS server, MTU, and default gateway information). A router sends an RA message periodically (every 200s) or in response to an RS message. RA messages are always sent to the IPv6 \textbf{all-nodes} multicast address \textbf{FF02::1}.
+\paragraph{Router advertisement (RA)} is sent by routers to provide IP configuration to clients. The RA message includes IPv6 configuration for clients (prefix, prefix-length, DNS server, MTU, and default gateway information). A router sends an RA message periodically (every 200s) or in response to an RS message. RA messages are always sent to the IPv6 \textbf{all-nodes} multicast address \textbf{FF02::1}.\\
+
+The two flags are the Managed Address Configuration flag (M flag) and the Other Configuration flag (O flag). Using different combinations of the M and O flags, RA messages have one of three addressing options for the IPv6 device:
+
+\begin{itemize}
+\item SLAAC (M = 0, O = 0)
+\item SLAAC and Stateless DHCPv6 (M = 0, O = 1)
+\item Stateful DHCPv6 (M = 1)
 \end{itemize}
 
-The two flags are the Managed Address Configuration flag (M flag) and the
-Other Configuration flag (O flag).
-Using different combinations of the M and O flags, RA messages have one of three
-addressing options for the IPv6 device, as shown in Figure 8-13:
-■ SLAAC (Router Advertisement only)
-■ Stateless DHCPv6 (Router Advertisement and DHCPv6)
-■ Stateful DHCPv6 (DHCPv6 only)
 
-
-\subsection{Client IPv6}
-
-The
-IPv6 global unicast address is created by combining the prefix from RA and an
-Interface ID using either EUI-64 or a randomly generated value.
-
-PC1 now has a 64-bit network prefix but needs a 64-bit interface ID
-(IID) to create a global unicast address.
-PC1 can create its own unique IID in two ways:
-● EUI-64—Using the EUI-64 process, PC1 creates an IID using its 48-bit MAC
-address.
-● Randomly generated—The 64-bit IID can be a random number that the client
-operating system generates.
-PC1 can create a 128-bit IPv6 global unicast address by combining the 64-bit
-prefix with the 64-bit ID. PC1 uses the link-local address of the router as its IPv6
-
-\subsection{DAD process}
-
-PC1 sends an ICMPv6 neighbor
-solicitation (NS) message with a specially constructed multicast address, called
-a solicited-node multicast address, which duplicates the last 24 bits of PC1’s
-IPv6 address. If no other devices respond with a neighbor advertisement (NA)
-message, then the address is virtually guaranteed to be unique and can be used
-by PC1. If PC1 receives an NA, the address is not unique and the operating system has to determine a new IID to use.
-
-\section{Configuration}
-
-\paragraph{SLAAC}
-
-To do so, use the no ipv6 nd
-managed-config-flag and ipv6 nd other-config-flag interface configuration mode
-commands.
-
-\paragraph{Stateless DHCPv6}For stateless DHCPv6, the O flag is set to 1 and the M flag is left at the default
-setting of 0. To modify the RA message sent on the interface of a router to indicate stateless
-DHCPv6, use the ipv6 nd other-config-flag interface configuration command.
-
-\paragraph{Stateful DHCPv6}The M flag indicates whether or not to use stateful DHCPv6. The O flag is not involved.
-To signify stateful DHCPv6 and change the M flag from 0 to 1, use the ipv6 nd
-managed-config-flag interface configuration command.
