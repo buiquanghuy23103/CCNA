@@ -1,0 +1,175 @@
+\chapter{Static routing}
+
+\section{Overview}
+
+\begin{table}[hbtp]
+\centering\caption{Dynamic vs Static routing}
+\begin{tabular}{ p{3cm} p{10cm} p{10cm} }
+\toprule
+\head{Feature} & \head{Dynamic routing} & \head{Static routing} \\
+\midrule
+
+Configuration complexity & Independent of network size & Increase with network size \\
+
+Topology changes & Automatically adapt to changes & Administrator intervention required \\
+
+Usage & Complex and growing network, normal route & Small network, Stub network, default route, summary route, backup route \\
+
+Resource & CPU, memory, bandwidth & No resources needed \\
+
+Predictability & Depends on current topology & Always the same \\
+
+Security & Advertise protocol message over the entire network, resulting security risk & Not advertised over the network, resulting in better security \\
+
+Configuration & simple, nearly error-free & error-prone, require complete knowledge of the whole network for proper configuration \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{IPv4 route configuration}
+
+Static routes are configured using the \verb|ip route| global configuration command. The basic syntax for the command is as follows:
+
+\begin{verbatim}
+Router(config)# ip route network-addr subnet-mask {ip-address | exit-intf} [distance]
+\end{verbatim}
+
+The \verb|network-addr| and \verb|subnet-mask| are the IP address and subnet mask of the destination network. The \verb|distance| parameter specifies AD. By default, static route has AD of 1.\\
+
+The next hop can be identified by an IP address (\verb|ip-address|), exit interface (\verb|exit-intf|), or both. The way the destination is specified creates one of the three following route types:
+
+\begin{itemize}
+\item \textbf{Next-hop} static route: Only the next-hop IP address is specified.
+
+\begin{verbatim}
+R1(config)# ip route 172.16.1.0 255.255.255.0 172.16.2.2
+\end{verbatim}
+
+\item \textbf{Directly connected} static route: Only the router exit interface is specified.
+
+\begin{verbatim}
+R1(config)# ip route 172.16.1.0 255.255.255.0 s0/0/0
+\end{verbatim}
+
+\item \textbf{Fully specified} static route: The next-hop IP address and exit interface are specified. When the exit interface is a multiaccess network (e.g. Ethernet network), it is recommended that a fully specified static route be used. 
+
+\begin{verbatim}
+R1(config)# ip route 172.16.1.0 255.255.255.0 g0/0 172.16.2.2
+\end{verbatim}
+\end{itemize}
+
+A route that does not reference an exit interface must perform a \emph{recursive lookup}. Recursive lookup means that the router searches through the routing table to find the interface that match the next-hop IP address. 
+
+Along with \verb|ping| and \verb|traceroute|, useful commands to verify static routes include these:
+\begin{verbatim}
+R1# show ip route
+R1# show ip route static
+R1# show ip route 192.168.1.0
+R1# show running-config | section ip route
+\end{verbatim}
+
+\section{IPv6 route configuration}
+
+The \verb|ipv6 unicast-routing| global configuration command must be configured to enable the router to forward IPv6 packets. Static routes for IPv6 are configured using the \verb|ipv6 route| global configuration command. The syntax is as follows:
+
+\begin{verbatim}
+Router(config)# ipv6 route ipv6-prefix/prefix-length {ipv6-address | exit-intf}
+
+R1(config)# ipv6 route 2001:DB8:ACAD:2::/64 2001:DB8:ACAD:4::2
+R1(config)# ipv6 route 2001:DB8:ACAD:2::/64 s0/0/0
+R1(config)# ipv6 route 2001:db8:acad:2::/64 s0/0/0 fe80::2
+\end{verbatim}
+
+\note  If the IPv6 static route uses an IPv6 link-local address as the next-hop address, a fully specified static route including the exit interface must be used.\\
+
+Along with \verb|ping| and \verb|traceroute|, useful commands to verify static routes include these:
+
+\begin{verbatim}
+R1# show ipv6 route
+R1# show ipv6 route static
+R1# show ipv6 route 2001:db8:acad:3::
+R1# show running-config | section ipv6 route
+\end{verbatim}
+
+\section{Types}
+
+There are four types static routes: Standard, Default, Summary, and Floating.
+
+\subsection{IPv4 Default static route}  
+
+A default route is used when no other routes in the routing table match the destination IP address of the packet. It acts as the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the network address is \verb|0.0.0.0| and the subnet mask is \verb|0.0.0.0|.
+
+\begin{verbatim}
+R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+\end{verbatim}
+
+Note the asterisk (*) next to the route with code \verb|S| in the output of the \verb|show| command. The asterisk indicates that this static route is a candidate default route, which is why it is selected as the Gateway of Last Resort.
+
+\begin{verbatim}
+R1# show ip route static
+<output omitted>
+Gateway of last resort is 172.16.2.2 to network 0.0.0.0
+S* 0.0.0.0/0 [1/0] via 172.16.2.2
+\end{verbatim}
+
+\subsection{IPv4 Default static route}  
+
+Unlike IPv4, IPv6 does not explicitly state that the default IPv6 is the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the ipv6-prefix/prefix-length is \verb|::/0|, which matches all routes.
+
+\begin{verbatim}
+Router(config)# ipv6 route ::/0 {ipv6-address | exit-intf}
+R1(config)# ipv6 route ::/0 2001:DB8:ACAD:4::2
+\end{verbatim}
+
+\subsection{Summary static route}
+
+To reduce the number of routing table entries, multiple static routes can be summarized into a single static route in the following circumstances:
+
+\begin{itemize}
+\item The destination networks are contiguous and can be summarized into a single network address.
+\item All the multiple static routes use the same exit interface or next-hop IP address.
+\end{itemize}
+
+\paragraph{Floating static route}
+
+Floating static routes are static routes that are used to provide a backup path, in the event of a link failure. This route is only used when the primary route is not available. To accomplish this, the floating static route is configured with a higher AD\footnote{The AD represents the trustworthiness of a route. If multiple paths to the destination exist, the router will choose the path with the lowest AD.} than that of another static route or dynamic routes. The floating route is not shown in the routing table until the primary route is not available.
+
+\begin{verbatim}
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.2 5
+R3(config)# ipv6 route ::/0 2001:db8:acad:6::2 5
+\end{verbatim}
+
+\subsection{Static host routes}
+
+A host route is an IPv4 address with a 32-bit mask or an IPv6 address with a 128-bit mask. There are three ways a host route can be added to the routing table:
+
+\begin{itemize}
+\item Automatically installed when an IP address is configured on the router
+\item Configured as a static host route
+\item Host route automatically obtained through other methods (discussed in
+\end{itemize}
+
+Cisco IOS automatically installs a host route, also known as a \emph{local host route}, when an interface address is configured on the router. A host route allows for a more efficient process for packets that are directed to the router itself, rather than for packet forwarding. This is in addition to the connected route, designated with a C in the routing table for the network address of the interface.
+
+\begin{verbatim}
+Branch# show ip route
+Gateway of last resort is not set
+    198.51.100.0/24 is variably subnetted, 2 subnets, 2 masks
+C     198.51.100.0/30 is directly connected, Serial0/0/0
+L     198.51.100.1/32 is directly connected, Serial0/0/0
+
+Branch# show ipv6 route
+C     2001:DB8:ACAD:1::/64 [0/0]
+        via Serial0/0/0, directly connected
+L     2001:DB8:ACAD:1::1/128 [0/0]
+        via Serial0/0/0, receive
+\end{verbatim}
+
+A host route can be a manually configured static route to dire ct traffic to a specific destination device, such as an authentication server.
+
+\begin{verbatim}
+Branch(config)# ip route 209.165.200.238 255.255.255.255 198.51.100.2
+Branch(config)# ipv6 route 2001:db8:acad:2::99/128 2001:db8:acad:1::2
+Branch(config)# ipv6 route 2001:db8:acad:2::99/128 s0/0/0 fe80::2
+\end{verbatim}

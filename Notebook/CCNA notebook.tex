@@ -1,4 +1,4 @@
-\documentclass[]{book}
+\documentclass[10pt]{book}
 \usepackage{huy,math,titlepage}
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
@@ -21,13 +21,14 @@
 \include{WANconcepts}
 
 \part{SWITCHING TECHNOLOGIES}
+\include{VLAN}
 \include{vtp}
-\include{Layer3switching}
 \include{stp}
 \include{EtherChannel}
 
 
 \part{ROUTING TECHNOLOGIES}
+\include{StaticRoute}
 \include{eigrp}
 \include{ospf}
 
@@ -41,9 +42,12 @@
 \include{hsrp}
 
 \part{INFRASTRUCTURE SECURITY}
+\include{nat}
 \include{ACL}
 
 \part{INFRASTRUCTURE MANAGEMENT}
 \include{Monitoring}
 \include{Troubleshooting}
+\include{cdp}
+\include{Maintenance}
 \end{document}
