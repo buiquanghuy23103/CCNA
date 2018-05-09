@@ -2,9 +2,9 @@
 
 \section{Introduction}
 
-HDLC is the default serial encapsulation method when connecting two Cisco routers and it can only work with other Cisco devices. However, when there is a need to connect to a non-Cisco router, PPP encapsulation should be used.\\
+HDLC is the default serial encapsulation method when connecting two Cisco routers and it can only work with other Cisco devices. HDLC is now the basis for synchronous point-to-point used by many servers to connect to a WAN, most commonly the Internet. However, when there is a need to connect to a non-Cisco router, PPP encapsulation should be used.\\
 
-There are many advantages to using PPP, including the fact that it is not proprietary. PPP includes many features not available in HDLC: The link quality management feature (LQM) monitors the quality of the link, PPP supports PAP and CHAP authentication.\\
+There are many advantages to using PPP, including the fact that it is not proprietary. PPP provides router-to-router and host-to-network connections over \emph{synchronous} and \emph{asynchronous} circuits. PPP includes many features not available in HDLC: The link quality management feature (LQM) monitors the quality of the link, PAP and CHAP authentication.\\
 
 \begin{figure}[hbtp]
 \caption{PPP layered architecture}\label{PPPlayers}

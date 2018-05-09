@@ -1,0 +1,463 @@
+\chapter{Seven layers}
+
+\section{Introductions}
+
+A group of inter-related protocols necessary to perform a communication function is called a \textbf{protocol suite}.The \textbf{TCP/IP protocol suite} is an open standard, meaning these protocols are freely available to the public, and any vendor is able to implement these protocols on their hardware or in their software. The TCP/IP protocol suite includes many protocols, as shown in Figure \ref{TCPIP}.
+
+\begin{figure}[hbtp]
+\caption{TCP/IP protocol suite and Communication process}\label{TCPIP}
+\centering
+\includegraphics[scale=0.7]{pictures/TCPIP.PNG}
+\end{figure}
+
+Figure \ref{ProtocolEncap}  demonstrate the complete protocol encapsulation during the \textbf{TCP/IP communication process}. The process begins with the web server preparing the HTML page as \emph{data} to be sent. The application protocol \emph{HTTP} header is added to the front of the HTML data. The transport layer divides a data stream into segments and may add reliability and flow control information (TCP). Next, the Layer 3 (network layer) adds IP addresses and control information to each segment to create packets. Then, Layer 2 (Data Link layer) protocol (Ethernet, PPP, HDLC, etc.) adds information to both ends of the IP packet, known as a data link frame. This data is now ready to be transported through the internetwork via Layer 1 (Physical layer).\\
+
+\begin{figure}[hbtp]
+\caption{Protocol encapsulation}\label{ProtocolEncap}
+\centering
+\includegraphics[scale=0.8]{pictures/ProtocolEncap.PNG}
+\end{figure}
+
+Whereas the TCP/IP model layers (table \ref{TCP}) are referred to only by name, the seven OSI model layers (table \ref{OSI}) are more often referred to by number rather than by name. For instance, the physical layer is referred to as Layer 1 of the OSI model.
+
+\begin{table}[hbtp]
+\centering\caption{The OSI Reference Model}\label{OSI}
+\begin{tabular}{cl p{12cm} }
+\toprule
+\head{Number} & \head{Layer} & \head{Description} \\
+\midrule
+
+7 & Application & contain protocols used for process-toprocess communications\\
+
+6 & Presentation & provide for common representation of the data transferred between application layer services\\
+
+5 & Session & organize dialog and manage data exchange\\
+
+4 & Transport & segment, transfer, and reassemble\\
+
+3 & Network & exchange the individual pieces of data over the network \\
+
+2 & Data Link & exchange data frames between devices over a common media\\
+
+1 & Physical & describe the mechanical, electrical media to create physical connections for bit transmission\\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[hbtp]
+\centering\caption{The TCP/IP Reference Model}\label{TCP}
+\begin{tabular}{c p{12cm} }
+\toprule
+\head{Layer} & \head{Description} \\
+\midrule
+
+Application & represent data to user plus encoding and dialog control\\
+
+Transport & support communication between various devices across diverse networks\\
+
+Internet & determine best path through the network \\
+
+Network Access & control hardware devices and media\\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Physical layer}
+
+\subsection{Introduction}
+
+The OSI physical layer provides the means to transport the bits that make up a data link layer frame across the network media. This layer accepts a complete frame from the data link layer and encodes it as a series of signals that are transmitted onto the local media.\\
+
+The physical layer standards address three functional areas:
+
+\begin{itemize}
+\item \textbf{Physical Components:} electronic hardware devices, media, and other connectors that transmit and carry the signals to represent the bits.
+
+\item \textbf{Encoding:} a method of converting a stream of data bits into a predefined code. Codes are groupings of bits used to provide a predictable pattern that can be recognized by both the sender and the receiver. 
+
+\item \textbf{Signaling:} The physical layer must generate the electrical, optical, or wireless signals that represent the 1 and 0 on the media. The method of representing the bits is called the \emph{signaling method}. A common signaling method  is using modulation techniques. \emph{Modulation} is the process by which the characteristic of one wave (the signal) modifies another wave (the carrier).
+\end{itemize}
+
+\textbf{Bandwidth} is the capacity of a medium to carry data. Digital bandwidth measures the amount of data that can flow from one place to another in a given amount of time in kb/s, Mb/s, and Gb/s. A combination of factors determines the practical bandwidth of a network: The properties of the physical media, The technologies chosen for signaling and detecting network signals.\\
+
+\textbf{Throughput} is the measure of the transfer of bits across the media over a given period of time. Due to a number of factors, throughput usually does not match the specified bandwidth in physical layer implementations. Many factors influence throughput, including: The type and amount of traffic and Latency\footnote{Latency refers to the amount of time, to include delays, for data to travel from one given point to another.} between source and destination. \emph{Throughput cannot be faster than the slowest link in the path from source to destination}. \\
+
+There are three basic forms of network media: Copper cable (electrical pulses), fiber optic (light), and wireless (microwave transmissions).\\
+
+\subsection{Copper cable}
+
+Copper cable is inexpensive and easy to install but limited by distance and signal interference. \\
+
+There are two sources of interference:
+
+\begin{itemize}
+\item \textbf{EMI or RIF:} distort and corrupt the data signals; potential source: radio waves, electromagnetic devices, such as fluorescent lights or electric motors. To counter the negative effects of EMI and RFI, some types of copper cables are wrapped in metallic shielding and require proper grounding connections.
+
+\item \textbf{Crosstalk} is a disturbance caused by the electric or magnetic fields of a signal on one wire to the signal in an adjacent wire. To counter the negative effects of crosstalk, some types of copper cables have opposing circuit wire pairs twisted together. 
+\end{itemize}
+
+There are three main types of copper media used in networking:
+
+\begin{itemize}
+\item \textbf{Unshielded Twisted-Pair (UTP):} These cables are used to interconnect nodes on a LAN and infrastructure devices such as PCs, switches, routers. UTP cabling, terminated with \textbf{RJ-45} connectors, consists of \textbf{four} pairs of color-coded wires that have been twisted together. 
+
+\item \textbf{Shielded twisted-pair (STP)} provides better noise protection than UTP cabling.
+
+\item \textbf{Coaxial cable} contains two conductors that share the same axis. 
+\end{itemize}
+
+\begin{table}[hbtp]
+\centering\caption{UTP Categories}\label{UTPcat}
+\begin{tabular}{ll}
+\toprule
+\head{Category} & \head{Speed} \\
+\midrule
+Cat3 Cable (UTP) & 10Mb/s\\
+Cat5 & 100 -- 1000 Mb/s\\
+Cat5e& 1000 Mb/s \\
+Cat6 &  1000 Mb/s -- 10 Gb/s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{l p{4cm} p{10cm} }
+\toprule
+\head{UTP cable} & \head{Standard} & \head{Application} \\
+\midrule
+
+Straight-through & Both ends T568A or T568B & PC to switch, switch to router \\
+
+Crossover & One end T568A, the other end T568B & switch to switch, router to router, PC to router \\
+
+Rollover & Cisco proprietary & Connects a workstation serial port to a router console port \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Fiber optic}
+
+Optical fiber cable transmits data over longer distances and at higher bandwidths than any other networking media. Unlike copper wires, fiber-optic cable can transmit signals with less attenuation and is completely immune to EMI and RFI. 
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{l p{12cm} }
+\toprule
+\head{Component} & \head{Description} \\
+\midrule
+
+Core & The core is actually the light transmission element at the center of the optical fiber. This core is typically silica or glass. Light pulses travel through the fiber core.\\
+
+Cladding & It tends to act like a mirror by reflecting light back into the core of the fiber. This keeps light in the core as it travels down the fiber.\\
+
+Buffer & Used to help shield the core and cladding from damage.\\
+
+Strengthening material & Surrounds the buffer, prevents the fiber cable from being stretched when it is being pulled. The material used is often the same material used to produce bulletproof vests.\\
+
+Jacket Typically & a PVC jacket that protects the fiber against abrasion, moisture, and other contaminants.\\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+Light pulses representing the transmitted data as bits on the media are generated by either Lasers or LEDs. Fiber-optic cables are broadly classified into two types:
+
+\begin{itemize}
+\item \textbf{Single-mode fiber (SMF)} consists of a very small core and uses \emph{laser} to send a \emph{single} ray of light. Popular in long-distance situations spanning hundreds of kilometers: long-haul telephony, cable TV, campus backbones .
+
+\item \textbf{Multimode fiber (MMF)} consists of a larger core and uses LED emitters to send light pulses. It provides bandwidth up to 10 Gb/s over link lengths of up to 550 meters.
+
+\item One of the highlighted differences between multimode and single-mode fiber is the amount of \emph{dispersion}. Dispersion refers to the spreading out of a light pulse over time. The more dispersion there is, the greater the loss of signal strength.
+\end{itemize}
+
+\subsection{Wireless}
+
+Wireless media provides the greatest mobility options of all media. Wireless does have some areas of concern, including Coverage area, Interference, Security, and Shared medium. There are many types of wireless media: WiFi (IEEE 802.11 standard), Bluetooth  (IEEE 802.15 standard), and Wi Max (IEEE 802.16 Standard).
+
+\section{Data Link layer}
+
+The PDU of Data Link layer is always \textbf{frame}. The data link layer is divided into two sublayers: Logical Link Control (LLC) and Media Access Control (MAC). See Figure \ref{Sublayers}.
+
+\subsection{Logical Link Control sublayer (LLC)}
+
+This upper sublayer communicates with the network layer. It places information in the frame that identifies which network layer protocol is being used for the frame. This information allows multiple Layer 3 protocols, such as IPv4 and IPv6, to utilize the same network interface and media.
+
+\begin{figure}[hbtp]
+\caption{Data Link sublayers}\label{Sublayers}
+\centering
+\includegraphics[scale=0.7]{pictures/Sublayers.PNG}
+\end{figure}
+
+LLC is implemented in software, and its implementation is independent of the hardware. In a computer, the LLC can be considered the driver software for the NIC. The NIC driver is a program that interacts directly with the hardware on the NIC to pass the data between the MAC sublayer and the physical media.
+
+\subsection{Ethernet MAC sublayer}
+
+The Ethernet MAC sublayer has two primary responsibilities: Data encapsulation and Media Access Control.\\
+
+The \textbf{data encapsulation} process includes frame assembly before transmission and frame disassembly upon reception of a frame. Data encapsulation provides three primary functions: Frame delimiting, Addressing, and Error detection.
+
+\textbf{Media access control} is responsible for the placement of frames on the media and the removal of frames from the media. As its name implies, it controls access to the media. This sublayer communicates directly with the physical layer. The actual media access control method used depends on Topology and Media sharing.\\
+
+\paragraph{Multi-access networks} Ethernet LANs\footnote{Various hosts connect to a single switch (or hub) using Ethernet cables.} and WLANs\footnote{Various hosts connect to an access point via radio transmissions} are examples of a multiaccess network. At any one time, there may be a number of devices attempting to send and receive data using the same network media. Therefore, multi-access networks require rules to govern how devices share the physical media. Those rules, together, form a media access control method. There are two basic access control methods for shared media:
+
+\begin{itemize}
+\item \textbf{Contention-based access:} All nodes operating in half-duplex compete, only one device can send at a time. Ethernet LANs \emph{using hubs} and WLANs are examples of this type of access control.
+
+\item \textbf{Controlled access:} Each node has its own time to use the medium, a device must wait its turn to access the medium. Legacy Token Ring LANs are an example of this type of access control. 
+\end{itemize}
+
+It is important to note that Ethernet LANs using switches do not use a contention-based system because the switch and the host NIC operate in full-duplex mode.\\
+
+The \textbf{CSMA/CD} (Carrier Sense Multiple Access/Collision Detection) process is used in \emph{half-duplex Ethernet LANs}. A PC's NIC needs to determine if anyone is transmitting on the medium. If it does not detect a carrier signal or receives transmissions from another device, it will assume the network is available to send. If another device wants to transmit, it must wait until the channel is clear. \\
+
+The \textbf{CSMA/CA} (Carrier Sense Multiple Access/Collision Avoidance) process is used in \emph{WLAN}. CSMA/CA does not detect collisions but attempts to avoid them by waiting before transmitting. Each device that transmits includes the time duration that it needs for the transmission. All other wireless devices receive this information and know how long the medium will be unavailable. 
+
+\subsection{Frame}
+
+\subsubsection{Generic Frame}
+
+The data link layer prepares a packet for transport across the local media by encapsulating it with a header and a trailer to create a frame. Each frame has three parts: Header, Data, and Trailer (Figure \ref{Frame}). The generic frame field types include:
+
+\begin{figure}[hbtp]
+\caption{Frame fields}\label{Frame}
+\centering
+\includegraphics[scale=0.8]{pictures/Frame.PNG}
+\end{figure}
+
+
+\begin{itemize}
+\item \textbf{Frame start and stop indicator flags} identify the beginning and end limits of the frame.
+
+\item \textbf{Addressing} indicates the source and destination nodes on the media.
+
+\item \textbf{Type} identifies the Layer 3 protocol in the data field.
+
+\item \textbf{Control} identifies special flow control services such as quality of service (QoS). 
+
+\item \textbf{Data} contains the frame payload 
+
+\item \textbf{Error Detection}
+\end{itemize}
+
+The trailer is used to determine if the frame arrived without error. This process is called error detection. Cyclic Redundancy Check (CRC) value is placed in the Frame Check Sequence (FCS) field to represent the contents of the frame. In the Ethernet trailer, the FCS checks transmission errors.\\
+
+\begin{figure}[hbtp]
+\caption{Layer 2 Data Link addresses change at each point along the way}\label{Frame2}
+\centering
+\includegraphics[ width=0.8\textwidth ]{pictures/Frame2.PNG}
+\end{figure}
+
+As the IP packet travels from host-to-router, router-to-router, and finally router-to-host, at each point along the way the IP packet is encapsulated in a new data link frame (Figure \ref{Frame2}). Each data link frame contains the source data link address of the NIC card sending the frame and the destination data link address of the NIC card receiving the frame. Remember that the data link layer address is only used for local subnet delivery. 
+
+\subsubsection{Ethernet Frame}
+
+\paragraph{size} The minimum Ethernet frame size is 64 bytes and the maximum is 1518 bytes\footnote{ The Preamble field is not included when describing the size of a frame.}. Any frame less than 64 bytes in length is called a \emph{collision fragment} or \emph{runt frame}. Frames with more than 1500 bytes of data are called \emph{jumbo frames} or \emph{baby giant frames}. If the size of a transmitted frame is less than the minimum or greater than the maximum, the receiving device drops the frame. 
+
+\paragraph{Frame fields} The \emph{Preamble} (7 bytes) and \emph{Start Frame Delimiter} (1 byte) fields are used for synchronization between the sending and receiving devices. The \emph{Type} field (2 bytes) identifies the upper layer protocol in hexadecimal: IPv4 = 0x800, IPv6 = 0x86DD, ARP = 0x806.
+
+\textbf{Ethernet MAC addresses} (6 bytes) are made up of two parts: vendor code OUI (3 bytes) assigned by IEEE and device identifier (3 bytes). When the computer starts up, the first thing the NIC does is copy the MAC address from ROM into RAM. Broadcast MAC address is FF-FF-FF-FF-FF-FF (twelve F letters). The \textbf{multicast MAC} address associated with an IPv4 multicast address is a special value that begins with 01-00-5E in hexadecimal. The remaining portion of the multicast MAC address is created by converting the lower 24 bits of the IP multicast group address into 6 hexadecimal characters. For an IPv6 address, the multicast MAC address begins with 33-33.
+
+\subsection{MAC address table}
+
+A Layer 2 Ethernet switch uses MAC addresses to make forwarding decisions. It consults a MAC address table to make a forwarding decision for each frame. By default, most Ethernet switches keep an entry in the MAC address table for 5 minutes.\\
+
+\paragraph{Learning MAC Address} The switch dynamically builds the MAC address table by examining the source MAC address of the frames received on a port. Every frame that enters a switch is checked for new information to learn. If the source MAC address does not exist, it is added to the table along with the incoming port number. If the source MAC address does exist, the switch updates the refresh timer for that entry.  If the source MAC address does exist in the table but on a different port, the switch treats this as a new entry.
+
+\paragraph{Forwarding MAC Address} Next, if the destination MAC address is a unicast address, the switch will look for a
+match between the destination MAC address of the frame and an entry in its MAC address table. If the destination MAC address is in the table, it will forward the frame out the specified port. If the destination MAC address is not in the table, the switch will forward the frame out all ports except the incoming port. If the destination MAC address is a broadcast or a multicast, the frame is also flooded out all ports except the incoming port.
+
+A switch can have multiple MAC addresses associated with a single port. This is common when the switch is connected to another switch.
+
+\subsection{Frame forwarding method}
+
+Switches use one of the following forwarding methods:  Store-and-forward switching and Cut-through switching.
+
+\paragraph{Store-and-forward switching} When the switch receives the frame, it stores the data in buffers until the complete frame has been received. In this process, the switch also performs an error check using the CRC trailer portion of the Ethernet frame. When an error is detected in a frame, the switch discards the frame. Discarding frames with errors reduces the amount of bandwidth consumed by corrupt data. Store-and-forward switching is required for Quality of Service (QoS).
+
+\paragraph{Cut-through switching} The switch buffers just enough of the frame to read the destination MAC address so that it can determine to which port to forward the data. No error detection is performed. There are two variants of cut-through switching: 
+
+\begin{itemize}
+\item \textbf{Fast-forward switching:} the switch immediately forwards a packet after reading the destination address. It offers the lowest level of latency. 
+
+\item \textbf{Fragment-free switching} the switch stores the first 64 bytes of the frame before forwarding. The reason fragment-free switching stores only the first 64 bytes of the frame is that most network errors and collisions occur during the first 64 bytes. 
+\end{itemize}
+
+\subsection{Memory Buffering on Switches}
+
+There are two methods of memory buffering: Port-based Memory Buffering and Shared Memory Buffering.
+
+\paragraph{Port-based Memory Buffering} Frames are stored in queues that are linked to specific incoming and outgoing ports. A frame is transmitted to the outgoing port only when all the frames ahead of it in the queue have been successfully transmitted. 
+
+\paragraph{Shared Memory Buffering} deposits all frames into a common memory buffer that all the ports on the switch share.  The frames in the buffer are linked dynamically to the destination port. This allows the packet to be transmitted on a port without order and waiting. This method permits larger frames to be transmitted with fewer dropped frames. 
+
+\subsection{ARP}
+
+To determine the destination MAC address, the device uses ARP. ARP provides two basic functions: Resolving IPv4 addresses to MAC addresses, Maintaining a table of mappings. \\
+
+When a packet is sent to the data link layer to be encapsulated into an Ethernet frame, the device refers to a table in its memory to find the MAC address that is mapped to the IPv4 address. This table is called the ARP table or the ARP cache. The ARP table is stored in the RAM of the device. \\
+
+The sending device will search its ARP table for a destination IPv4 address and a corresponding MAC address. If the destination IPv4 address is on the \emph{same} network as the source IPv4 address, the device will search the ARP table for the destination IPv4 address. Otherwise, the device will search the ARP table for the IPv4 address of the default gateway.\\
+
+For each device, an ARP cache timer removes ARP entries that have not been used for a specified period of time. The times differ depending on the device's operating system. For example, Windows store ARP cache entries for 2 minutes.\\
+
+\paragraph{ARP request} If there is no entry is found in ARP table for a particular IPv4 address, then the device sends an ARP request. ARP messages are encapsulated directly within an Ethernet frame. There is no IPv4 header (Figure \ref{ARPrequest}). Destination MAC address is a broadcast address. ARP messages have a type field of \textbf{0x806}. 
+
+\begin{table}[hbtp]
+\centering\caption{ARP request message}\label{ARPrequest}
+\begin{tabular}{|c|c|c|c|}
+\toprule
+Destination MAC & Source MAC & \textbf{Target} IPv4 & Target MAC \\
+FF-FF & 00-0A & 192.68.1.5 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{ARP reply} Only the device with an IPv4 address associated with the target IPv4 address in the ARP request will respond with an ARP reply. Only the device that originally sent the ARP request will receive the unicast ARP reply. The ARP reply is encapsulated in an Ethernet frame (Figure \ref{ARPreply}).
+
+\begin{table}[hbtp]
+\centering\caption{ARP request message}\label{ARPreply}
+\begin{tabular}{|c|c|c|c|}
+\toprule
+Destination MAC & Source MAC & \textbf{Sender} IPv4 & Sender MAC \\
+00-0A & 00-0B & 192.68.1.5 & 00-0B \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{ARP broadcasts}  If a large number of devices were to be powered up, and all start sending ARP requests, there could be some reduction in performance for a short period of time. 
+
+\paragraph{ARP spoofing} is a technique used by an attacker to reply to an ARP request for an IPv4 address belonging to another device, such as the default gateway. The attacker sends an ARP reply with its own MAC address. The receiver of the ARP reply will add the wrong MAC address to its ARP table and send these packets to the attacker.
+
+\section{Network layer}
+
+Network Layer PDU Is an \textbf{Packet}.
+
+\subsection{Introduction}
+
+The network layer has four basic processes: Addressing end devices, routing, encapsulation, de-encapsulation. There are several network layer protocols in existence, but there are only two network layer protocols that are commonly implemented: \textbf{IPv4} and \textbf{IPv6}.\\
+
+IP encapsulates the transport layer segment or other data by adding an IP header. This header remains the same from the time the packet leaves the source host until it arrives at the destination host.\\
+
+The protocols in network layer were not designed to track and manage the flow of packets. The basic characteristics of IP are
+
+\begin{itemize}
+\item \textbf{Connectionless:} no dedicated end-to-end connection is created before data is sent. 
+\item \textbf{Best Effort:} The IP protocol does not guarantee that all packets that are received. Furthermore, IP is unreliable which means that IP does not have the capability to manage and recover from undelivered or corrupt packets
+\item \textbf{Media Independent:} Operation is independent of the medium (i.e., copper, fiber optic, or wireless) carrying the data.
+\end{itemize}
+
+There is, however, one major characteristic of the media that the network layer considers: \textbf{MTU} (maximum transmission unit). The data link layer passes the MTU value up to the network layer. The network layer then determines how large packets can be.\\
+
+Sometimes, a IPv4 router must split up a packet when forwarding it from one medium to another medium with a smaller MTU. This process is called \textbf{fragmentation}. Unlike IPv4, IPv6-enabled routers do not fragment packets.
+
+\subsection{Packet header}
+
+Significant fields in the \textbf{IPv4} header include (Figure \ref{IPv4packet}):
+
+\begin{itemize}
+\item \textbf{Version:} is set to \textbf{0100} that identifies this as an IP version 4 packet.
+
+\item \textbf{DiffServ:} used by QoS service to determine the priority.
+
+\item \textbf{TTL:} limit the lifetime of a packet. The value is decreased by one each time the packet is processed by a router. If the TTL field decrements to zero, the router discards the packet and sends an \emph{ICMP Time Exceeded} message to the source IP address.
+
+\item \textbf{Protocol:} identify the next level protocol. Common values include \textbf{ICMP (1)}, \textbf{TCP (6)}, and \textbf{UDP (17)}.
+
+\item \textbf{Source IPv6 Address}
+
+\item \textbf{Destination IPv6 Address}
+\end{itemize}
+
+\begin{figure}[hbtp]
+\caption{IPv4 packet header}\label{IPv4packet}
+\centering
+\includegraphics[scale=0.6]{pictures/IPv4packet.PNG}
+\end{figure}
+
+Significant fields in the \textbf{IPv6} header include (Figure \ref{IPv6packet}):
+
+\begin{itemize}
+\item \textbf{Version:} is set to \textbf{0110} that identifies this as an IP version 6 packet.
+
+\item \textbf{Traffic class:} equivalent to the IPv4 DiffServ field.
+
+\item \textbf{Payload Length:} indicates the length of the data portion of the packet.
+
+\item \textbf{Hop Limit:} equivalent to the IPv4 TTL field.
+
+\item \textbf{Next Header:} equivalent to the IPv4 Protocol field.
+\end{itemize}
+
+\subsection{Routing table}
+
+When a router interface (g0/0) is configured with an IPv4 address (192.168.10.1), a subnet mask (255.255.255.0), and is activated, the following two routing table entries are automatically created:
+
+\begin{verbatim}
+C 192.168.10.0/24 is directly connected, GigabitEthernet0/0
+L 192.168.10.1/32 is directly connected, GigabitEthernet0/0
+\end{verbatim}
+
+The letter \textbf{C} identifies a directly connected \emph{network}. The letter \textbf{L} shows that this is a local interface and its IP address is 192.168.10.1.\\
+
+The routing table also stores information about remote network. For example, the entry for the remote network 10.1.1.0 is as follows:
+
+\begin{verbatim}
+D 10.1.1.0/24 [90/2170112] via 209.165.200.226, 00:00:09, Serial0/0/0
+\end{verbatim}
+
+The details of the remote network routing table entry are explained as follow:
+
+\begin{itemize}
+\item \verb|D| -- Identifies how the network was learned by the router. Common  route sources include \textbf{S} (static route), \textbf{D} (EIGRP), \textbf{O} (OSPF).
+
+\item \verb|10.1.1.0/24| -- Identifies the destination network.
+
+\item \verb|90| -- Identifies the AD of the route.
+
+\item \verb|2170112| -- Identifies the metric of the route.
+
+\item \verb|209.165.200.226| -- Identifies the IP address of the router to forward the packet.
+
+\item \verb|00:00:09| -- Router timestamp
+
+\item \verb|Serial0/0/0| -- Identifies the exit interface to use to forward a packet
+\end{itemize}
+
+\subsection{Router Boot-up}
+
+This topic will introduce the structure of Cisco routers and how they boots up.\\
+
+A Cisco router has four types of memory:
+
+\begin{itemize}
+\item \textbf{RAM:} This is volatile memory that stores: IOS image, Running configuration file, Routing table, ARP cache, and Packet buffer.
+
+\item \textbf{ROM:} This non-volatile memory is used to store Bootstrap program, Power-on self-test (POST), and Limited IOS (backup IOS).
+
+\item \textbf{NVRAM:} This non-volatile memory is used to store Startup configuration file.
+
+\item \textbf{Flash:} This non-volatile computer memory used as permanent storage for the IOS and other system-related files (log, HTML files, etc.) When a router is rebooted, the IOS is copied from flash into RAM.
+\end{itemize}
+
+\begin{figure}[hbtp]
+\caption{Cisco router bootup process}\label{BootUp}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/BootUp.PNG}
+\end{figure}
+
+There are three major phases to the bootup process, as shown in Figure \ref{BootUp}.
+
+\begin{enumerate}
+\item \textbf{POST process and Bootstrap Program:} During the Power-On Self-Test (POST), the router executes diagnostics from ROM on several hardware components, including the CPU, RAM, and NVRAM. After the POST, the bootstrap program is copied from ROM into RAM. The main task of the bootstrap program is to locate the Cisco IOS and load it into RAM.
+
+\item \textbf{Loading Cisco IOS:} The IOS is copied from Flash memory into RAM. If the IOS image is not located in flash, then the router may look for it using a TFTP server. If a full IOS image cannot be located, a Limited IOS (in ROM) is copied into RAM, which can be used to diagnose problems and transfer a full IOS into Flash memory.
+
+\item \textbf{Loading the Startup configuration File:} The bootstrap program then copies the startup configuration file from NVRAM into RAM. This becomes the running configuration. If the startup configuration file does not exist in NVRAM, the router may be configured to search for a TFTP server. If a TFTP server is not found, then the router displays the setup mode prompt.
+\end{enumerate}
+
+\note Setup mode is not used in this course to configure the router. When prompted to enter setup mode, always answer no. If you answer yes and enter setup mode, press Ctrl+C at any time to terminate the setup process.\\
+

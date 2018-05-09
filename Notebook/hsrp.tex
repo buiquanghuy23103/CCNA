@@ -2,9 +2,9 @@
 
 \section{Operations}
 
-One way to prevent a single point of failure at the default gateway, is to implement a virtual router. To implement this type of router redundancy, multiple routers are configured by First Hop Redundancy Protocol (FHRP) to work together as an illusion of a single router to the hosts on the LAN. One the most popular options for FHRP is Hot Standby Router Protocol (HSRP). HSRP was designed by Cisco to allow for gateway redundancy without any additional configuration on end devices.\\
+One way to prevent a single point of failure at the default gateway is to implement a virtual router. Specifically, multiple routers are configured by First Hop Redundancy Protocol (FHRP) to work together as an illusion of a single router to the hosts on the LAN. One popular option for FHRP is Hot Standby Router Protocol (HSRP), designed by Cisco. This protocol allows for gateway redundancy without any additional configuration on end devices.\\
  
-One of the routers is selected by HSRP to be the active router. The active router will act as the default gateway for end devices. The other router will become the standby router. The default gateway address is a virtual IPv4 address along with a virtual MAC address that is shared amongst both HSRP routers. End devices use this virtual IPv4 address as their default gateway address.(See figure \ref{HSRP-topology}). The virtual IPv4 address is configured by the network administrator. The virtual MAC address is created automatically.
+HSRP selects exactly one active router and one standby router. The active router will act as the default gateway for end devices. The default gateway address is a virtual IPv4 address along with a virtual MAC address that is shared amongst both HSRP routers. End devices use this virtual IPv4 address as their default gateway address.(See figure \ref{HSRP-topology}). The virtual IPv4 address is configured by the network administrator. The virtual MAC address is created automatically.
 
 \begin{figure}[hbtp]
 \centering

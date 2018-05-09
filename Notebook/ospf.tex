@@ -241,6 +241,14 @@ Also keep the following notes in mind:
 \item  The dead interval must be larger than Hello interval.
 \end{itemize}
 
+In order to form OSPF adjacencies, the following must match on the neighboring routers:
+\begin{itemize}
+\item Area ID (NOT process ID, two routers with different process ID but same area ID can communicate with each other)
+\item Subnet
+\item Hello and Dead timers
+\item Stub area flag
+\end{itemize}
+
 \subsection{OSPF for IPv4}
 
 \begin{enumerate}

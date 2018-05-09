@@ -224,10 +224,10 @@ Cisco PortFast technology is useful for DHCP. Because PortFast immediately chang
 Rapid PVST+ is Cisco enhancement of RSTP. In this section, only the common features of these two protocols are discussed.
 
 \subsection{BPDU}
-RSTP uses BPDU version 2, while 802.1D uses version 0. Protocol information can be immediately aged on a port if Hello packets are not received for three consecutive Hello times (six seconds, by default) or if the max age timer expires. BPDUs are used as a keepalive mechanism. Therefore, three consecutively missed BPDUs indicate lost connectivity between a bridge and its neighboring.\\
+RSTP uses BPDU version 2, while 802.1D uses version 0. Protocol information can be immediately aged on a port if Hello packets are not received for three consecutive Hello times (six seconds, by default) or if the max age timer expires. BPDUs are used as a keepalive mechanism. Therefore, three consecutively missed BPDUs indicate lost connectivity between a bridge and its neighboring.
 
 \subsection{Port state}
-RSTP does not have a blocking port state. Port states are defined as \emph{discarding}, \emph{learning}, or \emph{forwarding}. RSTP discarding state is equivalent to PVST+ blocking and disabled state. RSTP learning state is equivalent to PVST+ listening and learning state.\\
+RSTP expands the STP port roles by adding the alternate and backup roles. RSTP combine blocking and listening port state to allow faster convergence. Port states are defined as \emph{discarding}, \emph{learning}, or \emph{forwarding}.\\
 
 RSTP speeds the recalculation of the spanning tree when the Layer 2 network topology changes. If a port is configured to be an alternate port, it can immediately change to a forwarding state without waiting for the network to converge.\\
 
@@ -253,7 +253,7 @@ S1(config)# spanning-tree mode rapid-pvst
 
 \subsection{Priority}
 
-The default priority value of a switch is 32,768. When an administrator wants a specific switch to become a root bridge, the bridge priority value must be adjusted to ensure it is lower than the bridge priority values of all the other switches on the network. There are two different methods to configure the bridge priority value:
+The default priority value of a switch is 32768. When an administrator wants a specific switch to become a root bridge, the bridge priority value must be adjusted to ensure it is lower than the bridge priority values of all the other switches on the network. There are two different methods to configure the bridge priority value:
 
 \subsubsection{Method 1}
 
@@ -261,11 +261,11 @@ To ensure that the switch has the lowest bridge priority value, use the followin
     \begin{verbatim}
     S1(config)# spanning-tree vlan 10 root primary
     \end{verbatim}
-This command dynamically makes priority of the switch to be the lowest in the broadcast domain. By default, the priority for the switch is 24,576. If an alternate root bridge is desired, use the following command. 
+This command dynamically makes priority of the switch to be the lowest in the broadcast domain. By default, the priority for the switch is 24576. If an alternate root bridge is desired, use the following command. 
     \begin{verbatim}
     S1(config)# spanning-tree vlan 10 root secondary
     \end{verbatim}   
-This command ensures that the alternate switch becomes the root bridge if the primary root bridge fails.  This command, by default, sets the priority to 28,672.
+This command ensures that the alternate switch becomes the root bridge if the primary root bridge fails.  This command, by default, sets the priority to 28672.
 
 \subsubsection{Method 2}
 

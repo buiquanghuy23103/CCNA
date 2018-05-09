@@ -85,7 +85,7 @@ It uses resource reservation and admission-control mechanisms as building blocks
 \includegraphics[scale=0.7]{pictures/IntServ.PNG}
 \end{figure}
 
-IntServ uses the Resource Reservation Protocol (RSVP) to signal the QoS needs of an application’s traffic along devices in the end-to-end path through the network. If network devices along the path can reserve the necessary bandwidth, the originating application can begin transmitting. If the requested reservation fails along the path, the originating application does not send any data.\\
+IntServ uses the \textbf{RSVP} (Resource Reservation Protocol) to reserve bandwidth for an application's traffic (e.g. VoIP) across the entire path. If this requested reservation fails along the path, the originating application does not send any data.\\
 
 \begin{table}[hbtp]
 \centering

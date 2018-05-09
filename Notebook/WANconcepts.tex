@@ -32,16 +32,16 @@ A WAN operates beyond the geographic scope of a LAN. WANs are used to interconne
 \end{figure}
 
 \paragraph{Point-to-Point topology} employs a point-to-point circuit between two endpoints (Figure \ref{WANtopology1}). Typically involves a dedicated leased-line connection such as a T1/E1 line.
-\paragraph{Hub-and-Spoke} An example of a single-homed topology. Applicable when a private network connection between multiple sites is required. A single interface to the hub can be shared by all spoke circuits (Figure \ref{WANtopology2}).
-\paragraph{Full Mesh} A disadvantage of the hub-and-spoke topology is that all communication has to go through the hub. With a full mesh topology using virtual circuits, any site can communicate directly with any other site (Figure \ref{WANtopology3}). A disadvantage is the large number of virtual circuits that need to be configured and maintained.
-\paragraph{Dual-homed Topology} Provides redundancy and load balancing, however more expensive to implement than single-homed topologies(Figure \ref{WANtopology4}). Requires additional networking hardware including routers and switches. More difficult to implement since they require complex configurations.
 
+\paragraph{Hub-and-Spoke} An example of a single-homed topology. Applicable when a private network connection between multiple sites is required. A single interface to the hub can be shared by all spoke circuits (Figure \ref{WANtopology2}).
+
+\paragraph{Full Mesh} A disadvantage of the hub-and-spoke topology is that all communication has to go through the hub. With a full mesh topology using virtual circuits, any site can communicate directly with any other site (Figure \ref{WANtopology3}). A disadvantage is the large number of virtual circuits that need to be configured and maintained.
+
+\paragraph{Dual-homed Topology} Provides redundancy and load balancing, however more expensive to implement than single-homed topologies(Figure \ref{WANtopology4}). Requires additional networking hardware including routers and switches. More difficult to implement since they require complex configurations.
 
 \subsection{Terminology}
 
 WAN operations focus primarily on the Layer 1 and 2 of the OSI Model. One primary difference between a WAN and a LAN is that a company must subscribe to an outside WAN service provider to use WAN carrier network services.\\
-
-Terminology commonly used to describe WAN connections (Figure \ref{terminology}):
 
 \begin{figure}[hbtp]
 \caption{Common WAN terminology}\label{terminology}
@@ -49,36 +49,48 @@ Terminology commonly used to describe WAN connections (Figure \ref{terminology})
 \includegraphics[ width=0.7\textwidth ]{pictures/DCE.PNG}
 \end{figure}
 
-\paragraph{Customer Premises Equipment (CPE)} Consists of devices and inside wiring located on the enterprise edge connecting to a carrier.
-\paragraph{Data Communications Equipment (DCE)} Also called circuit-terminating equipment, the DCE consists of devices that put data on the local loop. The DCE primarily provides an interface to connect subscribers to a communication link on the WAN cloud.
-\paragraph{Data Terminal Equipment (DTE)} The customer devices that pass the data from a customer network or host computer for transmission over the WAN. The DTE connects to the local loop through the DCE.
-\paragraph{Demarcation Point} This is a point established in a building to separate customer equipment from service provider equipment. The the place where the responsibility for the connection changes from the user to the service provider.
-\paragraph{Local Loop (last mile)} The actual copper or fiber cable that connects the CPE to the CO of the service provider.
-\paragraph{Central Office (CO)} The CO is the local
-service provider facility or building that
-connects the CPE to the provider network.
-\paragraph{Toll network} This consists of the longhaul, all-digital, fiber-optic communications lines and other equipment inside the WAN provider network.\\
+Terminology commonly used to describe WAN connections (Figure \ref{terminology}):
 
-There are many types of devices that are specific to WAN environments:
+\begin{itemize}
+\item \textbf{Customer Premises Equipment (CPE)} Consists of devices and inside wiring located on the enterprise edge connecting to a carrier.
+
+\item \textbf{Central Office (CO)} is the local service provider facility that connects the CPE to the provider network.
+
+\item \textbf{Local Loop (last mile)} is the actual copper or fiber cable that connects the CPE to the CO.
+
+\item \textbf{Data Terminal Equipment (DTE)} is usually a router that pass the data from a customer network to DCE.
+
+\item \textbf{Data Communications Equipment (DCE)} is usually a modem that puts data on the local loop by converting digital signals into analog signals. It connects subscribers to the ISP provider.
+
+\item \textbf{Demarcation Point} is a point established in a building to separate customer equipment from service provider equipment. It is the place where the responsibility for the connection changes from the user to the service provider.
+
+\item \textbf{Toll network} consists of the longhaul, all-digital, fiber-optic communications lines and other equipment inside the WAN provider network.
+\end{itemize}
 
 \begin{figure}[hbtp]
-\caption{WAN devices}
+\caption{WAN devices}\label{Device}
 \centering
 \includegraphics[scale=1]{pictures/Device.PNG}
 \end{figure}
 
-\begin{description}
-\item[Dialup modem] Legacy WAN technology that converts (modulates) the digital signals produced by a computer into voice frequencies which are transmitted over the analog lines of the public telephone network to another modem for demodulation.
-\item[Access server] Legacy technology where the server controls and coordinates dialup modem, dial-in and dial-out user communications.
-\item[Broadband modem] A type of digital modem used with high-speed DSL or cable Internet service. Both operate in a similar manner to the voiceband modem, but use higher broadband frequencies and transmission speeds
-\item[CSU/DSU] Digital-leased lines require a CSU and a DSU. The CSU provides termination for the digital signal and ensures connection integrity through error correction and line monitoring. The DSU converts line frames into frames that the LAN can interpret and vice versa. 
-\end{description}
+There are many types of devices that are specific to WAN environments (Figure \ref{Device}):
+
+\begin{itemize}
+\item \textbf{Dialup modem} converts (modulates) the digital signals (produced by a computer) into analog signals (voice frequencies).
+
+\item \textbf{Broadband modem} converts the digital signals into analog signals transferred via high-speed DSL or cable Internet service.
+
+\item \textbf{Access server} controls and coordinates dialup modem, dial-in and dial-out user communications.
+
+
+\item \textbf{CSU/DSU} is only used for Leased lines. The CSU provides termination for the digital signal and ensures connection integrity through error correction and line monitoring. The DSU converts line frames into frames that the LAN can interpret and vice versa.
+\end{itemize}
 
 WAN technologies are either circuit-switched or packet-switched:
 
-\paragraph{Circuit Switching}dynamically establishes a \emph{dedicated virtual connection} for voice or data between a sender and a receiver. Communication can't start until the connection is established through the service provider network. The two most common types of circuit-switched WAN technologies are \textbf{PSTN} and \textbf{ISDN}.
+\paragraph{Circuit Switching} dynamically establishes a \emph{dedicated virtual connection} for voice or data between a sender and a receiver. Communication can't start until the connection is established through the service provider network. The two most common types of circuit-switched WAN technologies are \textbf{PSTN} and \textbf{ISDN}.
 
-\paragraph{Packet Switching}splits traffic data into packets packet that are routed over a shared network. A circuit does not need to be established and many pairs of nodes can communicate over the same channel. Packet switching costs less than circuit switching, however, latency and jitter are greater in packet-switching networks. There are two approaches to packet-switched network link determination:
+\paragraph{Packet Switching} splits traffic data into packets packet that are routed over a shared network. A circuit does not need to be established and many pairs of nodes can communicate over the same channel. Packet switching costs less than circuit switching, however, latency and jitter are greater in packet-switching networks. There are two approaches to packet-switched network link determination:
 
 \begin{itemize}
 \item \textbf{Connectionless systems:} Full addressing information must be carried in each packet. The \textbf{Internet} is an example of a connectionless system. 

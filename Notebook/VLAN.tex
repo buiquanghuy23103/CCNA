@@ -12,7 +12,7 @@ The primary benefits of using VLANs are as follows:
 \item \textbf{Better performance:} Dividing flat Layer 2 networks into multiple logical workgroups (broadcast domains) reduces unnecessary traffic on the network and
 boosts performance.
 
-\item \textbf{Improved IT staff efficiency:} VLANs make it easier to manage the network because users with similar network requirements share the same VLAN. 
+\item \textbf{Grouping:} VLANs allows logical grouping of users by function. 
 \end{itemize}
 
 There are a number of distinct types of VLANs: 
@@ -201,7 +201,13 @@ S1# show vlan brief
 S1# show interfaces vlan 20
 \end{verbatim}
 
-The trunking configuration is verified with the \verb|show int <int> switchport| or \verb|show int trunk|.
+The trunking configuration is verified by the following commands:
+
+\begin{itemize}
+\item \verb|show interfaces switchport|
+\item \verb|show interface <int> switchport|
+\item \verb|show interfaces trunk| 
+\end{itemize}
 
 \subsection{Troubleshoot}
 
