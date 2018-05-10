@@ -452,12 +452,162 @@ A Cisco router has four types of memory:
 There are three major phases to the bootup process, as shown in Figure \ref{BootUp}.
 
 \begin{enumerate}
-\item \textbf{POST process and Bootstrap Program:} During the Power-On Self-Test (POST), the router executes diagnostics from ROM on several hardware components, including the CPU, RAM, and NVRAM. After the POST, the bootstrap program is copied from ROM into RAM. The main task of the bootstrap program is to locate the Cisco IOS and load it into RAM.
+\item \textbf{POST process and Bootstrap Program:} During the Power-On Self-Test (POST), the router executes diagnostics on hardware components (CPU, RAM, NVRAM, etc.). After the POST, the bootstrap program is copied from ROM into RAM.
 
-\item \textbf{Loading Cisco IOS:} The IOS is copied from Flash memory into RAM. If the IOS image is not located in flash, then the router may look for it using a TFTP server. If a full IOS image cannot be located, a Limited IOS (in ROM) is copied into RAM, which can be used to diagnose problems and transfer a full IOS into Flash memory.
+\item \textbf{Loading Cisco IOS:} The IOS image is copied from Flash memory into RAM. If the image is not located in flash, then the router may look for it using a TFTP server. If a full IOS image cannot be located, a Limited IOS (in ROM) is copied into RAM, which can be used to diagnose problems and transfer a full IOS into Flash memory.
 
 \item \textbf{Loading the Startup configuration File:} The bootstrap program then copies the startup configuration file from NVRAM into RAM. This becomes the running configuration. If the startup configuration file does not exist in NVRAM, the router may be configured to search for a TFTP server. If a TFTP server is not found, then the router displays the setup mode prompt.
 \end{enumerate}
 
 \note Setup mode is not used in this course to configure the router. When prompted to enter setup mode, always answer no. If you answer yes and enter setup mode, press Ctrl+C at any time to terminate the setup process.\\
 
+Use \verb|show version| to check the version of the Cisco IOS, the version of the bootstrap program, and information about the hardware configuration, including the amount of system memory.
+
+\subsection{Router configuration}
+
+\begin{table}[hbtp]
+\centering\caption{Initial Router Configuration Tasks}
+\begin{tabular}{ll}
+\toprule
+\head{Task} & \head{Commands}\\
+\midrule
+
+Configure the device name & \verb|Router(config)# hostname name|\\
+
+Secure user EXEC mode & 
+\begin{verbatim}
+Router(config)# line console 0
+Router(config-line)# password password
+Router(config-line)# login
+\end{verbatim}\\
+
+Secure remote Telnet/SSH access & 
+\begin{verbatim}
+Router(config)# line vty 0 4
+Router(config-line)# password password
+Router(config-line)# login
+\end{verbatim}
+
+Secure privilege EXEC mode & \verb|enable secret password|\\
+
+Secure all passwords & \verb|service password-encryption|\\
+
+Provide legal notification & \verb|banner motd "message"|\\
+
+Save the configuration & \verb|copy run start|\\
+
+Configure the interface & 
+\begin{verbatim}
+interface <int>
+  ip address ip-address subnet-mask
+  description description-text
+  no shutdown
+\end{verbatim}
+
+Verify interface configuration & 
+\begin{verbatim}
+show interface
+show ip interface
+show ip interface brief
+show ip route
+\end{verbatim}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Transport layer}
+
+The PDU of transport layer is either \textbf{segment} or \textbf{datagram}. The transport layer is responsible for:
+
+\begin{itemize}
+\item Establishing a temporary communication session between two applications and delivering data between them. 
+\item Tracking individual conversations
+\item Segmenting data and Reassembling segments
+\item To pass data streams to the proper applications, transport layer assigns each application an identifier called a \textbf{port number}. 
+\end{itemize}
+
+\subsection{TCP}
+
+TCP is considered a reliable, full-featured transport layer protocol, which ensures that all of the data arrives at the destination. However, this requires additional fields in the TCP header which increases the size of the packet and also increases delay. With TCP, there are three basic operations of reliability:
+
+\begin{itemize}
+\item Numbering and tracking data segments transmitted 
+\item Acknowledging received data
+\item Retransmitting any unacknowledged data 
+\end{itemize}
+
+TCP has the following features:
+
+\begin{itemize}
+\item  \textbf{connection-oriented:} TCP negotiates and establishes a virtual connection between source and destination devices prior to forwarding any traffic.
+
+\item \textbf{Reliable:} TCP ensures that each segment arrives at the destination. 
+
+\item \textbf{Stateful protocol:} A stateful protocol is a protocol that keeps track of the state of the communication session. 
+
+\item \textbf{Same-Order Delivery:} Because networks may provide multiple routes that can have different transmission rates, data can arrive in the wrong order. By numbering and sequencing the segments, TCP can ensure that these segments are reassembled into the proper order.
+
+\item \textbf{Flow control:} When TCP is aware that these resources are overtaxed, it can request that the sending application reduce the rate of data flow. 
+\end{itemize}
+
+\begin{figure}[hbtp]
+\caption{TCP segment}\label{TCPheader}
+\centering
+\includegraphics[scale=0.5]{pictures/TCPheader.PNG}
+\end{figure}
+
+
+Each TCP segment has 20 bytes of overhead (Figure \ref{TCPheader}) in the header encapsulating the application layer data:
+
+\begin{itemize}
+\item \textbf{Source Port and Destination Port}
+
+\item \textbf{Sequence number} –- Used for data reassembly purposes
+
+\item \textbf{Acknowledgement number} – Indicates the data that has been received
+
+\item \textbf{Header length:} -– Indicates the length of the TCP segment header.
+\item \textbf{Reserved:} -– This field is reserved for the future.
+\item \textbf{Control bits:} -– Known as flags, these identify bit codes that indicate the purpose and function of the TCP segment.
+\item \textbf{Window size:} -– Indicates the number of bytes that can be accepted at
+one time.
+\item \textbf{Checksum} -– Used for error checking of the segment header and data.
+\item \textbf{Urgent} -– Indicates if data is urgent.
+\end{itemize}
+
+\subsection{UDP}
+
+UDP is a lightweight transport protocol that offers the same data segmentation and reassembly as TCP, but without TCP reliability and flow control. It is known as a best-effort delivery protocol. \\
+
+\begin{figure}[hbtp]
+\caption{UDP datagram}\label{UDPheader}
+\centering
+\includegraphics[scale=0.5]{pictures/UDPheader.PNG}
+\end{figure}
+
+
+UDP is a stateless protocol, meaning neither the client, nor the server, is obligated to keep track of the state of the communication session. \\
+
+The pieces of communication in UDP are called datagrams. These datagrams are sent as best-effort by the transport layer protocol. UDP has a low overhead of 8 bytes (Figure \ref{UDPheader}).
+
+\subsection{Port number}
+
+The source port number is associated with the originating application on the local host. The destination port number is associated with the destination application on the remote host.\\
+
+The combination of the source IP address and source port number, or the destination IP address and destination port number is known as a socket. The socket is used to identify the server and service being requested by the client. In figure \ref{Socket}, the client socket is 192.168.1.5:1099 with 1099 representing the source number, the socket on the web server is 192.168.1.7:80. Together, these two sockets combine to form a socket pair: 192.168.1.5:1099, 192.168.1.7:80 \\
+
+\begin{figure}[hbtp]
+\caption{Examples of socket pairs}\label{Socket}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/Socket.PNG}
+\end{figure}
+
+There are different types of port numbers:
+
+\begin{itemize}
+\item \textbf{Well-known Ports} (0 -- 1023): These numbers are used for popular protocols such as FTP, HTTP, TFTP, etc.
+
+\item \textbf{Registered Ports} (1024 -- 49151): These port numbers are assigned by IANA to a requesting entity to use with specific processes or applications.
+
+\item \textbf{Dynamic or Private Ports} (49152 -- 65535): These are assigned dynamically by the client's OS to identify the application during communication.
+\end{itemize}
