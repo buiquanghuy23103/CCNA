@@ -10,47 +10,40 @@ Enhanced Interior Gateway Routing Protocol (EIGRP) is a powerful \emph{distance 
 \item Partial and Bounded Updates -- Sends updates only when there is a change and only to the routers that need the information
 \item Supports Equal and Unequal cost load balancing
 \item Does not encrypt the routing updates
-\item \textbf{Authentication:} Only accepts routing information from other routers with the same authentication information 
+\item Authentication: Only accepts routing information from other routers with the same authentication information 
 \end{itemize}
 
-\paragraph{Protocol Dependent Modules (PDM)}sends and receives EIGRP packets that are encapsulated in IPv4 or IPv6.
-
-\paragraph{Reliable Transport Protocol (RTP)}EIGRP was designed as a network layer independent routing protocol. Because of this design, EIGRP cannot use UDP or TCP, but use RTP instead. RTP includes both reliable and unreliable delivery of EIGRP packets, similar to TCP and UDP, respectively. RTP can send EIGRP packets as unicast or multicast. EIGRP multicast address is 224.0.0.10 for IPv4 and  FF02::A for IPv6.
+\textbf{Protocol Dependent Modules (PDM)} sends and receives EIGRP packets that are encapsulated in IPv4 or IPv6. \textbf{Reliable Transport Protocol (RTP)} is responsible for both reliable and unreliable packet delivery, because EIGRP cannot use UDP or TCP. RTP can send EIGRP packets as unicast or multicast.
 
 \section{Packet types}
 
 \subsection{Hello packets}
 
-EIGRP uses small Hello packets to discover other EIGRP-enabled routers on directly connected links. Hello packets are used by routers to form EIGRP neighbor adjacencies.\\
+EIGRP uses Hello packets to discover other EIGRP-enabled routers on directly connected links and form EIGRP neighbor adjacencies. These packets are sent as multicast \emph{every five seconds}. However, on slow network (e.g. multipoint, NBMA networks with access links of T1), they are sent as unicast packets every 60 seconds.\\
  
-Hello packets are sent as multicast packets \emph{every five seconds}. However, on slow network (e.g. multipoint, NBMA networks with access links of T1), Hello packets are sent as unicast packets every 60 seconds.\\
- 
-EIGRP uses a Hold timer to determine the maximum time the router should wait to receive the next Hello before declaring that neighbor as unreachable. By default, the Hold timer is \emph{three times the Hello interval}. If the hold time expires, EIGRP declares the route as down and DUAL searches for a new path by sending out queries.\\
+\textbf{Hold timer} determines the maximum time the router should wait to declare neighbor as unreachable. By default, the Hold timer is \emph{three times the Hello interval}. If the hold time expires, EIGRP declares the route as down and DUAL searches for a new path by sending out queries.\\
 
 Hello intervals and hold times are configurable on a per-interface basis and \emph{do not have to match} with other EIGRP routers to establish or maintain adjacencies. If the Hello interval is changed, ensure that the Hold time value is not less than the Hello interval. Otherwise, neighbor adjacency goes down after the Hold timer expires and before the next Hello interval. 
 
-\subsection{Update packets}
+\subsection{Other packets}
 
-EIGRP sends Update packets to propagate routing information. Update packets are sent only when necessary. EIGRP updates contain only the routing information needed, and are sent only to those routers that require it.\\
- 
-EIGRP uses \emph{partial update} and \emph{bounded update}. A partial update means that the update only includes information about route changes. A bounded update refers to the sending of partial updates only to the routers that are affected by the changes. Bounded updates help EIGRP minimize the bandwidth that is required to send EIGRP updates.
+EIGRP sends \textbf{Update packets} to propagate routing information. These packets are sent only when necessary and to those routers that require it. This is known as \emph{bounded update}, which minimizes the network bandwidth. Update packets must also contain only the routing information needed, which is known as \emph{partial update}.\\
 
-\subsection{Acknowledgment packets}
+EIGRP sends \textbf{Acknowledgment packets} when RTP reliable delivery is used. An EIGRP acknowledgment is an EIGRP Hello packet without any data. RTP uses reliable delivery for Update, Query, and Reply packets.\\
 
-EIGRP sends Acknowledgment (ACK) packets when RTP reliable delivery is used. An EIGRP acknowledgment is an EIGRP Hello packet without any data. RTP uses reliable delivery for Update, Query, and Reply packets.
-
-\subsection{Query and reply packets}
-
-DUAL uses Query and Reply packets when searching for networks and other tasks. Queries can use multicast or unicast, whereas replies are always sent as unicast.
+DUAL uses \textbf{Query and Reply packets} when searching for networks and other tasks. Queries can use multicast or unicast, whereas replies are always sent as unicast.
 
 \section{Encapsulating EIGRP Messages}
-The EIGRP packet headers and TLV (Type, Length, Value) field are encapsulated in an IP packet.
 
-\subsection{IP packet header}
+IP packet header, EIGRP packet header, and TLV (Type, Length, Value) field are encapsulated in a Layer 2 frame (Figure \ref{IPpacketHeader}). The destination MAC address of the frame is the multicast address \textbf{01-00-5E-00-00-0A}.\\
 
-In the IP packet header (figure \ref{EIGRP-packet-header}), the protocol field is set to \textbf{88} to indicate EIGRP. The destination address is set to the multicast 224.0.0.10 for IPv4, and FF02::A for IPv6. If the EIGRP packet is encapsulated in an Ethernet frame, the destination MAC address is the multicast address 01-00-5E-00-00-0A.
+In the \textbf{IP packet header}, the protocol field is set to \textbf{88} to indicate EIGRP. The destination address is the multicast address \textbf{224.0.0.10} for IPv4, or \textbf{FF02::A} for IPv6. 
 
-\subsection{EIGRP packet header}
+\begin{figure}[hbtp]
+\caption{Encapsulating EIGRP Messages}\label{IPpacketHeader}
+\centering
+\includegraphics[ width=0.7\textwidth ]{pictures/IPpacketHeader.PNG}
+\end{figure}
 
 \begin{figure}[hbtp]
 \centering
@@ -58,13 +51,9 @@ In the IP packet header (figure \ref{EIGRP-packet-header}), the protocol field i
 \caption{EIGRP packet header} \label{EIGRP-packet-header}
 \end{figure}
 
-\paragraph{Opcode field} specifies EIGRP packet type. Specifically, it identifies the EIGRP messages as either Update (1), Query (3), Reply (4), and Hello (5).\\
- 
-\paragraph{Autonomous system (AS) number}specifies the EIGRP routing process. Unlike RIP, multiple instances of EIGRP can run on a network. The autonomous system number is used to track each running EIGRP process.
+The \textbf{EIGRP packet header} contains two important fields: Opcode and Autonomous system number (Figure \ref{EIGRP-packet-header}). \textbf{Opcode field} specifies EIGRP packet type using number: Update(1), Query(3), Reply(4), and Hello(5). \textbf{Autonomous system (AS) number} specifies the EIGRP routing process. Unlike RIP, multiple instances of EIGRP can run on a network. The autonomous system number is used to track each running EIGRP instance.\\
 
-\subsection{TLV fields}
-
-There are three types of TLV: EIGRP parameters (figure \ref{EIGRP-parameters}), IP internal routes (figure \ref{EIGRP-internal-route}), and IP external routes (figure \ref{EIGRP-external-route}).\\
+There are three types of \textbf{TLV field}: EIGRP parameters (figure \ref{EIGRP-parameters}), IP internal routes (figure \ref{EIGRP-internal-route}), and IP external routes (figure \ref{EIGRP-external-route}).\\
 
 \begin{figure}[hbtp]
 \centering
@@ -80,7 +69,7 @@ The \emph{length} field identifies the size (in bytes) of the \emph{value} field
 \caption{EIGRP internal routes TLV fields} \label{EIGRP-internal-route}
 \end{figure}
 
-The EIGRP parameters include the weights that EIGRP uses for its composite metric (K1 -- K5). By default, only bandwidth and delay are weighted. Both are weighted equally; therefore, the K1 field for bandwidth and the K3 field for delay are both set to one (1). The other K values are set to zero (0).\\
+The \textbf{EIGRP parameters} include the weights that EIGRP uses for its composite metric (K1 -- K5). By default, only bandwidth and delay are weighted. Both are weighted equally; therefore, the K1 field for bandwidth and the K3 field for delay are both set to one (1). The other K values are set to zero (0).\\
 
 \begin{figure}[hbtp]
 \centering
@@ -88,7 +77,7 @@ The EIGRP parameters include the weights that EIGRP uses for its composite metri
 \caption{EIGRP external route TLV fields} \label{EIGRP-external-route}
 \end{figure}
  
-Each IP internal route or IP external route contains one route entry and the metric information for specific route. These types of TLV are included in EIGRP Update packets. The IP internal route message is used to advertise EIGRP routes within an autonomous system. The IP external message is used to import default static route, as well as routes outside the autonomous system, into the EIGRP routing process.
+Each \textbf{IP internal route} or \textbf{IP external route} contains one route entry and the metric information for specific route. These types of TLV are included in EIGRP Update packets. The IP internal route message is used to advertise EIGRP routes within an autonomous system. The IP external message is used to import default static route, as well as routes outside the autonomous system, into the EIGRP routing process.
  
 \section{Operation}
 
@@ -98,7 +87,7 @@ EIGRP uses Hello packets to establish and maintain neighbor adjacencies. To acco
 \begin{figure}[hbtp]
 \caption{Establish EIGRP adjacency}\label{EIGRPadjacency}
 \centering
-\includegraphics[scale=0.6]{pictures/EIGRPadjacency.PNG}
+\includegraphics[ width=0.7\textwidth ]{pictures/EIGRPadjacency.PNG}
 \end{figure}
 
  
@@ -128,23 +117,21 @@ By default, EIGRP uses the following values in its composite metric to calculate
 \end{itemize}
 
 Default composite formula:
-\[ \text{metric} = \left( \text{bandwidth} + \text{bandwidth} \right) \times 256 \]
+\[ \text{metric} = \left( \text{bandwidth} + \text{delay} \right) \times 256 \]
 
 Complete composite formula:
-\[ \text{metric} = \left( K1\times\text{bandwidth} + \frac{K2\times\text{bandwidth}}{256\times\text{load}} + K3\times\text{delay} \right) \times \frac{K5}{K4+\text{reliability}} \times 256 \]
+\[ \text{metric} = \left( K1\times\text{bandwidth} + \frac{K2\times\text{bandwidth}}{256 - \text{load}} + K3\times\text{delay} \right) \times \frac{K5}{K4+\text{reliability}}\]
 This is a conditional formula. If $K5=0$, the last term is replaced by 1. Default values for each parameter:
 
 \begin{itemize}
 \item K1 (bandwidth) = 1
 \item K2 (load) = 0
-\item K3 (delay) = 0
+\item K3 (delay) = 1
 \item K4 (reliability) = 0
 \item K5 (reliability) = 0
 \end{itemize}
 
-\subsubsection{Examining interface metric values}
-
-The \verb|show interfaces <interface>| command displays interface information (figure \ref{EIGRPmetric}), including the parameters used to compute the EIGRP metric.
+\paragraph{Examining interface metric values:} The \verb|show interfaces <interface>| command displays interface information (figure \ref{EIGRPmetric}), including the parameters used to compute the EIGRP metric.
 
 \begin{figure}[hbtp]
 \caption{Examine interface metric values}\label{EIGRPmetric}
@@ -159,15 +146,9 @@ The \verb|show interfaces <interface>| command displays interface information (f
 \item \textbf{Txload, Rxload} -- Transmit and receive load on the interface as a fraction of 255 (255/255 is completely saturated), calculated as an exponential average over five minutes. By default, EIGRP does not include its value in computing its metric.
 \end{itemize}
 
-\subsubsection{Bandwidth}
+\paragraph{Bandwidth:} EIGRP uses the slowest bandwidth along the path to the destination network. EIGRP divides a reference bandwidth value of $10^7$ by the interface bandwidth value in kb/s. If the result is not a whole number, then the value is rounded down. For example, $10^7$ divided by 1024 equals 9765.625. The .625 is dropped to yield 9765 for the bandwidth portion of the composite metric.
 
-EIGRP uses the slowest bandwidth along the path to the destination network. EIGRP divides a reference bandwidth value of $10^7$ by the interface bandwidth value in kb/s. If the result is not a whole number, then the value is rounded down. For example, $10^7$ divided by 1024 equals 9765.625. The .625 is dropped to yield 9765 for the bandwidth portion of the composite metric.
-
-\subsubsection{Delay}
-
-EIGRP uses the sum of all delays along the path to the destination. The sum of these delays is divided by 10. See also table \ref{delay-value} for default delay values.\\
-
-For example, along the path R1$\rightarrow$R2$\rightarrow$R3, the s0/0/1 interface on R2 has a delay of 20,000 microseconds, the g0/0 interface on R3 has a delay of 10 microseconds. The delay is $ \left( 20000 + 10 \right) \div 10 = 2001 $.
+\paragraph{Delay:} EIGRP uses the sum of all delays along the path to the destination. The sum of these delays is divided by 10. See also table \ref{delay-value} for default delay values. For example, along the path R1$\rightarrow$R2$\rightarrow$R3, the s0/0/1 interface on R2 has a delay of 20,000 microseconds, the g0/0 interface on R3 has a delay of 10 microseconds. The delay is $ \left( 20000 + 10 \right) \div 10 = 2001 $.
 
 \begin{table}[h!]
 \centering
@@ -188,15 +169,15 @@ Serial link      & 20000 \\ \hline
 EIGRP uses the Diffusing Update Algorithm (DUAL) to provide the best loop-free path and loop-free backup paths. DUAL uses several terms, which are discussed in more detail throughout this section:
 
 \begin{itemize}
-\item \textbf{Successor} is a neighboring router that is used for packet forwarding and is the least-cost route to the destination network. The IP address of a successor is shown in a routing table entry right after the word via (see figure \ref{EIGRP-FD}). 
+\item \textbf{Successor} is a neighboring router that is used for packet forwarding and is the least-metric route to the destination network. The IP address of a successor is shown in a routing table entry right after the word via (see figure \ref{EIGRP-FD}). 
 
-\item \textbf{Feasible Distance (FD)} is the lowest calculated metric to reach the destination network. FD is the metric listed in the routing table entry as the second number inside the brackets (see figure \ref{EIGRP-FD}). As with other routing protocols, this is also known as the metric for the route.
+\item \textbf{Feasible Distance (FD)} is the metric of the Successor to reach the destination network. FD is listed in the routing table entry as the second number inside the brackets (see figure \ref{EIGRP-FD}).
 
 \item \textbf{Feasible Successor (FS)} is a neighbor that has a loop-free backup path to the same network as the successor, and it satisfies the Feasibility Condition (FC). FS is not represented in the routing table until the Successor is down. Instead, we can view FS in topology table (figure \ref{FS}).
 
-\item \textbf{Reported Distance (RD)} is simply an EIGRP neighbor’s FD to the same destination network.
+\item \textbf{Reported Distance (RD)} is the FD (metric) of an FS to the same destination network.
 
-\item \textbf{Feasible Condition (FC)} is met when a neighbor’s RD to a network is less than the local router’s FD to the same destination network. If the RD is less, it represents a loop-free path. 
+\item \textbf{Feasible Condition (FC)} is met when a neighbor's RD to a network is less than the local router's FD to the same one. If the RD is less, it represents a loop-free path. 
 \end{itemize}
 
 \begin{figure}[hbtp]
@@ -204,6 +185,14 @@ EIGRP uses the Diffusing Update Algorithm (DUAL) to provide the best loop-free p
 \includegraphics[ width=0.8\textwidth ]{pictures/EIGRP-FD.png}
 \caption{Successor and Feasible Distance} \label{EIGRP-FD}
 \end{figure}
+
+A route learned through EIGRP must meet two criteria to be installed in the local routing table:
+
+\begin{itemize}
+\item The route must be loop-free, being either an FS or having an RD that is less than the total distance.
+
+\item The metric of the route must be lower than the metric of the best route (the successor) multiplied by the \emph{variance} configured on the router. For example, if the variance is set to 1, only routes with the same metric as the successor are installed in the local routing table. If the variance is set to 2, any EIGRP-learned route with a metric less than 2 times the successor metric will be installed in the local routing table.
+\end{itemize}
 
 The decision process for all route computations is done by the DUAL Finite State Machine (FSM). The DUAL FSM tracks all routes and uses EIGRP metrics to select efficient, loop-free paths, and to identify the routes with the least-cost path to be inserted into the routing table.\\
 
@@ -226,15 +215,14 @@ When the Successor is no longer available and there is no FS, DUAL puts the rout
 
 \subsection{Automatic summarization}
 
-Route summarization allows a router to group networks together and advertises them as one large group using a single, summarized route. Summarization decreases the number of entries in routing updates and lowers the number of entries in local routing tables. It also reduces bandwidth utilization for routing updates and results in faster routing table lookups.\\
+Route summarization allows a router to group networks together and advertises them as one large group using a single, summarized route. Summarization decreases the number of entries in routing updates and lowers the number of entries in local routing tables. It also reduces bandwidth utilization for routing updates and results in faster routing table lookups. However, in classes IP network, the only way that all routers can find the best routes for each individual subnet is for neighbors to send subnet information. In this situation, automatic summarization should be disabled. \\
 
-However, in classes IP network, the only way that all routers can find the best routes for each individual subnet is for neighbors to send subnet information. In this situation, automatic summarization should be disabled. \\
-
-A problem associated with automatic route summarization is that a summary address also advertises networks that are not available on the advertising router. For example, R1 is advertising the summary address 172.16.0.0/16, but it is only connected to 172.16.1.0/24. Therefore, R1 may receive incoming packets to destinations that do not exist (for example, 172.16.2.0/24). It then forwards a request to a destination network that does not exist, creating a routing loop.\\
+A problem associated with automatic summarization is that a summary address also advertises networks that are not available on the advertising router. For example, R1 is advertising the summary address 172.16.0.0/16, but it is only connected to 172.16.1.0/24. Therefore, R1 may receive incoming packets to destinations that do not exist (for example, 172.16.2.0/24). It then forwards a request to a destination network that does not exist, creating a routing loop.\\
 
 EIGRP uses the Null0 interface to avoid the above problem. The Null0 interface is a virtual IOS interface that is a route to nowhere. If R1 receives a packet destined for a network that is advertised by the classful mask but does not exist, it discards the packets by sending them to Null0.\\
  
-\note  The Null0 summary route is removed when autosummarization is disabled.
+\note The Null0 summary route is removed when automatic summarization is disabled.\\
+\note EIGRP for IPv4 automatic summarization is disabled by default.
 
 \section{Configuration}
 
@@ -268,29 +256,32 @@ EIGRP uses the Null0 interface to avoid the above problem. The Null0 interface i
 	R1(config-router)# no passive-interface s0/0/0
 	R1(config-router)# no passive-interface s0/0/1
 	\end{verbatim}
+	
+\item On border router, propagate its default static route to other routers
+    \begin{verbatim}
+    R1(config-router)# redistribute static
+    \end{verbatim}
 
-\item Examine the EIGRP neighbor table (figure \ref{neigborTable}
+\item Examine the EIGRP neighbor table (figure \ref{neigborTable}), routing table using \verb|show ip route eigrp| (figure \ref{EIGRProutingTable}), topology table using \verb|show ip eigrp topology| (figure \ref{EIGRPtopologyTable}), EIGRP routing parameters, passive interfaces and networks advertised (figure \ref{EIGRPparameters}).
 	\begin{figure}[hbtp]
 	\caption{Examine EIGRP neigbor table}\label{neigborTable}
 	\centering
 	\includegraphics[scale=0.8]{pictures/neigborTable.PNG}
 	\end{figure}
 	
-\item Examine the IP EIGRP routing table using \verb|show ip route eigrp| (figure \ref{EIGRProutingTable})
 	\begin{figure}[hbtp]
 		\caption{EIGRP routing table}\label{EIGRProutingTable}
 		\centering
 		\includegraphics[scale=0.8]{pictures/EIGRProutingTable.PNG}
 		\end{figure}
-
-\item Examine the EIGRP topology table using \verb|show ip eigrp topology| (figure \ref{EIGRPtopologyTable})	
+ 	
 	\begin{figure}[hbtp]
 			\caption{EIGRP topology table}\label{EIGRPtopologyTable}
 			\centering
 			\includegraphics[scale=0.8]{pictures/EIGRPtopologyTable.PNG}
 			\end{figure}
 
-\item Verify the EIGRP routing parameters, passive interfaces and networks advertised (figure \ref{EIGRPparameters})
+
 	\begin{figure}[hbtp]
 	\caption{EIGRP routing parameters and networks advertised}\label{EIGRPparameters}
 	\centering
@@ -310,19 +301,19 @@ EIGRP uses the Null0 interface to avoid the above problem. The Null0 interface i
 \item Enable EIGRP for IPv6
 	\begin{verbatim}
 	R1(config)# ipv6 router eigrp 1 
-	R1(config-rtr)# no shutdown 
+	R1(config-router)# no shutdown 
 	\end{verbatim}	
 	
 \item Assign a router ID to each router and 
 	\begin{verbatim}
 	R1(config)# ipv6 router eigrp 1 
-	R1(config-rtr)# eigrp router-id 1.1.1.1
+	R1(config-router)# eigrp router-id 1.1.1.1
 	\end{verbatim}
 
 \item Configure passive interfaces
 	\begin{verbatim}
 	R1(config)# ipv6 router eigrp 1 
-	R1(config-rtr)# passive-interface g0/0 
+	R1(config-router)# passive-interface g0/0 
 	\end{verbatim}
 	
 \item If there are too many passive interfaces, you can make all interfaces of the router to be passive using \verb|passive-interface default|, then configure necessary interface to be active again using \verb|no passive-interface|
@@ -339,9 +330,40 @@ EIGRP uses the Null0 interface to avoid the above problem. The Null0 interface i
 	R1(config-if)# no shutdown
 	\end{verbatim}
 	
-\item Examine the neighbor adjacencies using \verb|show ipv6 eigrp neighbors|
-\item Examine the IPv6 EIGRP routing table using \verb|show ipv6 route eigrp|
-\item Examine the EIGRP topology using \verb|show ipv6 eigrp topology|
-\item Verify the parameters and current state of the active IPv6 routing protocol processes using \verb|show ipv6 protocols|
+\item On border router, propagate its default static route to other routers
+    \begin{verbatim}
+    R1(config-router)# redistribute static
+    \end{verbatim}
+	
+\item Examine the neighbor adjacencies using \verb|show ipv6 eigrp neighbors|, routing table using \verb|show ipv6 route eigrp|, topology table using \verb|show ipv6 eigrp topology|. Verify the parameters and current state of the EIGRPv6 using \verb|show ipv6 protocols|.
 	
 \end{enumerate}
+
+\subsection{Tuning EIGRP}
+
+\paragraph{Bandwidth utilization:} By default, EIGRP uses only up to \textbf{50\%} of an interface's bandwidth for EIGRP information. This prevents the EIGRP process from over-utilizing a link and not allowing enough bandwidth for the routing of normal traffic. Use the following command to configure the 80\% of bandwidth that can be used by EIGRP (AS = 100) on an interface.
+
+\begin{verbatim}
+Router(config-if)# ip bandwidth-percent eigrp 100 80
+Router(config-if)# ipv6 bandwidth-percent eigrp 100 80
+\end{verbatim}
+
+\paragraph{Hello and Hold timers:} Hello intervals and hold times are configurable on a per-interface basis and do not have to match with other EIGRP routers to establish or maintain adjacencies. If the Hello interval is changed, ensure that the hold time value is equal to, or greater than, the Hello interval. The following commands set Hello interval to 50 seconds and Hold timer to 150 seconds. The number \verb|100| is the AS number of EIGRP. \note The \emph{seconds} value for both Hello and Hold time intervals can range from 1 to 65,535. 
+
+\begin{verbatim}
+Router(config-if)# ip hello-interval eigrp 100 50
+Router(config-if)# ip hold-time eigrp 100 150
+\end{verbatim}
+
+\paragraph{Equal-cost load balancing:} Load balancing is the ability of a router to distribute outbound traffic using all interfaces that have the same metric from the destination address. For IP, Cisco IOS Software applies load balancing using up to \emph{four} equal-cost paths by default. However, this can be modified using the below command. If the \verb|<value>| is set to 1, load balancing is disabled.  The \verb|show ip protocols| command can be used to verify the number of equal-cost paths currently configured on the router.
+
+\begin{verbatim}
+Router(config-router)# maximum-paths <value>
+\end{verbatim} 
+
+\paragraph{Unequal-cost load balancing:} EIGRP is the only routing protocol that supports unequal-cost load balancing. Setting a variance value using the following command enables EIGRP to install routes with unequal cost in a local routing table. 
+
+\begin{verbatim}
+R1(config-router)# variance 2
+\end{verbatim}
+

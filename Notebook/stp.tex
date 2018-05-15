@@ -10,8 +10,7 @@ Multiple cabled paths between switches provide physical redundancy. However, whe
 \item Broadcast storm
 \end{itemize}
 
-\paragraph{MAC Database Instability}Broadcast frames are forwarded out all switch ports, except the original ingress port. If there is more than one path to the destination, the frames may be forwarded back to the original switch, and create an endless loop. When a loop occurs, the MAC address table constantly changes with the updates from the broadcast frames, which results in MAC database instability.
-See this \href{https://ccnav6.com/s3/course/module2/2.1.1.2/2.1.1.2.html}{link} for more explanation.
+\paragraph{MAC Database Instability}Broadcast frames are forwarded out all switch ports, except the original ingress port. If there is more than one path to the destination, the frames may be forwarded back to the original switch, and create an endless loop. When a loop occurs, the MAC address table constantly changes with the updates from the broadcast frames, which results in MAC database instability. See this \href{https://ccnav6.com/s3/course/module2/2.1.1.2/2.1.1.2.html}{link} for more explanation.
 
 \paragraph{Duplicate unicast frame}MAC Database Instability makes the switch overwhelming and confused. It does not know destination MAC address and must forward the frame out all ports.  Consequently, unicast frames arrive at the destination device more than once.
 
@@ -28,11 +27,11 @@ There is a root bridge elected for each spanning tree instance. It is possible t
 \subsection{Types of STP}
 
 \begin{itemize}
-\item \textbf{802.1D} -- The first STP version, provide one spanning tree instance for the entire bridged network.
+\item \textbf{802.1D} -- The first STP version, one spanning tree instance for the entire bridged network, regardless of the number of VLANs.
 \item \textbf{PVST+} -- Cisco enhancement of STP, provide a separate spanning tree instance for each VLAN.
-\item \textbf{RSTP or 802.1w} -- An evolution of STP.
-\item \textbf{Rapid PVST+} -- Cisco enhancement of RSTP.
-\item \textbf{MSTP} -- Multiple Spanning Tree Protocol, an IEEE standard, map multiple VLANs into the same spanning tree instance.
+\item \textbf{RSTP or 802.1w} -- An standards-based evolution of STP.
+\item \textbf{Rapid PVST+} -- Cisco enhancement of RSTP, provide a separate spanning tree instance for each VLAN.
+\item \textbf{MSTP} -- Multiple Spanning Tree Protocol, an IEEE standard, map multiple VLANs into the same spanning tree instance. It can also ride on top of another spanning-tree protocol.
 \item \textbf{MST} -- Cisco implementation of MSTP, provide up to 16 instances of RSTP.
 \end{itemize}
 
@@ -47,7 +46,7 @@ Bridge ID (BID) uniquely identifies a switch. The BID contains a bridge priority
 \label{BID}
 \end{figure}
 
-The extended system ID reserves the rightmost 12 bits for the VLAN ID and the far left 4 bits for the bridge priority. Therefore, the bridge priority value can only be the multiples of 4096 ($2^12$). If we consider BID as a hexadecimal number, the lowest left-most 4 bits (meaning lowest priority) always leads to lowest BID value.\\
+The extended system ID reserves the rightmost 12 bits for the VLAN ID and the far left 4 bits for the bridge priority. Therefore, the bridge priority value can only be the multiples of 4096 ($2^{12}$). If we consider BID as a hexadecimal number, the lowest left-most 4 bits (meaning lowest priority) always leads to lowest BID value.\\
 
 To be more accurate, the root bridge election is based on the following criteria, in sequential order:
 
@@ -226,8 +225,12 @@ Rapid PVST+ is Cisco enhancement of RSTP. In this section, only the common featu
 \subsection{BPDU}
 RSTP uses BPDU version 2, while 802.1D uses version 0. Protocol information can be immediately aged on a port if Hello packets are not received for three consecutive Hello times (six seconds, by default) or if the max age timer expires. BPDUs are used as a keepalive mechanism. Therefore, three consecutively missed BPDUs indicate lost connectivity between a bridge and its neighboring.
 
+\subsection{Port role}
+
+RSTP expands the STP port roles by adding the alternate and backup roles.
+
 \subsection{Port state}
-RSTP expands the STP port roles by adding the alternate and backup roles. RSTP combine blocking and listening port state to allow faster convergence. Port states are defined as \emph{discarding}, \emph{learning}, or \emph{forwarding}.\\
+RSTP combine blocking and listening port state to allow faster convergence. Port states are defined as \emph{discarding}, \emph{learning}, or \emph{forwarding}.\\
 
 RSTP speeds the recalculation of the spanning tree when the Layer 2 network topology changes. If a port is configured to be an alternate port, it can immediately change to a forwarding state without waiting for the network to converge.\\
 
@@ -261,11 +264,11 @@ To ensure that the switch has the lowest bridge priority value, use the followin
     \begin{verbatim}
     S1(config)# spanning-tree vlan 10 root primary
     \end{verbatim}
-This command dynamically makes priority of the switch to be the lowest in the broadcast domain. By default, the priority for the switch is 24576. If an alternate root bridge is desired, use the following command. 
+The above command dynamically makes priority of the switch to be the lowest in the broadcast domain. By default, the priority for the root switch is \textbf{24576}. If an alternate root bridge is desired, use the following command. 
     \begin{verbatim}
     S1(config)# spanning-tree vlan 10 root secondary
     \end{verbatim}   
-This command ensures that the alternate switch becomes the root bridge if the primary root bridge fails.  This command, by default, sets the priority to 28672.
+The above command ensures that the alternate switch becomes the root bridge if the primary root bridge fails. This command, by default, sets the priority to \textbf{28672}.
 
 \subsubsection{Method 2}
 

@@ -2,9 +2,9 @@
 
 \section{PPPoE}
 
-Ethernet links do not natively support PPP. PPP over Ethernet (PPPoE) provides a solution to this problem. PPPoE creates a PPP tunnel over an Ethernet connection. This allows PPP frames to be sent across the Ethernet cable to the ISP from the customer’s router.\\
+Ethernet links do not natively support PPP. A solution to this problem is PPP over Ethernet (PPPoE). PPPoE creates a PPP tunnel over an Ethernet connection. This allows PPP frames to be sent across the Ethernet cable to the ISP from the customer’s router.\\
 
-To create the PPP tunnel a dialer interface is configured.
+To create a PPP tunnel, the configuration uses a \emph{dialer interface}. A dialer interface is a virtual interface. The PPP configuration is placed on the dialer interface, not the physical interface. 
 
 \begin{verbatim}
 interface dialer 1
@@ -55,13 +55,20 @@ debug ppp {negotiation | authentication | events}
 
 GRE, IPsec, web-based SSL are the three methods of establishing a VPN connection offered by Cisco devices. GRE is a out-dated, non-secure, stateless, site-to-site VPN tunneling protocol. GRE supports the encapsulation of \textbf{any OSI Layer 3 protocol} and \textbf{47} is used in the protocol field in IP header (figure \ref{GREpacket}). GRE also supports multiprotocol and IP multicast tunneling.\\
 
-GRE is the default tunnel interface mode for Cisco IOS software. GRE does not provide encryption or any other security mechanisms. Therefore, data that is sent across a GRE tunnel is not secure.
+GRE is the default tunnel interface mode for Cisco IOS software. GRE does not provide encryption or any other security mechanisms. Therefore, data that is sent across a GRE tunnel is not secure.\\
 
 \begin{figure}[hbtp]
 \caption{Header for GRE encapsulated packet header}\label{GREpacket}
 \centering
 \includegraphics[scale=1]{pictures/GREpacket.PNG}
 \end{figure}
+
+Three circumstances can cause a GRE tunnel to be in an up/down state:
+\begin{itemize}
+\item The tunnel interface is down.
+\item A valid route to the destination address is missing from the routing table.
+\item The tunnel address is routed through the tunnel itself.
+\end{itemize}
 
 \subsection{Configuration}
 

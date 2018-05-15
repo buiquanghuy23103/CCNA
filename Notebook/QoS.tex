@@ -4,13 +4,13 @@
 
 \subsection{Traffic characteristics}
 
-\paragraph{Voice}Voice traffic is predictable and smooth. However, voice is delay-sensitive and there is no reason to re-transmit voice if packets are lost. Therefore, voice packets must receive a higher priority than other types of traffic. Latency should be no more than \textbf{150 ms}. Jitter should be no more than \textbf{30 ms}, and voice packet loss should be no more than \textbf{1\%}. Voice traffic requires at least \textbf{30 Kbps} of bandwidth.
+\paragraph{Voice}Voice traffic is predictable and smooth. However, voice is delay-sensitive and there is no reason to re-transmit voice if packets are lost. Therefore, voice packets must receive a higher priority than other types of traffic. Latency should be no more than \textbf{150 ms}. Jitter should be no more than \textbf{30 ms}, and voice packet loss should be no more than \textbf{1\%}. Voice traffic requires at least \textbf{30 Kb/s} of bandwidth.
 
-\paragraph{Video}Video traffic tends to be unpredictable, inconsistent, and bursty compared to voice traffic. Compared to voice, video is less resilient to loss and has a higher volume of data per packet. Latency should be no more than \textbf{400 ms}. Jitter should be no more than \textbf{50 ms}, and video packet loss should be no more than \textbf{1\%}. Video traffic requires at least \textbf{384 Kbps} of bandwidth.
+\paragraph{Video}Video traffic tends to be unpredictable, inconsistent, and bursty compared to voice traffic. Compared to voice, video is less resilient to loss and has a higher volume of data per packet. Latency should be no more than \textbf{400 ms}. Jitter should be no more than \textbf{50 ms}, and video packet loss should be no more than \textbf{1\%}. Video traffic requires at least \textbf{384 Kb/s} of bandwidth.
 
 \paragraph{Data}Data traffic is relatively insensitive to drops and delays compared to voice and video. The two main factors a network administrator needs to ask about the flow of data traffic are the following: Does the data come from an interactive application? Is the data mission critical?
 
-\paragraph{Delay} Network congestion causes delay. Two types of delays are fixed and variable. A fixed delay is a specific amount of time a specific process takes, such as how long it takes to place a bit on the transmission media. A variable delay take an unspecified amount of time and is affected by factors such as how much traffic is being processed. \emph{Jitter} is the variation in the delay of received packets.
+Network congestion causes \textbf{delay}. Two types of delays are fixed and variable. A \emph{fixed delay} is a specific amount of time a specific process takes, such as how long it takes to place a bit on the transmission media. A \emph{variable delay} take an unspecified amount of time and is affected by factors such as how much traffic is being processed. \emph{Jitter} is the variation in the delay of received packets.
 
 \subsection{QoS tools}
 

@@ -1,56 +1,60 @@
 \chapter{LAN Design}
+
 \section{Hierarchical Design Model}
+
 A hierarchical LAN design includes the following three layers, as shown in Figure \ref{Hierarchical-model}:
+
 \begin{itemize}
 \item \textbf{Access layer}  provides endpoints and users direct access to the network
 \item \textbf{Distribution layer} aggregates access layers and provides connectivity to services. 
 \item \textbf{Core layer} provides connectivity between distribution layers for large LAN environments.
 \end{itemize}
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=0.7\textwidth]{pictures/Hierarchical-model.png}
 \caption{Three-layer hierarchical design model}
 \label{Hierarchical-model}
 \end{figure}
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=0.7\textwidth]{pictures/collapsed-core.png}
 \caption{Collapsed Core}
 \label{collapsed-core}
 \end{figure}
+
 Even though the hierarchical model has three layers, some smaller enterprise networks may implement a two-tier hierarchical design. In a two-tier hierarchical design, the core and distribution layers are collapsed into one layer, as shown in Figure \ref{collapsed-core}.
+
 \section{Expanding the network}
-The network designer must develop a strategy to enable the network to be available and to scale effectively and easily. Included in a basic network design strategy are the following recommendations:
-\begin{itemize}
-\item Use expandable, modular equipment or clustered devices that can be easily upgraded. 
-\item Design a hierarchical network to include modules that can be upgraded without affecting the design of the other functional areas of the network.
-\item Create an IPv4 or IPv6 address strategy that is hierarchical. 
-\item Choose routers or multilayer switches to limit broadcasts and filter other undesirable traffic from the network. 
-\end{itemize}
-More advanced network design requirements will be described in the following sections.
-\subsection{Planning for redundancy}
-One method of implementing redundancy is by installing duplicate equipment and providing failover services for critical devices. Another method of implementing redundancy is redundant paths.
-\subsection{Failure domain}
-A failure domain is the area of a network that is impacted when a critical device or network service experiences problems. The use of redundant links and reliable enterprise-class equipment minimize the chance of disruption in a network. Smaller failure domains reduce the impact of a failure on company productivity.\par 
-In the hierarchical design model, it is easiest and usually least expensive to control the size of a failure domain in the distribution layer. In the distribution layer, network errors can be contained to a smaller area; thus, affecting fewer users. \par 
-Routers, or multilayer switches, are usually deployed in pairs, with access layer switches evenly divided between them. This configuration is referred to as a building, or departmental, switch block. Each switch block acts independently of the others. As a result, the failure does not affect a significant number of end users.
-\subsection{Increasing Bandwidth}
-Link aggregation allows an administrator to increase the amount of bandwidth between devices by creating one logical link made up of several physical links. EtherChannel is a form of link aggregation used in switched networks. The EtherChannel is seen as one logical link using an EtherChannel interface. Most configuration tasks are done on the EtherChannel interface, instead of on each individual port, ensuring configuration consistency throughout the links.
-\subsection{Expanding the Access Layer}
-To communicate wirelessly, end devices require a wireless NIC that incorporates a radio transmitter/receiver and the required software driver to make it operational. Additionally, a wireless router or a wireless access point (AP) is required for users to connect.
-\subsection{Fine-tuning Routing Protocols}
-Advanced routing protocols, such as OSPF and EIGRP are used in large networks. Link-state routing protocols such as Open Shortest Path First (OSPF) works well for larger hierarchical networks where fast convergence is important. Another popular routing protocol for larger networks is Enhanced Interior Gateway Routing Protocol (EIGRP). Cisco developed EIGRP as a proprietary distance vector routing protocol with enhanced capabilities.
+
+One method of implementing \textbf{Redundancy} is by installing duplicate equipment and providing failover services for critical devices. Another method of implementing redundancy is redundant paths.\\
+
+A \textbf{failure domain} is the area of a network that is impacted when a critical device or network service experiences problems. The use of redundant links and reliable enterprise-class equipment minimize the chance of disruption in a network. Smaller failure domains reduce the impact of a failure on company productivity.\\
+
+To minimize failure domain, routers or multilayer switches, are usually deployed in pairs, with access layer switches evenly divided between them. This configuration is referred to as a \textbf{switch block}. Each switch block acts independently of the others.
+
+\paragraph{Increasing Bandwidth:} Link aggregation allows an administrator to increase the amount of bandwidth between devices by creating one logical link made up of several physical links. EtherChannel is a form of link aggregation used in switched networks. The EtherChannel is seen as one logical link using an EtherChannel interface. Most configuration tasks are done on the EtherChannel interface, instead of on each individual port, ensuring configuration consistency throughout the links.
+
+\paragraph{Wireless connection:} To communicate wirelessly, end devices require a wireless NIC that incorporates a radio transmitter/receiver and the required software driver to make it operational. Additionally, a wireless router or a wireless access point (AP) is required for users to connect.
+
+\paragraph{Fine-tuning Routing Protocols:} Advanced routing protocols, such as OSPF and EIGRP are used in large networks. Link-state routing protocols such as Open Shortest Path First (OSPF) works well for larger hierarchical networks where fast convergence is important. Another popular routing protocol for larger networks is Enhanced Interior Gateway Routing Protocol (EIGRP). Cisco developed EIGRP as a proprietary distance vector routing protocol with enhanced capabilities.
 
 \section{Selecting network devices}
 \subsection{Switch hardwares}
 There are five categories of switches for enterprise networks:
+
 \begin{itemize}
 \item \textbf{Campus LAN Switches} -- To scale network performance in an enterprise LAN, there are core, distribution, access, and compact switches.
-\item \textbf{Cloud-Managed Switches} -- The Cisco Meraki cloud-managed access switches enable virtual stacking of switches. They monitor and configure thousands of switch ports over the web, without the intervention of onsite IT staff.
-\item \textbf{Data Center Switches} -- A data center should be built based on switches that promote infrastructure scalability, operational continuity, and transport flexibility. The data center switch platforms include the Cisco Nexus Series switches and the Cisco Catalyst 6500 Series switches.
-\item \textbf{Service Provider Switches} -- Service provider switches fall under two categories: aggregation switches and Ethernet access switches. Aggregation switches are carrier-grade Ethernet switches that aggregate traffic at the edge of a network. Service provider Ethernet access switches feature application intelligence, unified services, virtualization, integrated security, and simplified management.
-\item \textbf{Virtual Networking} -- Cisco Nexus virtual networking switch platforms provide secure multi-tenant services by adding virtualization intelligence technology to the data center network.
+\item \textbf{Cloud-Managed Switches} -- The Cisco \textbf{Meraki} cloud-managed access switches enable virtual stacking of switches. They monitor and configure thousands of switch ports over the web, without the intervention of onsite IT staff.
+
+\item \textbf{Data Center Switches} -- A data center should be built based on switches that promote infrastructure scalability, operational continuity, and transport flexibility. The data center switch platforms include the Cisco Nexus Series switches and the \textbf{Cisco Catalyst 6500 Series} switches.
+
+\item \textbf{Service Provider Switches} -- Service provider switches fall under two categories: aggregation switches and Ethernet access switches. \textbf{Aggregation switches} are carrier-grade Ethernet switches that aggregate traffic at the edge of a network. \textbf{Ethernet access switches} feature application intelligence, unified services, virtualization, integrated security, and simplified management.
+
+\item \textbf{Virtual Networking} -- Cisco \textbf{Nexus} virtual networking switch platforms provide secure multi-tenant services by adding virtualization intelligence technology to the data center network.
 \end{itemize}
+
 There are some terminologies that an administrator to be able to choose the right switch platform:
 \begin{itemize}
 \item \textbf{Port density} is the number of ports available on a single switch.

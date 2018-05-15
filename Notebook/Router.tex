@@ -9,10 +9,10 @@ The primary function of a router is: Determine the best path to send packets and
 
 \item \textbf{Fast switching:} The flow information for the packet is also stored in the \emph{fast-switching cache}. If another packet going to the same destination arrives on an interface, the next-hop information in the cache is reused without CPU intervention.
 
-\item \textbf{Cisco Express Forwarding (CEF):} CEF builds a Forwarding Information Base (FIB), and an adjacency table. The FIB contains precomputed reverse lookups, next-hop information for routes including the interface, and Layer 2 information. Therefore, when a network has converged, the FIB and adjacency tables contain all the information a router would have to consider when forwarding a packet. The table entries are updated whenever something changes in the network topology. 
+\item \textbf{Cisco Express Forwarding (CEF):} CEF builds a Forwarding Information Base (FIB), and an adjacency table, then stores them in the data plane. The FIB contains precomputed reverse lookups, next-hop information for routes including the interface, and Layer 2 information. Therefore, when a network has converged, the FIB and adjacency tables contain all the information a router would have to consider when forwarding a packet. This enables forwarding of packets to occur at the data plane without consulting the control plane.
 \end{itemize}
 
-\section{Router Switching Function }
+\section{Router Switching Function}
 
 The router performs the following three major steps (Figure \ref{SwitchingFunc}):
 
@@ -41,6 +41,17 @@ A metric is the quantitative value used to measure the distance to a given netwo
 \item EIGRP -- Bandwidth, delay, load, reliability
 \end{itemize}
 
-When a router has two or more paths to a destination with equal cost metrics, then the router forwards the packets using both paths equally. This is called equal cost \textbf{load balancing}. The routing table contains the single destination network but has multiple exit interfaces, one for each equal cost path. Only EIGRP supports unequal cost load balancing.\\
+When a router has two or more paths to a destination with equal cost metrics, then the router forwards the packets using both paths equally. This is called equal cost \textbf{load balancing}. The routing table contains the single destination network but has multiple exit interfaces, one for each equal cost path. Only \emph{EIGRP} supports \emph{unequal cost load balancing}.\\
 
-A router uses what is known as the \textbf{administrative distance (AD)} to determine the route to install into the IP routing table. The AD represents the trustworthiness of the route; the lower the AD, the more trustworthy the route source. For example, when a router has the choice of a static route (AD = 1) and an EIGRP route (AD = 90), the static route takes precedence. 
+A router uses what is known as the \textbf{administrative distance (AD)} to determine the route to install into the IP routing table. The AD represents the trustworthiness of the route; the lower the AD, the more trustworthy the route source. For example, when a router has the choice of a static route (AD = 1) and an EIGRP route (AD = 90), the static route takes precedence. The following list shows the AD value of common routes:
+
+\begin{itemize}
+\item Connected interface = 0
+\item Static route = 1
+\item BGP = 20
+\item Internal EIGRP = 90
+\item OSPF = 110
+\item RIP = 120
+\item External EIGRP = 170
+\item Internal BGP = 200
+\end{itemize}

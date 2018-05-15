@@ -44,10 +44,9 @@ An IPv6 unicast address uniquely identifies an interface on an IPv6-enabled devi
 \end{figure}
 
 
-\paragraph{Link-local:} Link-local addresses are used to communicate with other devices on the same local link\footnote{With IPv6, the term link refers to a subnet.}. Packets with a source or destination link-local address cannot be routed beyond the link from which the packet originated. Their uniqueness must only be confirmed on that link. If a link-local address is not configured manually on an interface, the device will automatically create its own. IPv6 link-local addresses are in the FE80::/10 range\footnote{The /10 indicates that the first 10 bits are 1111 1110 10xx xxxx. The first hextet has a range of 1111 1110 1000 0000 (FE80) to 1111 1110 1011 1111 (FEBF)}.
+\paragraph{Link-local:} Link-local addresses are used to communicate with other devices on the same local link\footnote{With IPv6, the term link refers to a subnet.}. Packets with a source or destination link-local address cannot be routed beyond the link from which the packet originated. Their uniqueness must only be confirmed on that link. If a link-local address is not configured manually on an interface, the device will automatically create its own. IPv6 link-local addresses are in the \textbf{FE80::/10} range\footnote{The /10 indicates that the first 10 bits are 1111 1110 10xx xxxx. The first hextet has a range of 1111 1110 1000 0000 (FE80) to 1111 1110 1011 1111 (FEBF)}.
 
-\paragraph{Dynamic Link-Local Addresses} A link-local address can be established dynamically or configured manually as a static link-local address. Operating systems will typically use either EUI-64 process or a randomly generated 64-bit
-number to dynamically assign link-local address. By default, Cisco routers use EUI-64 to generate the Interface ID for all link-local address on IPv6 interfaces. For serial interfaces, the router will use the MAC address of an Ethernet interface.
+\paragraph{Dynamic Link-Local Addresses} A link-local address can be established dynamically or configured manually as a static link-local address. Operating systems will typically use either EUI-64 process or a randomly generated 64-bit number to dynamically assign link-local address. By default, Cisco routers use EUI-64 to generate the Interface ID for all link-local address on IPv6 interfaces. For serial interfaces, the router will use the MAC address of an Ethernet interface.
 
 \paragraph{Static Link-Local Addresses} A drawback to using the dynamically assigned link-local address is its long interface ID, which makes it challenging to identify and remember assigned addresses. Configuring the link-local address manually provides the ability to create an address that is recognizable and easier to remember.
 
@@ -58,19 +57,17 @@ R1(config-if)# ipv6 address fe80::1 link-local
 
 The link-local address in the above example is used to make it easily recognizable as belonging to router R1. The same IPv6 link-local address is configured on all of R1's interfaces. FE80::1 can be configured on each link because it only has to be unique on that link. Similar to R1, router R2 would be configured with FE80::2 as the IPv6 link-local address on all of its interfaces
 
-\paragraph{Unique local unicast:}Unique local addresses are used for local addressing within a site or between a limited number of sites. These addresses should not be Internet-routable and should not be translated to a global IPv6 address. Unique local addresses can be used for devices that will never need or have access from another network. Unique local addresses are in the range of FC00::/7 to FDFF::/7.
+\paragraph{Unique local unicast:}Unique local addresses are used for local addressing within a site or between a limited number of sites. These addresses should not be Internet-routable and should not be translated to a global IPv6 address. Unique local addresses can be used for devices that will never need or have access from another network. Unique local addresses are in the range of \textbf{FC00::/7 to FDFF::/7}.
 
 \subsection{Multicast IPv6}
 
-IPv6 multicast addresses have the prefix FF00::/8. Multicast addresses can only be destination addresses and not source addresses. There are two types of IPv6 multicast addresses: Assigned multicast address and Solicited node multicast address.
+IPv6 multicast addresses have the prefix \textbf{FF00::/8}. Multicast addresses can only be destination addresses and not source addresses. There are two types of IPv6 multicast addresses: Assigned multicast address and Solicited node multicast address.
 
-\paragraph{Assigned mulicast addresses} are reserved multicast addresses for predefined groups of devices. For example, FF02::1 is the all-nodes multicast address, which has the same effect as broadcast IPv4 address. The all-routers multicast address FF02::2 identifies a group of all IPv6 routers\footnote{A router with the ipv6 unicast-routing global configuration command executed} on the network.
+\paragraph{Assigned mulicast addresses} are reserved multicast addresses for predefined groups of devices. For example, \textbf{FF02::1} is the all-nodes multicast address, which has the same effect as broadcast IPv4 address. The all-routers multicast address \textbf{FF02::2} identifies a group of all IPv6 routers\footnote{A router with the ipv6 unicast-routing global configuration command executed} on the network.
 
 \paragraph{A solicited-node multicast address} is mapped to a special Ethernet multicast address. This allows the Ethernet NIC to filter the frame by examining the destination MAC address.
 
 \section{ICMPv6}
-
-\subsection{Description}
 
 The informational and error messages found in ICMPv6 are very similar to the control and error messages implemented by ICMPv4. However, ICMPv6 has new features and improved functionality not found in ICMPv4. ICMPv6 includes four types of message: RS and RA message\footnote{Router Solicitation (RS) message, Router Advertisement (RA) message} (communication between a router and a device), NS and NA message\footnote{Neighbor Solicitation (NS) message, Neighbor Advertisement (NA) message} (communication between devices). Address resolution and DAD process use NA and NS message, while RS and RA message contribute to assigning IPv6 to devices.\\
 
@@ -92,15 +89,7 @@ The informational and error messages found in ICMPv6 are very similar to the con
 
 \paragraph{DAD process} is a Duplicate Address Detection.  To check the uniqueness of an address, the device will send an NS message with its own IPv6 address as the targeted IPv6 address, shown in Figure \ref{DADprocess}. If another device on the network has this address, it will respond with an NA message. This NA message will notify the sending device that the address is in use. If a corresponding NA message is not returned within a certain period of time, the unicast address is unique and acceptable for use.
 
-\subsection{Traceroute}
 
-Traceroute (tracert) is a utility that generates a list of hops that were successfully reached along the path. Traceroute uses ICMP to accomplish its purpose.\\
-
-Using traceroute provides round trip time for each hop along the path and indicates if a hop fails to respond. The round trip time is the time a packet takes to reach the remote host and for the response from the host to return. An asterisk (*) is used to indicate a lost or unreplied packet.\\
-
-Traceroute makes use of a function of the TTL field in IPv4 and the Hop Limit field in IPv6 along with the ICMP time-exceeded message. The first sequence of messages sent from traceroute will have a TTL field value of 1. This causes the TTL to timeout the IPv4 packet at the first router. This router then responds with an ICMPv4 message. Traceroute now has the address of the first hop. Traceroute then progressively increments the TTL field (2, 3, 4, ...) to get the address of the next hops.\\
-
-After the final destination is reached, the host responds with either an ICMP port \emph{unreachable} message or an ICMP \emph{echo reply} message instead of the ICMP time exceeded message.
 
 \section{EUI-64 Process}
 

@@ -100,14 +100,14 @@ LSA has its own header, which includes link-state type, link's cost, sequence nu
 \centering
 \caption{Link-State Advertisment types}
 \label{LSA-type}
-\begin{tabular}{@{} p{2em} p{3em} p{0.3\textwidth} p{0.2\textwidth} p{0.3\textwidth} @{}}
-\toprule
-LSA type & Sending router & Description                                            & Flooding area        & Link ID                             \\ \midrule
-1        & all routers    & Introduce directly connected networks to its neighbors & one area             & router ID of the originating router \\
-2        & DR             & Give other routers info about multiaccess network      & one area             & IP interface address of DR		\\
-3        & ABR            & Propagates info of each area to all other routers      & between areas        & network address                 \\ 
-4        & ABR            & Identify ASBR and provide the route to it              & entire routing domain& router ID of ASBR                 \\ 
-5        & ASBR, ABR      & Advertise external network                             & entire routing domain& external network address         \\ \bottomrule
+\begin{tabular}{ | p{2em} | p{3em} | p{0.4\textwidth} | p{0.2\textwidth} | p{0.2\textwidth} | }
+\hline
+LSA type & Sending router & Description                                            & Flooding area        & Link ID                             \\ \hline
+1        & all routers    & Introduce directly connected networks to its neighbors & one area             & router ID of the originating router \\ \hline
+2        & DR             & Give other routers info about multiaccess network      & one area             & IP interface address of DR		\\ \hline
+3        & ABR            & Propagates info of each area to all other routers      & between areas        & network address                 \\ \hline
+4        & ABR            & Identify ASBR and provide the route to it              & entire routing domain& router ID of ASBR                 \\ \hline
+5        & ASBR, ABR      & Advertise external network                             & entire routing domain& external network address         \\ \hline
 \end{tabular}
 \end{table}
 
@@ -117,8 +117,8 @@ Receiving a type 3 LSA does not cause a router to run the SPF algorithm, but the
 
 When an OSPF router is initially connected to a network, it goes through the following states in order:
 \begin{enumerate}
-\item \textbf{Down state} (send hello packets but not able to receive them)
-\item \textbf{Init state} (hello packets are received)
+\item \textbf{Down state} (send hello packets but cannot receive them)
+\item \textbf{Init state} (send and receive hello packets)
 \item \textbf{Two-way state} (elect a DR and a BDR)
 \item \textbf{ExStart state} (decide which router will send the DBD packets first, the router with higher router ID will be the first one to send DBD packets)%negotiate the master/slave relationship and DBD packet sequence number
 \item \textbf{Exchange state} (exchange DBD packets)
@@ -145,7 +145,7 @@ SPF algorithm calculates the best paths in order: calculate intra-area routes $\
 	
 \paragraph{Backup Designated Router (BDR)} is also elected. The BDR listens passively to this exchange and maintains a relationship with all the routers. If the DR stops producing Hello packets, the BDR promotes itself and assumes the role of DR.
 	
-\paragraph{DROTHER} All other routers become DROTHERs (a router that is neither the DR nor the BDR). Each DROTHER forms full adjacencies (Full state) with the DR and BDR and form 2-way adjacencies (Two-way state) with any DROTHERs (see figure \ref{DR-adjacency}). DROTHERs only send their LSPs to the DR and BDR using the multicast address 224.0.0.6 (all DR routers). All DROTHER routers still receive Hello packets from each other.
+\paragraph{DROTHERs} are all other routers that are neither the DR nor the BDR. Each DROTHER forms full adjacencies (Full state) with the DR and BDR and form 2-way adjacencies (Two-way state) with any DROTHERs (see figure \ref{DR-adjacency}). DROTHERs only send their LSPs to the DR and BDR using the multicast address \textbf{224.0.0.6} (DR-routers address). All DROTHER routers still receive Hello packets from each other.
 	
 \begin{figure}[hbtp]
 \centering
@@ -154,19 +154,10 @@ SPF algorithm calculates the best paths in order: calculate intra-area routes $\
 \label{DR-adjacency}
 \end{figure}
 
-\subsection{Router ID}
-
-Every router requires a router ID to participate in an OSPF domain. The router ID is used by the OSPF-enabled router to:
-
-\begin{itemize}
-\item Uniquely identify the router
-\item Participate in DR election 
-\end{itemize}
-
-Cisco routers derive the router ID in one of three ways and with the following precedence: 
+\emph{Every router requires a router ID to participate in an OSPF domain.} The router ID is used by the OSPF-enabled router to Uniquely identify the router and Participate in DR election. Cisco routers derive the router ID in one of three ways and with the following precedence: 
 
 \begin{enumerate}
-\item IP address configured with the OSPF router-id command, if present 
+\item Router ID configured with the OSPF router-id command, if present 
 \item Highest IP address of any of the router’s loopback addresses, if present 
 \item Highest active IP address on any of the router’s physical interfaces
 \end{enumerate}
@@ -188,14 +179,12 @@ After the DR is elected, it remains the DR until one of the following events occ
 \item The multiaccess interface on the DR fails or is shutdown
 \end{itemize}
 	
-OSPF DR and BDR elections are not pre-emptive. If a new router with a higher priority or higher router ID is added to the network after the DR and BDR election, the newly added router does not take over the DR or the BDR role. This is because those roles have already been assigned. The addition of a new router does not initiate a new election process.\\
+The DR and BDR elections are not pre-emptive. If a new router with a higher priority or higher router ID is added to the network after the DR and BDR election, the newly added router does not take over the DR or the BDR role. This is because those roles have already been assigned. The addition of a new router does not initiate a new election process.\\
 
-If the DR fails, the BDR is automatically promoted to DR. This is the case even if a new router A with a higher priority or router ID is added to the network after the initial DR/BDR election. However, after a BDR is promoted to DR, a new BDR election occurs and the router A is elected as the new BDR.
+If the DR fails, the BDR is automatically promoted to DR. This is the case even if a new router with a higher priority or router ID is added to the network after the initial DR/BDR election. However, after a BDR is promoted to DR, a new BDR election occurs and the new router is elected as BDR.
 
 \section{OSPF area}
-An OSPF area is a group of routers that share the same link-state information in their LSDBs. An instance of OSPF can have several areas (called Multi-area OSPF).
-
-\subsection{Advantages of OSPF area}
+An OSPF area is a group of routers that share the same link-state information in their LSDBs. An instance of OSPF can have several areas (called Multi-area OSPF). Implementing multiple OSPF areas has many advantages:
 
 \begin{itemize}
 \item Smaller routing table (There are fewer routing table entries as network addresses can be summarized between areas.)
@@ -203,18 +192,14 @@ An OSPF area is a group of routers that share the same link-state information in
 \item Reduced frequency of SPF calculations (Routing still occurs between the areas, however, the CPU intensive routing operation of recalculating the SPF algorithm is done only for routes within an area.)
 \end{itemize}
 
-\subsection{Two-layer area hierarchy}
-
-To make OSPF more efficient and scalable, OSPF is implemented in a two-layer area hierarchy:
+To make multi-area OSPF more efficient and scalable, a two-layer area hierarchy is implemented:
 
 \begin{itemize}
-\item \textbf{Backbone (Transit) area} -- A backbone area directly connected with all other areas. All traffic moving from one area to another area must traverse the backbone area. Generally, end users are not found within a backbone area. The backbone area is also called OSPF area 0.
+\item \textbf{Backbone (Transit) area} -- A backbone area directly connected with all other areas. All traffic moving from one area to another area must traverse the backbone area. Generally, end users are not found within a backbone area. The backbone area is always OSPF area 0.
 \item \textbf{Regular (Non-backbone) area} -- Connects users and resources. By default, a regular area does not allow traffic from another area to use its links to reach other areas. All traffic from other areas must cross a transit area.
 \end{itemize}
-	
-\subsection{Types of routers}
 
-There are four different types of OSPF routers:
+In multi-area OSPF, there are four different types of OSPF routers:
 
 \begin{itemize}
 \item Internal router (have all interfaces in the same area)
@@ -237,16 +222,8 @@ The optimal number of routers per area varies based on factors such as network s
 Also keep the following notes in mind:
 \begin{itemize}
 \item Propagating type 3 and 5 LSAs can cause significant flooding problems. For this reason, it is strongly recommended that manual route summarization be configured on the ABRs and ASBR.
-\item For routers to become adjacent, their Hello interval, Dead interval, process ID and subnet masks must match.
+\item For routers to become adjacent, their Hello interval, Dead interval, area ID (not process ID), subnet masks, and Stub area flag must match.
 \item  The dead interval must be larger than Hello interval.
-\end{itemize}
-
-In order to form OSPF adjacencies, the following must match on the neighboring routers:
-\begin{itemize}
-\item Area ID (NOT process ID, two routers with different process ID but same area ID can communicate with each other)
-\item Subnet
-\item Hello and Dead timers
-\item Stub area flag
 \end{itemize}
 
 \subsection{OSPF for IPv4}
@@ -388,10 +365,4 @@ Directly assign OSPF cost. The cost is a number between 1 and 65,535. As for IPv
 	\end{verbatim}
 
 \subsection{Verification}
-As for IPv6, replace \verb|ip| by \verb|ipv6|.
-\begin{enumerate} 
-\item Examine the neighbor adjacencies using \verb|show ipv6 ospf neighbors|
-\item Examine the IPv6 EIGRP routing table using \verb|show ipv6 route ospf|
-\item Examine the EIGRP topology using \verb|show ipv6 ospf interface|
-\item Verify the parameters and current state of the active IPv6 routing protocol processes using \verb|show ipv6 protocols|	
-\end{enumerate}
+Examine the neighbor adjacencies using \verb|show ip ospf neighbors|, routing table using \verb|show ip route ospf|, topology using \verb|show ip ospf interface|. Verify the parameters and current state of OSPF processes using \verb|show ipv6 protocols|.	As for IPv6, replace \verb|ip| by \verb|ipv6|.

@@ -2,7 +2,7 @@
 
 \section{Introduction}
 
-HDLC is the default serial encapsulation method when connecting two Cisco routers and it can only work with other Cisco devices. HDLC is now the basis for synchronous point-to-point used by many servers to connect to a WAN, most commonly the Internet. However, when there is a need to connect to a non-Cisco router, PPP encapsulation should be used.\\
+HDLC is the default serial encapsulation method when connecting two Cisco routers and it can only work with other Cisco devices. HDLC is now the basis for \emph{synchronous} point-to-point used by many servers to connect to a WAN, most commonly the Internet. However, when there is a need to connect to a non-Cisco router, PPP encapsulation should be used.\\
 
 There are many advantages to using PPP, including the fact that it is not proprietary. PPP provides router-to-router and host-to-network connections over \emph{synchronous} and \emph{asynchronous} circuits. PPP includes many features not available in HDLC: The link quality management feature (LQM) monitors the quality of the link, PAP and CHAP authentication.\\
 
@@ -45,7 +45,7 @@ A PPP frame consists of six fields. The following descriptions summarize the PPP
 
 \subsection{Establishing a PPP Session}
 
-There are three phases of establishing a PPP session, as shown in the figure:
+There are three phases of establishing a PPP session:
 
 \begin{itemize}
 \item \textbf{Phase 1: Link establishment and configuration negotiation} -- The LCP opens the connection and negotiates configuration options. This phase is complete when the receiving router sends a configuration-acknowledgment frame back to the router initiating the connection. 
@@ -110,31 +110,31 @@ IPCP is an example of NCP. IPCP is responsible for configuring, enabling, and di
 
 \subsection{Authentication}
 
-\paragraph{PAP}is a very basic two-way process. There is no encryption. The username and password are sent in plaintext. If it is accepted, the connection is allowed. CHAP is more secure than PAP. PAP may be used in the following environments: CHAP is not supported, or simulate a login at the remote host. \\
+\paragraph{PAP}is a very basic \textbf{two-way handshake}. There is no encryption. The username and password are sent in plaintext. If it is accepted, the connection is allowed. CHAP is more secure than PAP. PAP may be used in the following environments: CHAP is not supported, or simulate a login at the remote host. 
 
-\paragraph{PAP Process}After PPP completes the link establishment phase, the remote node repeatedly sends a username-password pair across the link. At the receiving node, the username-password is checked. This device either allows or denies the connection. An accept or reject message is returned to the requester.
+\paragraph{PAP Process}\emph{After link establishment phase}, the remote node sends a username-password pair in plain text across the link. At the receiving node, the username-password is checked. This device either allows or denies the connection. An accept or reject message is returned to the requester.
 
-\paragraph{CHAP}Unlike PAP, which only authenticates once, CHAP conducts periodic challenges to make sure that the remote node still has a valid password value. The password value is variable and changes unpredictably while the link exists. Thus, CHAP provides protection against a playback attack.\\
+\paragraph{CHAP}Unlike PAP, which only authenticates once, CHAP uses a \textbf{three-way handshake}, and conducts periodic challenges to make sure that the remote node still has a valid password value. The password value is variable and changes unpredictably while the link exists. Thus, CHAP provides protection against a playback attack.
 
-\paragraph{CHAP process}After the PPP link establishment phase is complete, the local router sends a challenge message to the remote node. The remote node responds with a value that is calculated using a one-way hash function. The local router checks the response against its own calculation. If the values match, the initiating node acknowledges the authentication. If the values do not match, the initiating node immediately terminates the connection.
+\paragraph{CHAP process}\emph{After link establishment phase}, the local router sends a challenge message to the remote node. The remote node responds with a value that is calculated using a one-way hash function. The local router checks the response against its own calculation. If the values match, the initiating node acknowledges the authentication. If the values do not match, the initiating node immediately terminates the connection.
 
 \section{Configuration}
 
-\paragraph{Basic} To set PPP as the encapsulation method used by a serial interface, use the encapsulation ppp interface configuration command.
+\paragraph{Basic:} To set PPP as the encapsulation method used by a serial interface, use the encapsulation ppp interface configuration command.
 	\begin{verbatim}
 	interface s0/0/0
 		encapsulation ppp
 		no shutdown
 	\end{verbatim}
 	
-\paragraph{Compression} Point-to-point software compression on serial interfaces can be configured after PPP encapsulation is enabled. If the traffic already consists of compressed files, such as .zip, .tar, or .mpeg, do not use this option.
+\paragraph{Compression:} Point-to-point software compression on serial interfaces can be configured after PPP encapsulation is enabled. If the traffic already consists of compressed files, such as .zip, .tar, or .mpeg, do not use this option.
 	\begin{verbatim}
 	compress [predictor | stac]	
 	\end{verbatim}
 	
-\paragraph{Quality check} The \verb|ppp quality 80| command ensures that the link meets the quality requirement set (80\%); otherwise, the link closes down.
+\paragraph{Quality check:} The \verb|ppp quality 80| command ensures that the link meets the quality requirement set (80\%); otherwise, the link closes down.
 
-\paragraph{Multilink PPP} provides a method for spreading traffic across multiple physical WAN links. allows packets to be fragmented and sends these fragments simultaneously over multiple point-to-point links to the same remote address. 
+\paragraph{Multilink PPP:} provides a method for spreading traffic across multiple physical WAN links. allows packets to be fragmented and sends these fragments simultaneously over multiple point-to-point links to the same remote address. 
 	\begin{verbatim}
 	interface s0/0/0
 		no ip address
@@ -156,7 +156,7 @@ IPCP is an example of NCP. IPCP is responsible for configuring, enabling, and di
 		ppp multilink group 1			
 	\end{verbatim}
 	
-\paragraph{CHAP Authentication} The hostname (e.g. R3, R2, ISP) on one router must match the username the other router has configured in the command \verb|username <name> password <password>| . The passwords must also match.
+\paragraph{CHAP Authentication:} The hostname (e.g. R3, R2, ISP) on one router must match the username the other router has configured in the command \verb|username <name> password <password>| . The passwords must also match.
 	\begin{verbatim}
 	Router(config)# hostname ISP
 	ISP(config)# username R3 secret cisco
@@ -169,7 +169,7 @@ IPCP is an example of NCP. IPCP is responsible for configuring, enabling, and di
 	R3(config-if)# ppp authentication chap	
 	\end{verbatim}
 	
-\paragraph{PAP Authentication} The PAP username and password are configured in the command \verb|ppp pap sent-username <name> password <password>|. Theses username and password must match those specified with the \verb|username <name> password <password>| command on the other router.
+\paragraph{PAP Authentication:} The PAP username and password are configured in the command \verb|ppp pap sent-username|. Theses username and password must match those specified with the \verb|username <name> password <password>| command on the other router.
 	\begin{verbatim}
 	R1(config)# username R3 secret class
 	R1(config)# interface s0/0/0
@@ -180,4 +180,10 @@ IPCP is an example of NCP. IPCP is responsible for configuring, enabling, and di
 	R3(config)# interface s0/0/0
 	R3(config-if)# ppp authentication pap
 	R3(config-if)# ppp pap sent-username R3 password class	
+	
+	username R3 secret class
+	ppp pap sent-username R3 password class
+	
+	username R1 secret cisco
+	ppp pap sent-username R1 password cisco
 	\end{verbatim}

@@ -89,7 +89,7 @@ When backing up to a USB port, it is a good idea to issue the show file systems 
 
 Use \verb|copy run usbflash0:/| command to copy the configuration file to the USB. To restore configuration from a USB, it is necessary to edit the file in USB with a text editor. Assuming the file name is \verb|R1-Config|, use the command \verb|copy usbflash0:/R1-Config run| to restore a running configuration.
 
-\section{Password recovery}
+\subsection{Password recovery}
 
 Console access to the device using terminal emulator software on a PC is required for password recovery. With console access, a user can access the ROMMON mode by using a \emph{break sequence} during the bootup process or removing the external flash memory when the device is powered off.\\
 
@@ -292,4 +292,5 @@ R1(config)# no license boot module c1900 technology-package seck9 disable
 R1(config)# exit
 R1# reload
 \end{verbatim}
+
 \end{enumerate}

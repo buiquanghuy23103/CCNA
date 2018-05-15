@@ -1,0 +1,72 @@
+\chapter{IPv4}
+
+\section{Types of IPv4 addresses}
+
+\subsection{Unicast, Multicast, and Broadcast}
+
+\textbf{Multicast} transmission reduces traffic by allowing a host to send a single packet to a selected set of hosts that subscribe to a multicast group. \\
+
+IPv4 has reserved the \textbf{224.0.0.0 to 239.255.255.255} addresses as a multicast range. The IPv4 multicast addresses 224.0.0.0 to 224.0.0.255 are reserved for multicasting on the local network only. These addresses are to be used for multicast groups on a local network. A router connected to the local network recognizes that these packets are addressed to a local network multicast group and never forwards them further. \\
+
+A typical use of reserved local network multicast address is in routing protocols using multicast transmission to exchange routing information. For instance, \textbf{224.0.0.9 }is the multicast address used by Routing Information Protocol (RIP) version 2 to communicate with other RIPv2 routers.
+
+\subsection{Public and Private}
+
+Public IPv4 addresses are addresses which are globally routed between ISP (Internet Service Provider) routers. In contrast, private addresses are not globally routed, but instead, are used by most organizations to assign IPv4 addresses to internal hosts. Specifically, the private address blocks are:
+
+\begin{itemize}
+\item \textbf{10.0.0.0/8} (10.0.0.0 to 10.255.255.255)
+
+\item \textbf{172.16.0.0/12} (172.16.0.0 to 172.31.255.255)
+
+\item \textbf{192.168.0.0/16} (192.168.0.0 to 192.168.255.255)
+\end{itemize}
+
+\subsection{Special user}
+
+There are also special addresses that can be assigned to hosts, but with restrictions on how those hosts can interact within the network. 
+
+\paragraph{Loopback address} (\textbf{127.0.0.0/8} or 127.0.0.1 to 127.255.255.254) –- More commonly identified as only 127.0.0.1, these are special addresses used by a host to direct traffic to itself. For example, it can be used on a host to test if the TCP/IP configuration is operational. 
+
+\paragraph{APIPA addresses} (\textbf{169.254.0.0/16} or 169.254.0.1 to 169.254.255.254) – Also known as the IPv4 link-local addresses, they are used by a Windows DHCP client to self-configure in the event that there are no DHCP servers available. Useful in a peer-to-peer connection.
+
+\paragraph{TEST-NET addresses} (\textbf{192.0.2.0/24} or 192.0.2.0 to 192.0.2.255) – These addresses are set aside for teaching and learning purposes and can be used in documentation and network examples. 
+
+\paragraph{Experimental Addresses} in the block 240.0.0.0 to 255.255.255.254 that are reserved for future use.
+
+\subsection{Classful}
+
+Customers were allocated a network address based on one of three classes A, B, or C. The RFC divided the unicast ranges into specific classes called:
+
+\begin{itemize}
+\item Class A (0.0.0.0/8 to 127.0.0.0/8)
+\item Class B (128.0.0.0/16 to 191.255.0.0/16)
+\item Class C (192.0.0.0/24 to 255.255.255.0/24
+\end{itemize}
+
+\section{ICMP}
+
+The purpose of ICMP messages is to provide feedback about issues related to the processing of IP packets under certain conditions, \emph{not to make IP reliable}. ICMP messages are often not allowed within a network for security reasons. ICMP is available for both IPv4 and IPv6. ICMPv4 is the messaging protocol for IPv4. ICMPv6 provides these same services for IPv6. ICMP messages common to both ICMPv4 and ICMPv6 include:
+
+\begin{itemize}
+\item Host confirmation
+\item Destination or Service Unreachable
+\item Time exceeded
+\item Route redirection
+\end{itemize}
+
+\paragraph{Host Confirmation:}An ICMP Echo Message can be used to determine if a host is operational. The local host sends an ICMP Echo Request to a host. If the host is available, the destination host responds with an Echo Reply. This use of the ICMP Echo messages is the basis of the ping utility. 
+
+\paragraph{Destination or Service Unreachable:} When a host or gateway receives a packet that it cannot deliver, it can use an ICMP Destination Unreachable message to notify the source that the destination or service is unreachable. The message will include a code that indicates why the packet could not be delivered. Some of the Destination Unreachable codes for ICMPv4 are: 0 -- Net unreachable, 1 -- Host unreachable, 2 -- Protocol unreachable, 3 -- Port unreachable.
+
+\paragraph{Time Exceeded:} An ICMPv4 Time Exceeded message is used by a router to indicate that a packet cannot be forwarded because the Time to Live (TTL) field of the packet was decremented to 0. If a router receives a packet and decrements the TTL field in the IPv4 packet to zero, it discards the packet and sends a Time Exceeded message to the source host. IPv6 does not have a TTL field; it uses the hop limit field to determine if the packet has expired.
+
+\ssection{Traceroute}
+
+Traceroute (\verb|tracert|) is a utility that generates a list of hops that were successfully reached along the path. Traceroute uses ICMP to accomplish its purpose.\\
+
+Using traceroute provides \textbf{round trip time} for each hop along the path and indicates if a hop fails to respond. The round trip time is the time a packet takes to reach the remote host and for the response from the host to return. An asterisk (*) is used to indicate a lost or unreplied packet.\\
+
+Traceroute makes use of a function of the TTL field in IPv4 and the Hop Limit field in IPv6 along with the ICMP time-exceeded message. The first sequence of messages sent from traceroute will have a TTL field value of 1. This causes the TTL to timeout the IPv4 packet at the first router. This router then responds with an ICMPv4 message. Traceroute now has the address of the first hop. Traceroute then progressively increments the TTL field (2, 3, 4, ...) to get the address of the next hops.\\
+
+After the final destination is reached, the host responds with either an ICMP port \emph{unreachable} message or an ICMP \emph{echo reply} message instead of the ICMP time exceeded message.

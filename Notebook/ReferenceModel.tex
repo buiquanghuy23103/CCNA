@@ -123,7 +123,7 @@ Cat6 &  1000 Mb/s -- 10 Gb/s \\
 \end{table}
 
 \begin{table}[hbtp]
-\centering
+\centering\caption{Copper cable types}
 \begin{tabular}{l p{4cm} p{10cm} }
 \toprule
 \head{UTP cable} & \head{Standard} & \head{Application} \\
@@ -144,7 +144,7 @@ Rollover & Cisco proprietary & Connects a workstation serial port to a router co
 Optical fiber cable transmits data over longer distances and at higher bandwidths than any other networking media. Unlike copper wires, fiber-optic cable can transmit signals with less attenuation and is completely immune to EMI and RFI. 
 
 \begin{table}[hbtp]
-\centering
+\centering\caption{Fiber Cable Components}
 \begin{tabular}{l p{12cm} }
 \toprule
 \head{Component} & \head{Description} \\
@@ -158,7 +158,7 @@ Buffer & Used to help shield the core and cladding from damage.\\
 
 Strengthening material & Surrounds the buffer, prevents the fiber cable from being stretched when it is being pulled. The material used is often the same material used to produce bulletproof vests.\\
 
-Jacket Typically & a PVC jacket that protects the fiber against abrasion, moisture, and other contaminants.\\
+Jacket & a PVC jacket that protects the fiber against abrasion, moisture, and other contaminants.\\
 
 \bottomrule
 \end{tabular}
@@ -184,7 +184,7 @@ The PDU of Data Link layer is always \textbf{frame}. The data link layer is divi
 
 \subsection{Logical Link Control sublayer (LLC)}
 
-This upper sublayer communicates with the network layer. It places information in the frame that identifies which network layer protocol is being used for the frame. This information allows multiple Layer 3 protocols, such as IPv4 and IPv6, to utilize the same network interface and media.
+This upper sublayer communicates with the network layer. It places information in the frame that identifies which network layer protocol is being used for the frame. This information allows multiple Layer 3 protocols, such as IPv4 and IPv6, to utilize the same network interface and media.\\
 
 \begin{figure}[hbtp]
 \caption{Data Link sublayers}\label{Sublayers}
@@ -196,9 +196,9 @@ LLC is implemented in software, and its implementation is independent of the har
 
 \subsection{Ethernet MAC sublayer}
 
-The Ethernet MAC sublayer has two primary responsibilities: Data encapsulation and Media Access Control.\\
+The Ethernet MAC sublayer has two primary responsibilities: Data encapsulation and Media Access Control. \\
 
-The \textbf{data encapsulation} process includes frame assembly before transmission and frame disassembly upon reception of a frame. Data encapsulation provides three primary functions: Frame delimiting, Addressing, and Error detection.
+The \textbf{data encapsulation} process includes frame assembly before transmission and frame disassembly upon reception of a frame. Data encapsulation provides three primary functions: Frame delimiting, Addressing, and Error detection. \\
 
 \textbf{Media access control} is responsible for the placement of frames on the media and the removal of frames from the media. As its name implies, it controls access to the media. This sublayer communicates directly with the physical layer. The actual media access control method used depends on Topology and Media sharing.\\
 
@@ -210,9 +210,9 @@ The \textbf{data encapsulation} process includes frame assembly before transmiss
 \item \textbf{Controlled access:} Each node has its own time to use the medium, a device must wait its turn to access the medium. Legacy Token Ring LANs are an example of this type of access control. 
 \end{itemize}
 
-It is important to note that Ethernet LANs using switches do not use a contention-based system because the switch and the host NIC operate in full-duplex mode.\\
+\note Ethernet LANs using \emph{switches} do not use a contention-based system because the switch and the host NIC operate in full-duplex mode.\\
 
-The \textbf{CSMA/CD} (Carrier Sense Multiple Access/Collision Detection) process is used in \emph{half-duplex Ethernet LANs}. A PC's NIC needs to determine if anyone is transmitting on the medium. If it does not detect a carrier signal or receives transmissions from another device, it will assume the network is available to send. If another device wants to transmit, it must wait until the channel is clear. \\
+The \textbf{CSMA/CD} (Carrier Sense Multiple Access/Collision Detection) process is used in \emph{half-duplex Ethernet LANs}. A PC's NIC needs to determine if anyone is transmitting on the medium. If it does not detect a carrier signal or receives transmissions from another device, it will assume the network is available to send. If another device wants to transmit, it must wait until the channel is clear. Additionally, CSMA/CD stops transmitting when congestion occurs. It also uses a random time to re-sent a frame.\\
 
 The \textbf{CSMA/CA} (Carrier Sense Multiple Access/Collision Avoidance) process is used in \emph{WLAN}. CSMA/CA does not detect collisions but attempts to avoid them by waiting before transmitting. Each device that transmits includes the time duration that it needs for the transmission. All other wireless devices receive this information and know how long the medium will be unavailable. 
 
@@ -255,44 +255,13 @@ As the IP packet travels from host-to-router, router-to-router, and finally rout
 
 \subsubsection{Ethernet Frame}
 
-\paragraph{size} The minimum Ethernet frame size is 64 bytes and the maximum is 1518 bytes\footnote{ The Preamble field is not included when describing the size of a frame.}. Any frame less than 64 bytes in length is called a \emph{collision fragment} or \emph{runt frame}. Frames with more than 1500 bytes of data are called \emph{jumbo frames} or \emph{baby giant frames}. If the size of a transmitted frame is less than the minimum or greater than the maximum, the receiving device drops the frame. 
+\paragraph{Size} The minimum Ethernet frame size is 64 bytes and the maximum is 1518 bytes\footnote{ The Preamble field is not included when describing the size of a frame.}. Any frame less than 64 bytes in length is called a \emph{collision fragment} or \emph{runt frame}. Frames with more than 1500 bytes of data are called \emph{jumbo frames} or \emph{baby giant frames}. If the size of a transmitted frame is less than the minimum or greater than the maximum, the receiving device drops the frame. 
 
 \paragraph{Frame fields} The \emph{Preamble} (7 bytes) and \emph{Start Frame Delimiter} (1 byte) fields are used for synchronization between the sending and receiving devices. The \emph{Type} field (2 bytes) identifies the upper layer protocol in hexadecimal: IPv4 = 0x800, IPv6 = 0x86DD, ARP = 0x806.
 
-\textbf{Ethernet MAC addresses} (6 bytes) are made up of two parts: vendor code OUI (3 bytes) assigned by IEEE and device identifier (3 bytes). When the computer starts up, the first thing the NIC does is copy the MAC address from ROM into RAM. Broadcast MAC address is FF-FF-FF-FF-FF-FF (twelve F letters). The \textbf{multicast MAC} address associated with an IPv4 multicast address is a special value that begins with 01-00-5E in hexadecimal. The remaining portion of the multicast MAC address is created by converting the lower 24 bits of the IP multicast group address into 6 hexadecimal characters. For an IPv6 address, the multicast MAC address begins with 33-33.
+\paragraph{Ethernet MAC addresses}(6 bytes) are made up of two parts: vendor code OUI (3 bytes) assigned by IEEE and device identifier (3 bytes). When the computer starts up, the first thing the NIC does is copy the MAC address from ROM into RAM. \textbf{Broadcast MAC} address is \textbf{FF-FF-FF-FF-FF-FF} (twelve F letters). The \textbf{multicast MAC} address associated with an IPv4 multicast address is a special value that begins with \textbf{01-00-5E} in hexadecimal. The remaining portion of the multicast MAC address is created by converting the lower 24 bits of the IP multicast group address into 6 hexadecimal characters. For an \textbf{IPv6} address, the multicast MAC address begins with \textbf{33-33}.
 
-\subsection{MAC address table}
 
-A Layer 2 Ethernet switch uses MAC addresses to make forwarding decisions. It consults a MAC address table to make a forwarding decision for each frame. By default, most Ethernet switches keep an entry in the MAC address table for 5 minutes.\\
-
-\paragraph{Learning MAC Address} The switch dynamically builds the MAC address table by examining the source MAC address of the frames received on a port. Every frame that enters a switch is checked for new information to learn. If the source MAC address does not exist, it is added to the table along with the incoming port number. If the source MAC address does exist, the switch updates the refresh timer for that entry.  If the source MAC address does exist in the table but on a different port, the switch treats this as a new entry.
-
-\paragraph{Forwarding MAC Address} Next, if the destination MAC address is a unicast address, the switch will look for a
-match between the destination MAC address of the frame and an entry in its MAC address table. If the destination MAC address is in the table, it will forward the frame out the specified port. If the destination MAC address is not in the table, the switch will forward the frame out all ports except the incoming port. If the destination MAC address is a broadcast or a multicast, the frame is also flooded out all ports except the incoming port.
-
-A switch can have multiple MAC addresses associated with a single port. This is common when the switch is connected to another switch.
-
-\subsection{Frame forwarding method}
-
-Switches use one of the following forwarding methods:  Store-and-forward switching and Cut-through switching.
-
-\paragraph{Store-and-forward switching} When the switch receives the frame, it stores the data in buffers until the complete frame has been received. In this process, the switch also performs an error check using the CRC trailer portion of the Ethernet frame. When an error is detected in a frame, the switch discards the frame. Discarding frames with errors reduces the amount of bandwidth consumed by corrupt data. Store-and-forward switching is required for Quality of Service (QoS).
-
-\paragraph{Cut-through switching} The switch buffers just enough of the frame to read the destination MAC address so that it can determine to which port to forward the data. No error detection is performed. There are two variants of cut-through switching: 
-
-\begin{itemize}
-\item \textbf{Fast-forward switching:} the switch immediately forwards a packet after reading the destination address. It offers the lowest level of latency. 
-
-\item \textbf{Fragment-free switching} the switch stores the first 64 bytes of the frame before forwarding. The reason fragment-free switching stores only the first 64 bytes of the frame is that most network errors and collisions occur during the first 64 bytes. 
-\end{itemize}
-
-\subsection{Memory Buffering on Switches}
-
-There are two methods of memory buffering: Port-based Memory Buffering and Shared Memory Buffering.
-
-\paragraph{Port-based Memory Buffering} Frames are stored in queues that are linked to specific incoming and outgoing ports. A frame is transmitted to the outgoing port only when all the frames ahead of it in the queue have been successfully transmitted. 
-
-\paragraph{Shared Memory Buffering} deposits all frames into a common memory buffer that all the ports on the switch share.  The frames in the buffer are linked dynamically to the destination port. This allows the packet to be transmitted on a port without order and waiting. This method permits larger frames to be transmitted with fewer dropped frames. 
 
 \subsection{ARP}
 
@@ -472,45 +441,54 @@ Use \verb|show version| to check the version of the Cisco IOS, the version of th
 \head{Task} & \head{Commands}\\
 \midrule
 
-Configure the device name & \verb|Router(config)# hostname name|\\
+Configure the device name & \verb|Router(config)# hostname name|\\ \hline
 
 Secure user EXEC mode & 
+\begin{minipage}{4in}
 \begin{verbatim}
 Router(config)# line console 0
 Router(config-line)# password password
 Router(config-line)# login
-\end{verbatim}\\
+\end{verbatim} 
+\end{minipage} \\ \hline
 
 Secure remote Telnet/SSH access & 
+\begin{minipage}{4in}
 \begin{verbatim}
 Router(config)# line vty 0 4
 Router(config-line)# password password
 Router(config-line)# login
-\end{verbatim}
+\end{verbatim} 
+\end{minipage} \\ \hline
 
-Secure privilege EXEC mode & \verb|enable secret password|\\
+Secure privilege EXEC mode & \verb|Router(config)# enable secret password|\\ \hline
 
-Secure all passwords & \verb|service password-encryption|\\
+Secure all passwords & \verb|Router(config)# service password-encryption|\\ \hline
 
-Provide legal notification & \verb|banner motd "message"|\\
+Provide legal notification & \verb|Router(config)# banner motd "message"|\\ \hline
 
-Save the configuration & \verb|copy run start|\\
+Save the configuration & \verb|Router# copy run start|\\ \hline
 
 Configure the interface & 
+\begin{minipage}{3in}
 \begin{verbatim}
-interface <int>
-  ip address ip-address subnet-mask
-  description description-text
-  no shutdown
+Router(config)# interface <int>
+Router(config-if)# ip address ip-address subnet-mask
+Router(config-if)# description description-text
+Router(config-if)# no shutdown
 \end{verbatim}
+\end{minipage}\\ \hline
 
 Verify interface configuration & 
+\begin{minipage}{3in}
 \begin{verbatim}
-show interface
-show ip interface
-show ip interface brief
-show ip route
+Router# show interface
+Router# show ip interface
+Router# show ip interface brief
+Router# show ip route
 \end{verbatim}
+\end{minipage}\\ \hline
+
 \bottomrule
 \end{tabular}
 \end{table}
@@ -539,7 +517,7 @@ TCP is considered a reliable, full-featured transport layer protocol, which ensu
 TCP has the following features:
 
 \begin{itemize}
-\item  \textbf{connection-oriented:} TCP negotiates and establishes a virtual connection between source and destination devices prior to forwarding any traffic.
+\item  \textbf{Connection-oriented:} TCP negotiates and establishes a virtual connection between source and destination devices prior to forwarding any traffic.
 
 \item \textbf{Reliable:} TCP ensures that each segment arrives at the destination. 
 
@@ -547,7 +525,7 @@ TCP has the following features:
 
 \item \textbf{Same-Order Delivery:} Because networks may provide multiple routes that can have different transmission rates, data can arrive in the wrong order. By numbering and sequencing the segments, TCP can ensure that these segments are reassembled into the proper order.
 
-\item \textbf{Flow control:} When TCP is aware that these resources are overtaxed, it can request that the sending application reduce the rate of data flow. 
+\item \textbf{Flow control:} When TCP is aware that these resources are overtaxed, it can request that the sending application reduce the rate of data flow. To accomplish this, the TCP header includes a field called the \emph{window size}.
 \end{itemize}
 
 \begin{figure}[hbtp]
@@ -562,22 +540,40 @@ Each TCP segment has 20 bytes of overhead (Figure \ref{TCPheader}) in the header
 \begin{itemize}
 \item \textbf{Source Port and Destination Port}
 
-\item \textbf{Sequence number} –- Used for data reassembly purposes
+\item \textbf{Sequence number} –- Used for data reassembly purposes. During session setup, an \textbf{initial sequence number (ISN)} is set. ISN is the starting value of Sequence number. As data is transmitted during the session, the sequence number is incremented. 
 
-\item \textbf{Acknowledgement number} – Indicates the data that has been received
+\item \textbf{Acknowledgement number} – Indicates the data that has been received. Acknowledgement number sent back to the source to indicate the next byte that the receiver expects to receive. This is called \emph{expectational acknowledgement}. When TCP at the source host has not received an acknowledgement after a predetermined amount of time, it returns to the last ACK number received and retransmits the data from that point forward. 
 
-\item \textbf{Header length:} -– Indicates the length of the TCP segment header.
-\item \textbf{Reserved:} -– This field is reserved for the future.
-\item \textbf{Control bits:} -– Known as flags, these identify bit codes that indicate the purpose and function of the TCP segment.
-\item \textbf{Window size:} -– Indicates the number of bytes that can be accepted at
-one time.
+\item \textbf{Header length} -– Indicates the length of the TCP segment header.
+\item \textbf{Reserved} -– This field is reserved for the future.
+\item \textbf{Control bits} -– Known as flags, these identify bit codes that indicate the purpose and function of the TCP segment.
+\item \textbf{Window size} -– Indicates the number of bytes that can be accepted at one time. The window size is included in every TCP segment, so the destination can modify the window size at any time depending on buffer availability. The initial window size is agreed upon  TCP three-way handshake. 
 \item \textbf{Checksum} -– Used for error checking of the segment header and data.
 \item \textbf{Urgent} -– Indicates if data is urgent.
 \end{itemize}
 
+A TCP connection is established in three-way handshake:
+
+\begin{enumerate}
+\item The client requests a client-to-server communication session with the server
+\item The server acknowledges the client-to-server communication session and requests a server-to-client communication session
+\item The client acknowledges the server-to-client communication session 
+\end{enumerate}
+
+The TCP connect is terminated in \textbf{two} two-way handshakes with four exchanges:
+
+\begin{enumerate}
+\item When the client has no more data to send in the stream, it sends a segment with the FIN flag set 
+\item The server sends an ACK to acknowledge the receipt of the FIN to terminate the session from client to server. So step 1 and 2 is the first two-way handshake
+\item The server sends a FIN to the client to terminate the server-to-client session
+\item The client responds with an ACK to acknowledge the FIN from the server
+\end{enumerate}
+
+TCP is a \textbf{full-duplex} protocol, where each connection represents two one-way communication sessions. To establish the connection, the hosts perform a \textbf{three-way handshake}. Control bits in the TCP header indicate the progress and status of the connection. 
+
 \subsection{UDP}
 
-UDP is a lightweight transport protocol that offers the same data segmentation and reassembly as TCP, but without TCP reliability and flow control. It is known as a best-effort delivery protocol. \\
+UDP is a lightweight transport protocol that offers the same data segmentation and reassembly as TCP, but without TCP reliability and flow control. It is known as a \textbf{best-effort} delivery protocol. UDP is also a \textbf{stateless} protocol, meaning neither the client, nor the server, is obligated to keep track of the state of the communication session.\\
 
 \begin{figure}[hbtp]
 \caption{UDP datagram}\label{UDPheader}
@@ -586,13 +582,21 @@ UDP is a lightweight transport protocol that offers the same data segmentation a
 \end{figure}
 
 
-UDP is a stateless protocol, meaning neither the client, nor the server, is obligated to keep track of the state of the communication session. \\
+UDP has no way to reorder the datagrams into their transmission order. Therefore, UDP simply reassembles the data in the order that it was received and forwards it to the application. \\
 
 The pieces of communication in UDP are called datagrams. These datagrams are sent as best-effort by the transport layer protocol. UDP has a low overhead of 8 bytes (Figure \ref{UDPheader}).
 
+There are three types of applications that are best suited for UDP:
+
+\begin{itemize}
+\item Live video and multimedia applications (e.g. VoIP, live streaming video)
+\item Simple request and reply applications (e.g. DNS\footnote{DNS can also use TCP if the DNS request or DNS response is more than 512 bytes}, DHCP)
+\item Applications that handle reliability themselves (SNMP\footnote{SNMP uses UDP by default, but it can also use TCP}, TFTP)
+\end{itemize}
+
 \subsection{Port number}
 
-The source port number is associated with the originating application on the local host. The destination port number is associated with the destination application on the remote host.\\
+The source port number is associated with the originating application on the local host. The destination port number is associated with the destination application on the remote host. Each application process running on the server is configured to use a port number. An individual server cannot have two services assigned to the same port number within the same transport layer services.\\
 
 The combination of the source IP address and source port number, or the destination IP address and destination port number is known as a socket. The socket is used to identify the server and service being requested by the client. In figure \ref{Socket}, the client socket is 192.168.1.5:1099 with 1099 representing the source number, the socket on the web server is 192.168.1.7:80. Together, these two sockets combine to form a socket pair: 192.168.1.5:1099, 192.168.1.7:80 \\
 
@@ -605,9 +609,130 @@ The combination of the source IP address and source port number, or the destinat
 There are different types of port numbers:
 
 \begin{itemize}
-\item \textbf{Well-known Ports} (0 -- 1023): These numbers are used for popular protocols such as FTP, HTTP, TFTP, etc.
+\item \textbf{Well-known Ports} (0 -- 1023): These numbers are used for popular applications such as FTP, HTTP, TFTP, etc.
 
 \item \textbf{Registered Ports} (1024 -- 49151): These port numbers are assigned by IANA to a requesting entity to use with specific processes or applications.
 
 \item \textbf{Dynamic or Private Ports} (49152 -- 65535): These are assigned dynamically by the client's OS to identify the application during communication.
 \end{itemize}
+
+\begin{table}[hbtp]
+\centering
+\begin{tabular}{lll}
+\toprule
+\head{Port number} & \head{Protocol} & \head{Application}\\
+\midrule
+
+20 & TCP & FTP (data)\\
+21 & TCP & FTP (client)\\
+22 & TCP & SSH\\
+23 & TCP & Telnet\\
+25 & TCP & SMTP\\
+53 & UDP, TCP & DNS\\
+67, 68 & UDP & DHCP\\
+69 & UDP & TFTP\\
+80 & TCP & HTTP\\
+443 & TCP & HTTPS\\
+110 & TCP & POP3\\
+143 & TCP & IMAP\\
+161 & UDP & SNMP\\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Application layer}
+
+The PDU of application layer is \textbf{data}.  Application layer protocols are used to exchange data between programs running on the source and destination hosts. The upper three layers of the OSI model (application, presentation, and session) define functions of the single TCP/IP application layer.
+
+\subsection{Presentation and Session Layer}
+
+The presentation layer has three primary functions: Formatting, Compressing, and Encrypting. Specifically, it formats data for the application layer, and it sets standards for file formats (QuickTime, MPEG, GIF, PNG, JPEG, etc.).\\
+
+Functions at the session layer create and maintain dialogs between source and destination applications. The session layer handles the exchange of information to initiate dialogs, keep them active, and to restart sessions that are disrupted or idle for a long period of time.\\
+
+\subsection{Peer-to-peer network}
+
+In the peer-to-peer (P2P) networking model, the data is accessed from a peer device without the use of a dedicated server. The P2P network model involves two parts: P2P networks and P2P applications. Every connected end device (known as a peer) can function as both a server and a client. \\
+
+With P2P applications, each computer in the network running the application can act as a client or a server for the other computers in the network running the application. Common P2P networks include: eDonkey, G2, BitTorrent, Bitcoin. Some P2P applications are based on the Gnutella protocol, where each user shares whole files with other users. 
+
+\subsection{HTTP}
+
+When a web address or URL (uniform resource locator) is typed into a web browser, the web browser establishes a connection to the web service running on the server using the HTTP protocol. URLs and URIs (Uniform Resource Identifier) are the names most people associate with web addresses.\\
+
+HTTP is a request/response protocol. When a client sends a request to a web server, HTTP specifies the message types used for that communication. The three common message types are GET (A client request for data), POST (Upload data files), and PUT (Upload resources or content).\\
+
+\textbf{HTTPS} uses the same client request-server response process as HTTP, but the data stream is encrypted with Secure Socket Layer (SSL) before being transported across the network.
+
+\subsection{Email}
+
+Email is a \emph{store-and-forward} method of sending, storing, and retrieving electronic messages across a network. Email messages are stored in databases on mail servers. An email client does not communicate directly with another email client when sending email. Instead, both clients rely on the mail server to transport messages. \\
+
+Email supports three separate protocols for operation: SMTP, POP3, IMAP. The application layer process that sends mail uses SMTP. A client retrieves email using one of the two application layer protocols: POP or IMAP.\\
+
+SMTP port is \textbf{25}. \\
+
+When the server receives the message, it either places the message in a local account (if the recipient is local) or forwards the message to another mail server for delivery. The destination email server may not be online or may be busy when email messages are sent. Therefore, SMTP spools messages to be sent at a later time. Periodically, the server checks the queue for messages and attempts to send them again. If the message is still not delivered after a predetermined expiration time, it is returned to the sender as undeliverable. \\
+
+\paragraph{POP3} is used to retrieve mail from a mail server. With POP, by default, mail is downloaded from the server to the client and then deleted on the server. 
+
+\paragraph{IMAP} is another protocol that describes a method to retrieve email messages. Unlike POP, when the user connects to an IMAP-capable server, copies of the messages are downloaded to the client application.  The original messages are kept on the server until manually deleted. With IMAP, users can create a file hierarchy on the server to organize and store mail. That file structure is duplicated on the email client as well. When a user decides to delete a message, the server synchronizes that action and deletes the message from the server.
+
+\subsection{DNS}
+
+In data networks, devices are labeled with numeric IP addresses to send and receive data over networks. Domain names were created to convert the numeric address into a simple, recognizable name. For example, a domain name, such as http://www.cisco.com, is much easier for people to remember than 198.133.219.25, which is the actual numeric address for this server. \\
+
+The DNS (Domain Name Service)  defines an automated service that matches resource names with the required numeric network address. The steps involved in DNS resolution are as follows:
+
+\begin{enumerate}
+\item User enters a fully qualified domain name (FQDN).
+\item The client computer  sends a DNS query to the DNS server requesting an IP address to match the FQDN
+\item The DNS server resolve the FQDN to an IP address in the DNS server database
+\item The DNS server sends back a response to the client with the IP address for the FQDN
+\end{enumerate}
+
+The DNS server stores different types of resource records used to resolve names. These records contain the name, address, and type of record. Some of these record types are:
+
+\begin{itemize}
+\item A – An end device IPv4 address
+\item NS – An authoritative name server
+\item AAAA – An end device IPv6 address (pronounced quad-A)
+\item MX – A mail exchange record
+\end{itemize}
+
+When a client makes a query, the server's DNS process first looks at its own records to resolve the name. If it is unable to resolve the name using its stored records, it contacts other servers to resolve the name. After a match is found and returned to the original requesting server, the server temporarily stores the numbered address in the event that the same name is requested again. The DNS Client service on Windows PCs also stores previously resolved names in memory. The \verb|ipconfig /displaydns| command displays all of the cached DNS entries.\\
+
+\begin{figure}[hbtp]
+\caption{A hierarchy of DNS server}\label{DNSprocess}
+\centering
+\includegraphics[ width=0.8\textwidth ]{pictures/DNSprocess.PNG}
+\end{figure}
+
+
+The DNS protocol uses a hierarchical system to create a database to provide name resolution (Figure \ref{DNSprocess}). The naming structure is broken down into small, manageable zones. Each DNS server maintains a specific database file and is only responsible for managing name-to-IP mappings for that small portion of the entire DNS structure.\\
+
+The different top-level domains represent either the type of organization or the country of origin. Examples of top-level domains are: \textbf{.com} (business or industry), \textbf{.org} (non-profit organization), \textbf{.fi} (Finland), etc.\\
+
+Computer operating systems also have a utility called \emph{nslookup} that allows the user to manually query the name servers to resolve a given host name. This utility can also be used to troubleshoot name resolution issues and to verify the current status of the name servers. When the nslookup command is issued, the default DNS server configured for your host is displayed. 
+
+\subsection{FTP}
+
+FTP transfers data between a client and a server. To successfully transfer data, FTP requires two connections between the client and the server, one for commands and replies, the other for the actual file transfer:
+
+\begin{itemize}
+\item The \textbf{client} establishes the first connection to the server for control traffic using \textbf{TCP} port \textbf{21}, consisting of client \emph{commands} and server \emph{replies}.
+\item The client establishes the second connection to the server for the \emph{actual data transfer} using \textbf{TCP} port \textbf{20}. This connection is created every time there is data to be transferred. The data transfer can happen in either direction. The client can download (pull) data from the server, or the client can upload (push) data to the server.
+\end{itemize}
+
+\subsection{SMB}
+
+The Server Message Block (SMB) is a client/server file sharing protocol that describes the structure of shared network resources, such as directories, files, printers, and serial ports. It is a request-response protocol. SMB messages can
+
+\begin{itemize}
+\item Start, authenticate, and terminate sessions
+\item Control file and printer access
+\item Allow an application to send or receive messages to or from another device
+\end{itemize}
+
+Microsoft support SMB file-sharing. Unlike the file sharing supported by FTP, clients establish a long-term connection to servers. After the connection is established, the user of the client can access the resources on the server as if the resource is local to the client host. The LINUX and UNIX operating systems also provide a method of sharing resources with Microsoft networks using a version of SMB called \emph{SAMBA}. 

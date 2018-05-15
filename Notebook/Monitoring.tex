@@ -95,7 +95,7 @@ Simple Network Management Protocol (SNMP) was developed to allow administrators 
 
 \begin{itemize}
 \item \textbf{SNMP manager}: a part of a network management system (NMS), run SNMP management software. 
-\item \textbf{SNMP agents} (managed node):  responsible for providing access to the local MIB, the SNMP agent and MIB reside on SNMP client devices.
+\item \textbf{SNMP agents} (managed node):  responsible for providing access to the MIB which resides on each SNMP client device.
 \item \textbf{MIB} (Management Information Base): store data about the device and operational statistics 
 \end{itemize}
 
@@ -103,15 +103,30 @@ Simple Network Management Protocol (SNMP) was developed to allow administrators 
 
 The SNMP manager uses the get and set actions to perform the operations, as described in the Figure \ref{SNMPoperation}.
 
-\begin{figure}[hbtp]
-\caption{SNMP operations}\label{SNMPoperation}
-\centering
-\includegraphics[scale=1]{pictures/SNMPoperation.PNG}
-\end{figure}
+\begin{table}[hbtp]
+\centering\caption{SNMP operations}\label{SNMPoperation}
+\begin{tabular}{l p{10cm} }
+\toprule
+\head{Operation} & \head{Description}\\
+\midrule
+
+\verb|get-request| & Retrieves a value from a specific variable\\
+
+\verb|get-next-request| & Retrieves a value from a variable within a table\\
+
+\verb|get-bulk-request| & Retrieve large block of data such as multiple rows in a table\\
+
+\verb|get-response| & Replies to a \verb|get-request|, \verb|get-next-request|, and \verb|set-request|\\
+
+\verb|set-request| & Stores a value in a specific variable\\
+
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{SNMP Agent Traps}
 
-An \emph{NMS periodically polls} the SNMP agents residing on managed devices, by querying the device for data using the get request. Using this process, a network management application can collect information to monitor traffic loads and to verify device configurations of managed devices. Periodic SNMP polling does have disadvantages. First, there is a delay between the time that an event occurs and the time that it is noticed (via polling) by the NMS. Second, there is a trade-off between polling frequency and bandwidth usage.\\
+An NMS periodically polls the SNMP agents. Using this process, a network management application can collect information to monitor traffic loads and to verify device configurations. Periodic SNMP polling does have disadvantages. First, there is a delay between the time that an event occurs and the time that it is noticed (via polling) by the NMS. Second, there is a trade-off between polling frequency and bandwidth usage.\\
 
 To mitigate these disadvantages, it is possible for SNMP agents to generate and send traps to inform the NMS immediately of certain events. Traps are unsolicited messages alerting the SNMP manager to a condition or event on the network. 
 
@@ -119,7 +134,7 @@ To mitigate these disadvantages, it is possible for SNMP agents to generate and 
 
 SNMPv1 and SNMPv2c use community strings as plaintext password to control access to the MIB. There are two types of community strings: Read-only (\textbf{ro}) and Read-write (\textbf{rw}).\\
 
-MIB saves data in variables and organizes them hierarchically. Formally, the MIB defines each variable as an object ID (OID). OIDs uniquely identify managed objects in the MIB hierarchy (figure \ref{OID-tree}).
+MIB saves data in variables and organizes them hierarchically. Formally, the MIB defines each variable as an Object ID (OID). OIDs uniquely identify managed objects in the MIB hierarchy (figure \ref{OID-tree}). For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
 
 \begin{figure}[hbtp]
 \caption{OID tree}\label{OID-tree}
@@ -127,60 +142,64 @@ MIB saves data in variables and organizes them hierarchically. Formally, the MIB
 \includegraphics[ width=0.8\textwidth ]{pictures/OID-tree.png}
 \end{figure}
 
-For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
-The data is retrieved via the \emph{snmpget} utility, issued on the NMS. Using the snmpget utility, one can manually retrieve real-time data or have a report containing a period of time that you could use the data to get the average. 
 
 \subsection{Configuration}
 
 \subsubsection{SNMPv2}
 
 \begin{enumerate}
-\item (Required) Configure the community string and access level (read-only or read-write) with the snmp-server community string ro | rw command.
+\item (Required) Configure the community string and access level (read-only or read-write).
 
-\item (Optional) Document the location of the device using the snmp-server location text command.
+\begin{verbatim}
+R1(config)# snmp-server community batonaug ro
+\end{verbatim}
 
-\item (Optional) Document the system contact using the snmp-server contact text command.
-
-\item (Optional) Restrict SNMP access to NMS hosts (SNMP managers) that are permitted by an ACL: define the ACL and then reference the ACL with the snmp-server community string access-list-number-or-name command. This command can be used both to specify a community string and to restrict SNMP access via ACLs. Step 1 and Step 4 can be combined into one step, if desired; the Cisco networking device combines the two commands into one if they are entered separately.
-
-\item (Optional) Specify the recipient of the SNMP trap operations with the snmp-server hosthost-id [version {1| 2c | 3 [auth | noauth | priv]}] community-string command. By default, no trap manager is defined.
-
-\item (Optional) Enable traps on an SNMP agent with the snmp-server enable traps notification-types command. If no trap notification types are specified in this command, then all trap types are sent. Repeated use of this command is required if a particular subset of trap types is desired.
-\end{enumerate}
+\item (Optional) Restrict SNMP access to NMS hosts (SNMP managers) using ACL. Step 1 and 2 can be done in one command.
 
 \begin{verbatim}
 R1(config)# snmp-server community batonaug ro SNMP_ACL
-R1(config)# snmp-server location NOC_SNMP_MANAGER
-R1(config)# snmp-server contact Wayne World
-R1(config)# snmp-server host 192.168.1.3 version 2c batonaug
-R1(config)# snmp-server enable traps
-R1(config)# 
-R1(config)# ip access-list standard SNMP_ACL
-R1(config-std-nacl)# permit 192.168.1.3
 \end{verbatim}
 
-\note To verify SNMP configuration, use any of the variations of the \texttt{show snmp} command.\\ \note Only the first step is required, the rest are optional.\\
+\item (Optional) Enable traps on an SNMP agent. If no trap notification types are specified in this command, then all trap types are sent. Repeated use of this command is required if a particular subset of trap types is desired.
+
+\begin{verbatim}
+R1(config)# snmp-server enable traps
+\end{verbatim}
+
+\item (Optional) Specify the recipient of the SNMP trap operations.
+
+\begin{verbatim}
+R1(config)# snmp-server host 192.168.1.3 version 2c batonaug
+\end{verbatim}
+
+\item (Optional) Document the location of the SNMP server and the system contact.
+
+\begin{verbatim}
+R1(config)# snmp-server location NOC_SNMP_MANAGER
+R1(config)# snmp-server contact Wayne World
+\end{verbatim}
+
+\end{enumerate}
+
+\note To verify SNMP configuration, use any of the variations of the \texttt{show snmp} command.\\ 
+\note Only the first step is required, the rest are optional.\\
 \note By default, SNMP does not have any traps set. Without this command, SNMP managers must poll for all relevant information. 
 
 \subsubsection{SNMPv3}
 
-SNMPv3 provides three security features: Message integrity and authentication, Encryption, Access control. SNMPv3 can be secured with the four steps.
+SNMPv3 provides three security features: Message integrity and authentication, Encryption, Access control. The following commands show an example of basic SNMPv3 configuration:
 
 \begin{verbatim}
-1	R1(config)# ip access-list standard PERMIT-ADMIN
-2	R1(config-std-nacl)# permit 192.168.1.0 0.0.0.255
-3	R1(config-std-nacl)# exit
-4	R1(config)# snmp-server view SNMP-RO iso included
-5	R1(config)# snmp-server group ADMIN v3 priv read SNMP-RO access PERMIT-ADMIN
-6	R1(config)# snmp-server user BOB ADMIN v3 auth sha cisco12345 priv aes 128 cisco54321
-7	R1(config)# end
+1	R1(config)# snmp-server view SNMP-RO iso included
+2	R1(config)# snmp-server group ADMIN v3 priv read SNMP-RO access PERMIT-ADMIN
+3	R1(config)# snmp-server user BOB ADMIN v3 auth sha cisco12345 priv aes 128 cisco54321
+4	R1(config)# end
 \end{verbatim}
 
 \begin{description}
-\item[line 1,2] The above example configures a standard ACL named PERMIT-ADMIN. 
-\item[line 4] An SNMP view is named SNMP-RO and is configured to include the entire ISO tree from the MIB. 
-\item[line 5] An SNMP group is configured with the name ADMIN. SNMP is set to version 3 with authentication and encryption required. The group is allowed read-only access to the view SNMP-RO. Access for the group is limited by the PERMIT-ADMIN ACL. 
-\item[line 6] An SNMP user, BOB, is configured as a member of the group ADMIN. Authentication is set to use SHA, and an authentication password is configured. Although R1 supports up to AES 256 encryption, the SNMP management software only supports AES 128. Therefore, the encryption is set to AES 128 and an encryption password is configured.
+\item[Line 1.] Create an SNMP view \verb|SNMP-RO| and include the entire ISO tree from the MIB. 
+\item[Line 2.] Create an SNMP group \verb|ADMIN|; Set to version 3 (\verb|v3|) with authentication and encryption required (\verb|priv|). The group is allowed read-only access to the view SNMP-RO (\verb|read SNMP-RO|). Access for the group is limited by the an ACL (\verb|access PERMIT-ADMIN|). 
+\item[Line 3.] Create new SNMP user \verb|BOB| as a member of the group \verb|ADMIN|; Set to version 3 (\verb|v3|) with authentication SHA (\verb|auth sha|) and password \verb|cisco12345|; Enable 128-bit AES encryption \verb|priv aes 128| with password \verb|cisco54321|.
 \end{description}
 
 \section{SPAN}
@@ -199,7 +218,7 @@ There are three important things to consider when configuring SPAN:
 
 \paragraph{Local SPAN} is when traffic is mirrored to another port on the same switch. A SPAN session is the association between source ports (or VLANs) and a destination port. Traffic entering or leaving the source port (or VLAN) is replicated on the destination port. 
 
-\paragraph{Remote SPAN (RSPAN)} allows source and destination ports to be in different switches. RSPAN uses two sessions. One session is used as the source and one session is used to copy or receive the traffic from a VLAN. The traffic for each RSPAN session is carried over trunk links in a user-specified RSPAN VLAN that is dedicated (for that RSPAN session) in all participating switches. 
+\paragraph{Remote SPAN (RSPAN)} allows source and destination ports to be in different switches. RSPAN uses two sessions. One session is used as the source and one session is used to copy or receive the traffic from a VLAN. The traffic for each RSPAN session is carried over trunk links in a user-specified RSPAN VLAN that is dedicated (for that RSPAN session) in all participating switches.
 
 \subsection{Configuration}
 
@@ -210,7 +229,7 @@ S1(config)# end
 S1# show monitor
 \end{verbatim}
 
-The above command is used to associate a source port and a destination port with a SPAN session. A separate \verb|monitor session| command is used for each session. A VLAN can be specified instead of a physical port.
+The above command is used to associate a source port and a destination port with a SPAN session. A separate \verb|monitor session| command is used for each session. A VLAN can be specified instead of a physical port. \\
 
 \begin{figure}[hbtp]
 \caption{Verifying SPAN}\label{SPAN}
@@ -218,5 +237,17 @@ The above command is used to associate a source port and a destination port with
 \includegraphics[scale=0.8]{pictures/SPAN.PNG}
 \end{figure}
 
-In the output of show command in Figure \ref{SPAN}, the session number is 1, the source port for both traffic directions (receive and transmit) is F0/1, and the destination port is F0/2. The ingress SPAN is disabled on the destination port, so only traffic that leaves the destination port is copied to that port.
+\begin{verbatim}
+S1# show monitor
+Session 1
+---------
+Type                : Local session
+Source port         : 
+  Both              : Fa0/1
+Destination ports   : Fa0/2
+  Encapsulation     : Native
+      Ingress       : Disabled
+\end{verbatim}
+
+The above output shows that the session 1 of a Local SPAN (\verb|Type:| \verb|Local session|), the source port for both traffic directions (receive and transmit) is F0/1 (\verb|Both:| \verb|Fa0/1|), and the destination port is F0/2. The ingress SPAN is disabled on the destination port, so only traffic that leaves the destination port is copied to that port.
 

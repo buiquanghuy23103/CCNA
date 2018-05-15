@@ -29,9 +29,9 @@ There are a number of distinct types of VLANs:
 \item \textbf{Voive VLAN} is a separate VLAN needed to support Voice over IP (VoIP). 
 \end{itemize}
 
-\textbf{Normal range} VLANs are identified by a VLAN ID between 1 and 1005. Configurations are stored within a VLAN database file, called \verb|vlan.dat|. This file is located in the flash memory of the switch. VTP can only learn and store normal range VLANs.\\
+\textbf{Normal range:} VLANs are identified by a VLAN ID \textbf{between 1 and 1005}. Configurations are stored within a VLAN database file, called \textbf{vlan.dat}. This file is located in the flash memory of the switch. VTP can only learn and store normal range VLANs.\\
 
-\textbf{Extended Range} VLANs are identified by a VLAN ID between 1006 and 4094. Configurations are not written to the \verb|vlan.dat| file, but instead, stored in running configuration file. VTP does not learn extended range VLANs.
+\textbf{Extended Range:} VLANs are identified by a VLAN ID \textbf{between 1006 and 4094}. Configurations are not written to the \verb|vlan.dat| file, but instead, stored in \textbf{running configuration file}. VTP does \emph{not} learn extended range VLANs.
 
 \section{VLAN tag}
 
@@ -55,7 +55,7 @@ The 802.1Q header includes a 4-byte tag inserted within the original Ethernet fr
 The VLAN tag field (Figure \ref{tagging}) consists of: 
 
 \begin{itemize}
-\item \textbf{Type:} A 2-byte value called the tag protocol ID (TPID) value. For Ethernet, it is set to hexadecimal 0x8100.
+\item \textbf{Type:} A 2-byte value called the tag protocol ID (TPID) value. For Ethernet, it is set to hexadecimal \textbf{0x8100}.
 
 \item \textbf{User priority:} A 3-bit value that supports level or service implementation
 
@@ -198,33 +198,34 @@ S1# show vlan [brief | id vlan-id | name vlan-name | summary]
 S1# show vlan name student
 S1# show vlan summary
 S1# show vlan brief
+S1# show vlan id 20
 S1# show interfaces vlan 20
 \end{verbatim}
 
 The trunking configuration is verified by the following commands:
 
 \begin{itemize}
-\item \verb|show interfaces switchport|
+\item \verb|show interface switchport|
 \item \verb|show interface <int> switchport|
 \item \verb|show interfaces trunk| 
 \end{itemize}
 
 \subsection{Troubleshoot}
 
-\paragraph{IP address} Each VLAN must correspond to a unique IP subnet. If two devices in the same VLAN have different subnet addresses, they cannot communicate. This is a common problem, and it is easy to solve by identifying the incorrect configuration and changing the subnet address to the correct one.
+\paragraph{IP address:} Each VLAN must correspond to a unique IP subnet. If two devices in the same VLAN have different subnet addresses, they cannot communicate. This is a common problem, and it is easy to solve by identifying the incorrect configuration and changing the subnet address to the correct one.
 
-\paragraph{Missing VLAN} Verify whether the port is in the correct VLAN using \verb|show vlan| and \verb|show mac address-table int <int>|. Verify if the VLAN is present in the VLAN database using \verb|show vlan|. Use the \verb|show interfaces switchport| command to verify if the inactive VLAN is assigned to the port.
+\paragraph{Missing VLAN:} Verify whether the port is in the correct VLAN using \verb|show vlan| and \verb|show mac address-table int <int>|. Verify if the VLAN is present in the VLAN database using \verb|show vlan|. Use the \verb|show interfaces switchport| command to verify if the inactive VLAN is assigned to the port.
 
 
-\paragraph{Native VLAN mismatches} Trunk ports are configured with different native VLANs. This configuration error generates console notifications and can cause inter-VLAN routing issues. To solve the native VLAN mismatch, configure the native VLAN to be the same VLAN on both sides of the link.
+\paragraph{Native VLAN mismatches:} Trunk ports are configured with different native VLANs. This configuration error generates console notifications and can cause inter-VLAN routing issues. To solve the native VLAN mismatch, configure the native VLAN to be the same VLAN on both sides of the link.
 
-\paragraph{Trunk mode mismatches} One trunk port is configured in a mode that is not compatible for trunking on the corresponding peer port. This configuration error causes the trunk link to stop working. Be sure both sides of the trunk are configured with the \verb|sw mode trunk| command. 
+\paragraph{Trunk mode mismatches:} One trunk port is configured in a mode that is not compatible for trunking on the corresponding peer port. This configuration error causes the trunk link to stop working. Be sure both sides of the trunk are configured with the \verb|sw mode trunk| command. 
 
 \paragraph{Allowed VLANs} The list of allowed VLANs on a trunk has not been updated with the current VLAN trunking requirements. 
 
 \section{Inter-VLAN Routing}
 
-Layer 2 switches have limited IPv4 and IPv6 functionality and cannot perform the routing between VLANs. Any device that supports Layer 3 routing, such as a router or a Layer 3 switch (multiplayer), can be used to perform VLAN routing. Regardless of the device used, the process of forwarding network traffic from one VLAN to another is known as inter-VLAN routing. There are three options for inter-VLAN routing: Legacy inter-VLAN routing, Router-on-a-stick, Layer 3 switching using SVIs.
+Layer 2 switches have limited IPv4 and IPv6 functionality and cannot perform the routing between VLANs. Any device that supports Layer 3 routing, such as a router or a Layer 3 switch (multiplayer), can be used to perform VLAN routing. Regardless of the device used, the process of forwarding network traffic from one VLAN to another is known as inter-VLAN routing. There are three options for inter-VLAN routing: Legacy inter-VLAN routing, Router-on-a-stick, and Layer 3 switching using SVIs.
 
 \subsection{Legacy inter-VLAN routing}
 

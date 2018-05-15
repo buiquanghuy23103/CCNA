@@ -4,22 +4,22 @@
 
 \begin{table}[hbtp]
 \centering\caption{Dynamic vs Static routing}
-\begin{tabular}{ p{2cm} p{8cm} p{8cm} }
-\toprule
+\begin{tabular}{ | p{2cm} | p{7cm} | p{7cm} | }
+\hline
 \head{Feature} & \head{Dynamic routing} & \head{Static routing} \\
-\midrule
+\hline
 
-Configuration complexity & Independent of network size & Increase with network size \\
+Configuration complexity & Independent of network size & Increase with network size \\ \hline
 
-Topology changes & Automatically adapt to changes & Administrator intervention required \\
+Topology changes & Automatically adapt to changes & Administrator intervention required \\ \hline
 
-Usage & Complex and growing network, normal route & Small network, Stub network, default route, summary route, backup route \\
+Usage & Complex and growing network, normal route & Small network, Stub network, default route, summary route, backup route \\ \hline
 
-Resource & CPU, memory, bandwidth & No resources needed \\
+Resource & CPU, memory, bandwidth & No resources needed \\ \hline
 
-Predictability & Depends on current topology & Always the same \\
+Predictability & Depends on current topology & Always the same \\ \hline
 
-Security & Advertise protocol message over the entire network, resulting security risk & Not advertised over the network, resulting in better security \\
+Security & Advertise protocol message over the entire network, resulting security risk & Not advertised over the network, resulting in better security \\ \hline
 
 Configuration & simple, nearly error-free & error-prone, require complete knowledge of the whole network for proper configuration \\
 
@@ -59,7 +59,7 @@ R1(config)# ip route 172.16.1.0 255.255.255.0 g0/0 172.16.2.2
 \end{verbatim}
 \end{itemize}
 
-A route that does not reference an exit interface must perform a \emph{recursive lookup}. Recursive lookup means that the router searches through the routing table to find the interface that match the next-hop IP address. 
+A route that does not reference an exit interface must perform a \emph{recursive lookup}. Recursive lookup means that the router searches through the routing table to find the interface that match the next-hop IP address.\\ 
 
 Along with \verb|ping| and \verb|traceroute|, useful commands to verify static routes include these:
 \begin{verbatim}
@@ -94,17 +94,15 @@ R1# show running-config | section ipv6 route
 
 \section{Types}
 
-There are four types static routes: Standard, Default, Summary, and Floating.
+There are five types static routes: Standard, Default, Summary, Static host and Floating routes.
 
-\subsection{IPv4 Default static route}  
-
-A default route is used when no other routes in the routing table match the destination IP address of the packet. It acts as the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the network address is \verb|0.0.0.0| and the subnet mask is \verb|0.0.0.0|.
+\paragraph{IPv4 Default static route} A default route is used when no other routes in the routing table match the destination IP address of the packet. It acts as the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the network address is \verb|0.0.0.0| and the subnet mask is \verb|0.0.0.0|.
 
 \begin{verbatim}
 R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
 \end{verbatim}
 
-Note the asterisk (*) next to the route with code \verb|S| in the output of the \verb|show| command. The asterisk indicates that this static route is a candidate default route, which is why it is selected as the Gateway of Last Resort.
+\note The asterisk (*) next to the route with code \verb|S| in the output of the \verb|show| command. The asterisk indicates that this static route is a candidate default route, which is why it is selected as the Gateway of Last Resort.
 
 \begin{verbatim}
 R1# show ip route static
@@ -113,18 +111,14 @@ Gateway of last resort is 172.16.2.2 to network 0.0.0.0
 S* 0.0.0.0/0 [1/0] via 172.16.2.2
 \end{verbatim}
 
-\subsection{IPv6 Default static route}  
-
-Unlike IPv4, IPv6 does not explicitly state that the default IPv6 is the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the ipv6-prefix/prefix-length is \verb|::/0|, which matches all routes.
+\paragraph{IPv6 Default static route:} Unlike IPv4, IPv6 does not explicitly state that the default IPv6 is the Gateway of Last Resort. The command syntax for a default static route is similar to any other static route, except that the ipv6-prefix/prefix-length is \verb|::/0|, which matches all routes.
 
 \begin{verbatim}
 Router(config)# ipv6 route ::/0 {ipv6-address | exit-intf}
 R1(config)# ipv6 route ::/0 2001:DB8:ACAD:4::2
 \end{verbatim}
 
-\subsection{Summary static route}
-
-To reduce the number of routing table entries, multiple static routes can be summarized into a single static route in the following circumstances:
+\paragraph{Summary static route:} To reduce the number of routing table entries, multiple static routes can be summarized into a single static route in the following circumstances:
 
 \begin{itemize}
 \item The destination networks are contiguous and can be summarized into a single network address.
@@ -147,7 +141,7 @@ A host route is an IPv4 address with a 32-bit mask or an IPv6 address with a 128
 \begin{itemize}
 \item Automatically installed when an IP address is configured on the router
 \item Configured as a static host route
-\item Host route automatically obtained through other methods (discussed in
+\item Host route automatically obtained through other methods
 \end{itemize}
 
 Cisco IOS automatically installs a host route, also known as a \emph{local host route}, when an interface address is configured on the router. A host route allows for a more efficient process for packets that are directed to the router itself, rather than for packet forwarding. This is in addition to the connected route, designated with a C in the routing table for the network address of the interface.
@@ -166,7 +160,7 @@ L     2001:DB8:ACAD:1::1/128 [0/0]
         via Serial0/0/0, receive
 \end{verbatim}
 
-A host route can be a manually configured static route to dire ct traffic to a specific destination device, such as an authentication server.
+A host route can be a manually configured static route to direct traffic to a specific destination device, such as an authentication server.
 
 \begin{verbatim}
 Branch(config)# ip route 209.165.200.238 255.255.255.255 198.51.100.2

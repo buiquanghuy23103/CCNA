@@ -21,16 +21,16 @@ VLAN trunking protocol (VTP) allows a network administrator to manage VLANs on a
 Each switch in a VTP domain sends periodic VTP advertisements so that its neighbors can update VLAN configuration. VTP includes three types of advertisements:
 
 \begin{itemize}
-\item \textbf{Summary advertisements} -- These inform adjacent switches of VTP domain name and configuration revision number. By default, Cisco switches issue summary advertisements every five minutes. 
+\item \textbf{Summary advertisements} -- These inform adjacent switches of VTP domain name and configuration revision number. By default, Cisco switches issue summary advertisements \emph{every five minutes}. 
 \item \textbf{Advertisement request} -- These are in response to a summary advertisement message when the summary advertisement contains a higher configuration revision number than the current value.
 \item \textbf{Subset advertisements} -- These contain VLAN information including any changes.
 \end{itemize}
 
 \section{Operations}
 
-When the switch receives a summary advertisement packet, the switch compares the VTP domain name to its own VTP domain name. If the name is different, the switch simply ignores the packet. If the name is the same, the switch then compares the configuration revision number of the packet to its own. If the switch's revision number is lower, it means that its VLAN database is out-dated, and it sends an advertisement request to ask for updates (subset advertisement messages). If the switch's revision number is \emph{not lower} to that of the packet, then the packet is ignored. \\
+When the switch receives a summary advertisement packet, it compares the VTP domain name to its own VTP domain name. If the name is different, the switch simply ignores the packet. If the name is the same, the switch then compares the configuration revision number of the packet to its own. If the switch's revision number is lower, it means that its VLAN database is out-dated, and it sends an advertisement request to ask for updates (subset advertisement messages). If the switch's revision number is \emph{not lower} to that of the packet, then the packet is ignored. \\
 
-The subset advertisement message contains the VLAN information about any changes. When you add, delete, or change a VLAN on the VTP server, the VTP server increments the configuration revision and issues a summary advertisement. One or several subset advertisements follow the summary advertisement containing the VLAN information including these changes. This process is shown in the figure \ref{VTP-operation}.\\
+The configuration revision number reports any VLAN changes. When you add, delete, or change a VLAN on the VTP server, the VTP server increments the configuration revision. Then, the VTP server issues summary advertisements to announce that there have been some changes occur. Next, subset advertisements that contain information about these changes are sent to all VTP clients. This process is shown in the figure \ref{VTP-operation}.\\
 
 \begin{figure}[hbtp]
 \centering
@@ -41,7 +41,7 @@ The subset advertisement message contains the VLAN information about any changes
 
 \section{VTP Caveats}
 
-Adding a VTP-enabled switch to an existing VTP domain will wipe out the existing VLAN configurations in the domain if the new switch is configured with different VLANs and has a higher configuration revision number than the existing VTP server (see figure \ref{VTP-caveats}). Therefore, when a switch is added to a network, ensure that it has a default VTP configuration.\\
+Suppose there is a new switch with a higher configuration revision number, and you want to install it into the existing switched network. Then, the existing VLAN configurations will be wiped out (see figure \ref{VTP-caveats}). Therefore, when a switch is added to a network, ensure that it has a default VTP configuration, or its revision number is reset to 0.\\
 
 \begin{figure}[hbtp]
 \centering

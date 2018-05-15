@@ -83,14 +83,14 @@ There are many types of devices that are specific to WAN environments (Figure \r
 \item \textbf{Access server} controls and coordinates dialup modem, dial-in and dial-out user communications.
 
 
-\item \textbf{CSU/DSU} is only used for Leased lines. The CSU provides termination for the digital signal and ensures connection integrity through error correction and line monitoring. The DSU converts line frames into frames that the LAN can interpret and vice versa.
+\item \textbf{CSU/DSU} is only used for \textbf{Leased line}. The CSU provides termination for the digital signal and ensures connection integrity through error correction and line monitoring. The DSU converts line frames into frames that the LAN can interpret and vice versa.
 \end{itemize}
 
 WAN technologies are either circuit-switched or packet-switched:
 
 \paragraph{Circuit Switching} dynamically establishes a \emph{dedicated virtual connection} for voice or data between a sender and a receiver. Communication can't start until the connection is established through the service provider network. The two most common types of circuit-switched WAN technologies are \textbf{PSTN} and \textbf{ISDN}.
 
-\paragraph{Packet Switching} splits traffic data into packets packet that are routed over a shared network. A circuit does not need to be established and many pairs of nodes can communicate over the same channel. Packet switching costs less than circuit switching, however, latency and jitter are greater in packet-switching networks. There are two approaches to packet-switched network link determination:
+\paragraph{Packet Switching} splits traffic data into packets that are routed over a shared network. A circuit does not need to be established and many pairs of nodes can communicate over the same channel. Packet switching costs less than circuit switching, however, latency and jitter are greater in packet-switching networks. There are two approaches to packet-switched network link determination:
 
 \begin{itemize}
 \item \textbf{Connectionless systems:} Full addressing information must be carried in each packet. The \textbf{Internet} is an example of a connectionless system. 
@@ -111,27 +111,27 @@ Service provider networks are complex and consist mostly of high-bandwidth fiber
 
 \subsection{Private WAN Infrastructures}
 
-\paragraph{Leased lines} are permanent dedicated point-to-point connections from the customer premises to the provider network. The term leased line refers to the fact that the organization pays a monthly lease fee to a service provider to use the line. Leased lines are simple to implement and offer high quality and availability but are generally the most expensive type of WAN access and has Limited flexibility.
+\paragraph{Leased lines} are \emph{permanent dedicated point-to-point} connections from the customer premises to the provider network. The organization pays a monthly lease fee to a service provider to use the line. Leased lines require little installation and maintenance expertise, offer high quality and availability. However, they are expensive and has limited flexibility.
 
-\paragraph{Dialup}transport binary computer data through the voice telephone network using a modem. Dialup access is suitable when intermittent, low-volume data transfers are needed. The advantages of modem and analog lines are simplicity, availability, and low implementation cost. The disadvantages are the low data rates and a relatively long connection time. 
+\paragraph{Dialup}transports binary computer data through the voice telephone network using a modem. Dialup access is suitable when intermittent, low-volume data transfers are needed. The advantages of modem and analog lines are simplicity, availability, and low implementation cost. The disadvantages are the low data rates and a relatively long connection time. 
 
-\paragraph{ISDN}is a \underline{circuit-switching} technology that enables the local loop of a PSTN (Public switched telephone network) to carry digital signals. It can provide additional capacity as needed on a leased line connection or can also be used as a backup. ISDN has declined in popularity due to DSL and other broadband services. There are two types of ISDN Interfaces: BRI (2 B-channels, 1 D-channel), PRI (23 B-channel, 1 D-channel)
+\paragraph{ISDN}is a \emph{circuit-switching} technology that enables the local loop of a PSTN (Public switched telephone network) to carry digital signals. It can provide additional capacity as needed on a leased line connection or can also be used as a backup. ISDN has declined in popularity due to DSL and other broadband services. There are two types of ISDN Interfaces: BRI (2 B-channels, 1 D-channel), PRI (23 B-channel, 1 D-channel)
 
-\paragraph{Frame Relay}Frame Relay is a Layer 2 WAN technology used to interconnect enterprise LANs. A single router can be used to connect multiple sites using Private Virtual Circuits (PVCs) which can carry both voice and data traffic. Frame Relay creates PVCs which are uniquely identified by a data-link connection identifier (DLCI). The PVCs and DLCIs ensure bidirectional communication between one DTE device to another.
+\paragraph{Frame Relay}is a Layer-2 WAN technology used to interconnect enterprise LANs. Frame Relay creates PVCs (Private Virtual Circuits) to connect multiple sites, and carry voice and data traffic. PVCs are uniquely identified by a DLCI (Data-Link Connection Identifier). The PVCs and DLCIs ensure bidirectional communication between one DTE device to another.
 
-\paragraph{ATM} is built on a cell-based architecture rather than on a frame-based architecture. ATM cells are always a fixed length of 53 bytes, containing a 5-byte ATM header followed by 48 bytes of ATM payload. Small, fixed-length cells are well-suited for carrying voice and video traffic because this traffic is intolerant of delay. However, when the cell is carrying segmented network layer packets, the overhead is higher because the ATM switch must be able to reassemble the packets at the destination. 
+\paragraph{ATM} is built on a \emph{cell-based} architecture rather than on a frame-based architecture. ATM cells are always a \emph{fixed} length of \textbf{53 bytes}. ATM is well-suited for voice and video traffic because this traffic is intolerant of delay.s
 
-\paragraph{Ethernet WAN}Originally Ethernet was not suitable as a WAN access technology because the maximum cable length was one kilometer. However, fiber-optic cables have made Ethernet a reasonable WAN access option. There are several benefits to an Ethernet WAN: Reduced expenses and administration, Easy integration with existing networks, Enhanced business productivity. Ethernet WANs have replaced Frame Relay and ATM.
+\paragraph{Ethernet WAN:}Originally Ethernet was not suitable as a WAN access technology because the maximum cable length was one kilometer. However, \emph{fiber-optic} cables have made Ethernet a reasonable WAN access option. There are several benefits to an Ethernet WAN: Reduced expenses and administration, Easy integration with existing networks, Enhanced business productivity. Ethernet WANs have replaced Frame Relay and ATM.
 
-\paragraph{MPLS} is a multiprotocol high-performance WAN technology that directs data from one router to the next. MPLS is based on short path labels rather than IP network addresses.  It uses labels which tell a router what to do with a packet. The labels identify paths between distant routers rather than endpoints, and while MPLS actually routes IPv4 and IPv6 packets, everything else is switched. Furthermore, MPLS can deliver any type of packet between sites and encapsulate them of various network protocols.
+\paragraph{MPLS} is a \emph{multiprotocol} high-performance WAN technology that directs data from one router to the next. MPLS is based on \emph{short path labels} rather than IP network addresses.  It uses labels which tell a router what to do with a packet. The labels identify paths between distant routers rather than endpoints, and while MPLS actually routes IPv4 and IPv6 packets, everything else is switched. Furthermore, MPLS can deliver any type of packet between sites and encapsulate them of various network protocols.
 
-\paragraph{VSAT} is a solution that creates a private WAN using satellite communications in remote locations where there are no service providers that offer WAN service.
+\paragraph{VSAT} is a solution that creates a private WAN using \emph{satellite} communications in remote locations where there are no service providers that offer WAN service.
 
 \subsection{Public WAN Infrastructures}
 
-\paragraph{DSL}is an always-on connection technology that uses existing twisted-pair telephone lines to transport high-bandwidth data. A DSL modem converts an Ethernet signal from the user device to a DSL signal. Key components in the DSL connection: DSL modem (subscriber end) and DSLAM (ISP end). The advantage that DSL has over cable technology is that DSL is not a shared medium -- each user has a separate direct connection to the DSLAM.
+\paragraph{DSL}is an always-on connection technology that uses existing \emph{twisted-pair telephone} lines to transport high-bandwidth data. A DSL modem converts an Ethernet signal from the user device to a DSL signal. Key components in the DSL connection: \emph{DSL modem (subscriber end)} and \emph{DSLAM (ISP end)}. The advantage that DSL has over cable technology is that DSL is not a shared medium -- each user has a separate direct connection to the DSLAM.
 
-\paragraph{Cable} Coaxial cable is widely used in urban areas to distribute television signals. Network access is available from many cable television providers. This allows for greater bandwidth than the conventional telephone local loop. Two types of equipment are required: CMTS (ISP end), and Cable Modem (subscriber end).
+\paragraph{Cable} is widely used in urban areas to distribute television signals. Network access is available from television providers. This allows for greater bandwidth than the conventional telephone local loop. Two types of equipment are required: \emph{Cable Modem (subscriber end)} and \emph{CMTS (ISP end)}.
 
 \paragraph{WiMAX} is a new technology that operates in a similar way to Wi-Fi, but at higher speeds, over greater distances, and for a greater number of users. It uses a network of WiMAX towers that are similar to cell phone towers. 
 
@@ -145,4 +145,4 @@ office network to a company headquarters network.
 \item \textbf{Remote-access VPN:} enable individual hosts, such as  extranet consumers, to access a company network securely over the Internet.
 \end{itemize}
 
-\paragraph{Dynamic Multipoint VPN (DMVPN)} is a Cisco software solution for building multiple VPNs. DMVPN is built on three protocols: NHRP, IPsec, and mGRE. NHRP is the distributed address mapping protocol for VPN tunnels. IPsec encrypts communications on VPN tunnels. The mGRE protocol allows the dynamic creation of multiple spoke tunnels from one permanent VPN hub.
+\paragraph{Dynamic Multipoint VPN (DMVPN)} is a Cisco software solution for building multiple VPNs. DMVPN is built on three protocols: NHRP, IPsec, and mGRE. NHRP is the distributed address \emph{mapping} protocol for VPN tunnels. IPsec \emph{encrypts} communications on VPN tunnels. The mGRE protocol allows the dynamic creation of \emph{multiple spoke tunnels} from one permanent VPN \emph{hub}.

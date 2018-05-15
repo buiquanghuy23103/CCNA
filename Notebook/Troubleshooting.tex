@@ -190,6 +190,43 @@ R1(config)# ip sla schedule 1 start-time now life forever
 
 \paragraph{Network analysis module (NAM)} provides embedded browser-based interface that generates report on the network resources. NAM can also capture and decode packets, track response time, etc.
 
+\section{Symptoms and causes}
+
+\subsection{Physical layer}
+
+\begin{itemize}
+\item \textbf{Performance lower than baseline:} overloaded or underpowered servers, unsuitable switch or router configurations, traffic congestion on a low-capacity link, chronic frame loss.
+
+\item \textbf{Loss of connectivity:} a cable or device fails, a loose or oxidized connection.
+
+\item \textbf{Network bottlenecks or congestion:} a router, interface, or cable fails.
+
+\item \textbf{High CPU utilization rates:} a device, such as a router, switch, or server, is operating at or exceeding its design limits
+\end{itemize}
+
+\subsection{Data Link layer}
+
+\begin{itemize}
+\item \textbf{Encapsulation errors:} the encapsulation at one end of a WAN link is configured differently from the encapsulation used at the other end.
+
+\item \textbf{Address mapping errors:} devices are configured not to respond to ARP requests, invalid ARP replies are received, a security attack, etc.
+
+\item \textbf{Framing errors:} A framing error occurs when a frame does not end on an 8-bit byte boundary. Causes: noisy serial line, an improperly designed cable (too long or not properly shielded), faulty NIC, \emph{duplex mismatch}, or an incorrectly configured CSU line clock.
+
+\item \textbf{STP failures or loops:} a high rate of STP topology changes, inconsistent configuration of STP timers, overloaded CPU. 
+\end{itemize}
+
+\subsection{Network layer}
+
+\begin{itemize}
+\item \textbf{General network issues:} installation of new routes, static or dynamic, or removal of other routes. 
+
+\item \textbf{Connectivity issues:} power problems, cabling problems, bad ports, and ISP problems. 
+
+\item \textbf{Routing table, or Topology database:} missing or unexpected routes. Use \verb|debug| commands to view routing updates and routing table maintenance.
+
+\item \textbf{Neighbor issues:} check to see if there are any problems with the routers forming neighbor adjacencies.
+\end{itemize}
 \section{Scenarios}
 
 \begin{example}
