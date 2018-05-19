@@ -48,9 +48,7 @@ S1# show lldp neighbors detail
 
 \subsection{System clock}
 
-The software clock on a router or switch starts when the system boots and is the primary source of time for the system. It is important to synchronize the time across all devices on the network because all aspects of managing, securing, troubleshooting, and planning networks require accurate time-stamping. \\
-
-Typically, the date and time settings on a router or switch can be set using one of two methods: 
+The software clock on a router or switch starts when the system boots and is the primary source of time for the system. It is important to synchronize the time across all devices on the network because all aspects of managing, securing, troubleshooting, and planning networks require accurate time-stamping. Typically, the date and time settings on a router or switch can be set using one of two methods: 
 
 \begin{itemize}
 \item Manually configure the date and time. For example, \verb|clock set 20:36:00 aug 30 2016|
@@ -59,9 +57,9 @@ Typically, the date and time settings on a router or switch can be set using one
 
 \subsection{NTP operation}
 
-NTP allows routers on the network to synchronize their time settings with an NTP server. It uses UDP port 123. \\
+NTP allows routers on the network to synchronize their time settings with an NTP server. It uses \textbf{UDP} port \textbf{123}. \\
 
-NTP networks use a hierarchical system of time sources. Each level in this hierarchical system is called a stratum. The stratum level is defined as the number of hop counts from the authoritative time source (Figure \ref{NTP}). Smaller stratum numbers indicate that the server is closer to the authorized time source than larger stratum numbers. The max hop count is 15. Stratum 16, the lowest stratum level, indicates that a device is unsynchronized. 
+NTP networks use a hierarchical system of time sources. Each level in this hierarchical system is called a \textbf{stratum}. The stratum level is defined as the number of hop counts from the authoritative time source (Figure \ref{NTP}). Smaller stratum numbers indicate that the server is closer to the authorized time source than larger stratum numbers. The max hop count is 15. Stratum 16, the lowest stratum level, indicates that a device is unsynchronized. 
 
 \begin{figure}[hbtp]
 \caption{NTP Stratum levels}\label{NTP}
@@ -83,7 +81,7 @@ To verify the system clock, use \verb|show clock [detail]| command. To identify 
 
 \subsection{Introduction}
 
-The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}. By default, the logging trap level is \textbf{6}. The syslog logging service provides three primary functions:
+The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}. The syslog logging service provides three primary functions:
 
 \begin{itemize}
 \item Gather logging information
@@ -116,9 +114,7 @@ Cisco devices produce syslog messages as a result of network events. Every syslo
 \end{tabular}
 \end{table}
 
-Level 0 -- 4 are error messages. Level 5 notifies system messages such as interface up or down transitions and system restart messages. Level 6 generates messages , for example, when the device is booting. \\
-
-By default, Cisco routers and switches send log messages for all severity (levels Level 0 through 7) to the console. \\
+Level 0 -- 4 are error messages. Level 5 notifies system messages such as interface up or down transitions and system restart messages. Level 6 generates messages , for example, when the device is booting. By default, Cisco routers and switches send log messages up to level 6 of severity (levels 0 through 6) to the console. \\
 
 The facility represents the machine process that created the syslog event. For example, is the event created by the kernel, by the mail system, by security/authorization processes, etc.? The Facility value is a way of determining which process of the machine created the message. \\
 
@@ -140,9 +136,9 @@ The fields contained in the syslog message above are explained in Table \ref{tab
 \head{Field} & \head{Example} &\head{Explanation}\\
 \midrule
 
-\verb|seq no| & -- & Will be shown only if the \verb|service sequence-numbers| global configuration command is configured \\
+\verb|seq no| & -- & Will be shown only if the service \verb|sequence-numbers| is configured \\
 
-\verb|timestamp| & \verb|00:00:46| & Date and time of the message, which appears only if the service timestamps global configuration command is configured \\
+\verb|timestamp| & \verb|00:00:46| & Date and time of the message, which appears only if the service \verb|timestamps| is configured \\
 
 \verb|facility| & \verb|LINK| &The facility to which the message refers \\
 
@@ -172,7 +168,7 @@ There are three steps to configuring the router to send system messages to a sys
 \begin{enumerate}
 \item Use \verb|logging <ip-addr>| to configure IP address of the syslog server
 
-\item Use the \verb|logging trap <level>| to configure severity level. For example, to limit the messages to levels 4 and lower (0 to 4), use the \verb|logging trap 4 | command. This sends Level 0 through 4 severity messages.
+\item Use the \verb|logging trap <level>| to configure severity level. For example, to limit the messages to levels 4 and lower (0 to 4), use the \verb|logging trap 4| command.
 
 \item (Optional) Configure the source interface with the \verb|logging source <int>| command. This specifies that syslog packets contain the IP address of a specific interface, regardless of which interface the packet uses to exit the router.
 \end{enumerate}

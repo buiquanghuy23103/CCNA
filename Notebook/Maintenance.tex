@@ -12,9 +12,7 @@ The \verb|show file systems| command (Figure \ref{ShowFileSystem}) lists all of 
 
 Notice that the flash file system also has an asterisk preceding it. This indicates that flash is the current default file system. The bootable IOS is located in flash; therefore, the pound symbol (\#) is appended to the flash listing.\\
 
-The output of \verb|dir| command displays the contents of the current directory. Use \verb|dir <dir-name>| to view the content of the specified directory.\\
-
-You can change the current directory using \verb|cd <dir>| command. The \verb|pwd| (present working directory) command shows you the name of the current directory. \\
+Use \verb|dir <dir-name>| to view the content of the specified directory. You can change the current directory using \verb|cd <dir>| command. The \verb|pwd| (present working directory) command shows you the name of the current directory. \\
 
 In the \verb|flash| file system, the file with \verb|.bin| extension (usually the last listing) is the IOS file image that is running in RAM. 
 
@@ -62,7 +60,7 @@ Writing R1-Jan-2016 !!!!!! [OK]
 Use these steps to restore the running configuration from a TFTP server:
 
 \begin{enumerate}
-\item Enter the copy tftp running-config command.
+\item Enter the \verb|copy tftp run| command.
 \item Enter the IP address of the TFTP server where the configuration file is stored.
 \item Enter the name of the configuration file. For example, in the above example the file name was R1-Jan-2016.
 \item Press Enter to confirm.
@@ -117,7 +115,11 @@ Copyright (c) 2010 by cisco Systems, Inc.
 
 \item Because you are in privileged EXEC mode, you can now configure all the necessary passwords.
 
-\item After the new passwords are configured, change the configuration register back to \verb|0x2102| using the \verb|config-register 0x2102| global configuration mode command
+\item After the new passwords are configured, change the configuration register back to \verb|0x2102| using the the following command:
+
+\begin{verbatim}
+Router(config)# config-register 0x2102
+\end{verbatim}
 
 \item Save the new configuration using \verb|copy run startup| command
 
@@ -141,14 +143,14 @@ There are two types of universal images supported in ISR G2:
 \end{itemize}
 
 
-The Cisco IOS image file has special naming convention. The \verb|show flash| command displays all files stored in flash memory including IOS image:
+The Cisco IOS image file has special naming convention. The \verb|show flash| command displays all files stored in flash memory including IOS image(see table \ref{Naming} for explanation):
 
 \begin{verbatim}
 c1900-universalk9-mz.SPA.152-4.M3.bin
 \end{verbatim}
 
 \begin{table}[hbtp]
-\centering\caption{Cisco IOS image naming convention}
+\centering\caption{Cisco IOS image naming convention}\label{Naming}
 \begin{tabular}{ll p{12cm} }
 \toprule
 \head{Part} & \head{Example} & \head{Explanation} \\

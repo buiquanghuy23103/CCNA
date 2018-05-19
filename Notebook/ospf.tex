@@ -333,7 +333,7 @@ R1(config-router)# summary-address 192.168.64.0 255.255.224.0
 
 \subsection{Priority}
 
-Configure OSPF priority for each interface. The higher the priority value (from 0 to 255), the more likely the router becomes the DR or BDR on the interface.	The priority of 0 means that the router will never  become a DR or BDR. On the other hand, 255 means the router will always be DR or BDR. As for IPv6, replace \verb|ip| by \verb|ipv6|.
+By default, all IOS OSPF routers are assigned a priority of 1. OSPF priority is configured in per-interface basis. The higher the priority value (from 0 to 255), the more likely the router becomes the DR or BDR on the interface.	The priority of 0 means that the router will never  become a DR or BDR. On the other hand, 255 means the router will always be DR or BDR. As for IPv6, replace \verb|ip| by \verb|ipv6|.
 	\begin{verbatim}
 	R1(config)# interface g0/0 
 	R1(config)# ip ospf priority 150

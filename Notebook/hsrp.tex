@@ -4,7 +4,7 @@
 
 One way to prevent a single point of failure at the default gateway is to implement a virtual router. Specifically, multiple routers are configured by First Hop Redundancy Protocol (FHRP) to work together as an illusion of a single router to the hosts on the LAN. \\
 
-There are many options available for FHRP: HSRP (Cisco), VRRP (non-proprietary), GLBP (Cisco), IRDP (non-proprietary). This topic only introduces Hot Standby Router Protocol (HSRP), designed by Cisco. This protocol allows for gateway redundancy without any additional configuration on end devices.\\
+There are many options available for FHRP: HSRP (Cisco), GLBP (Cisco), VRRP (non-proprietary), IRDP (non-proprietary). This topic only introduces Hot Standby Router Protocol (HSRP), designed by Cisco. This protocol allows for gateway redundancy without any additional configuration on end devices.\\
  
 HSRP selects exactly one active router and one standby router. The active router will act as the default gateway for end devices. The default gateway address is a virtual IPv4 address along with a virtual MAC address that is shared amongst both HSRP routers. End devices use this virtual IPv4 address as their default gateway address.(See figure \ref{HSRP-topology}). The virtual IPv4 address is configured by the network administrator. The virtual MAC address is created automatically.
 
@@ -30,7 +30,7 @@ To force a new HSRP election process, preemption must be enabled. Preemption is 
 When an interface is configured with HSRP, it exchanges HSRP hello packets to determine which router is active. Hello packets are sent to the HSRP group multicast address every 3 seconds (hello timer), by default. The standby router will become active if it does not receive a hello message from the active router after 10 seconds (hold timer). To avoid increased CPU usage and unnecessary standby state changes, do not set the hello timer below 1 second or the hold timer below 4 seconds.
 
 \section{Configuration}
-Complete the following steps to configure HSRP (see figure \ref{HSRP-config} for example):
+Complete the following steps to configure HSRP:
 \begin{enumerate}
     \item Configure HSRP version 2.
     \item Configure the virtual IP address for the group.

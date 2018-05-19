@@ -8,31 +8,32 @@ The client must contact the DHCP server periodically to extend the lease. This l
 
 \subsection{Lease origination}
 
-When the client boots (or otherwise wants to join a network), it begins DORA\footnote{DORA = Discovery, Offer, Request, Acknowledgement} process to obtain a lease.
+When the client wants to join a network, it begins DORA\footnote{DORA = Discovery, Offer, Request, Acknowledgement} process to obtain a lease.
 
 \begin{enumerate}
 \item A client starts the process with a broadcast \textbf{DHCP-DISCOVER} message to finds available DHCPv4 servers.
 
-\item When the DHCPv4 server receives a DHCP-DISCOVER message, it reserves an available IPv4 address to lease to the client. It then sends a \textbf{DHCP-OFFER} message to the requesting client. The server also creates an ARP entry consisting of the MAC address of the requesting client and the leased IPv4 address of the client.
+\item When the DHCPv4 server receives a DHCP-DISCOVER message, it reserves an available IPv4 address to lease to the client. It then sends a \textbf{DHCP-OFFER} message to the requesting client. At the same time, the server caches the MAC address and the leased IPv4 address of the requesting client to create an ARP entry.
 
-\item When the client receives the DHCP-OFFER from the server, it broadcasts\textbf{DHCP-REQUEST} messages. The DHCP-REQUEST serves as an acceptance notice to the selected server and an implicit decline to any other servers.
+\item When the client receives the DHCP-OFFER from the server, it broadcasts \textbf{DHCP-REQUEST} messages. This message serves as an acceptance notice to the selected server and an implicit decline to any other servers.
 
-\item On receiving the DHCP-REQUEST message, the server verifies the lease information with an ICMP ping to that address to ensure it is not being used already. If there is \emph{no} ICMP echo reply, then the address is is not being used by any client. Otherwise, that address is being used and the server has to send DHCP-OFFER again.
+\item On receiving the DHCP-REQUEST message, the server verifies the lease information with an ICMP ping to that address to ensure it is not being used already. If there is \emph{no} ICMP echo reply, then the address is not being used by any client. Otherwise, that address is being used and the server has to send DHCP-OFFER again.
 
-\item DHCP server sends  unicast \textbf{DHCP-ACK} message to the client. The DHCP-ACK message informs the client that the IP address is valid. Because The DHCP-ACK message is a duplicate of the DHCP-OFFER, it also provides IP information for the client.
+\item DHCP server sends  unicast \textbf{DHCP-ACK} message to the client. This message informs the client that the IP address is valid. Because The DHCP-ACK message is a duplicate of the DHCP-OFFER, it also provides IP information for the client.
 
-\item When the client receives the DHCPACK message, performs an ARP lookup for the assigned address.
-If there is no reply to the ARP, the client knows that the IPv4 address is valid and starts using it as its own.
+\item When the client receives the DHCPACK message, it performs an ARP lookup for the assigned address. If there is \emph{no} reply to the ARP request, the client knows that the IPv4 address is valid and starts using it as its own.
 \end{enumerate}
 
-
+Sometimes, two clients use the same IPv4 address. This create a \textbf{conflict}. In such case, the server uses the ping command to detect the clients that experiencing address conflict. After that, the client uses ARP to detect conflicts. When an address conflict is detected, the address is \emph{removed} from the pool and not assigned until an administrator resolves the conflict. 
 
 \subsection{Lease renewal}
 
 \begin{enumerate}
-\item Before the lease expires, the client sends a DHCPREQUEST message directly to DHCPv4 server. If a DHCPACK is not received within a specified amount of time, the client broadcasts another DHCPREQUEST so that one of the other DHCPv4 servers can extend the lease.
+\item Before the lease expires, the client sends a \textbf{DHCP-REQUEST} message directly to DHCPv4 server. 
 
-\item On receiving the DHCPREQUEST message, the server verifies the lease information by returning a DHCPACK
+\item On receiving the DHCP-REQUEST message, the server verifies the lease information by returning a \textbf{DHCP-ACK}.
+
+\item If a DHCP-ACK is not received within a specified amount of time, the client broadcasts another DHCP-REQUEST message so that one of the other DHCPv4 servers can extend the lease.
 \end{enumerate}
 
 \subsection{Relay agent}
@@ -44,11 +45,24 @@ a router forwards address assignment/parameter requests, it is acting as a DHCPv
 
 \section{Message}
 
-DHCPv4 messages UDP encapsulation. The server uses port 67, the client uses port 68.
+The DHCPv4 message format is used for all DHCPv4 transactions. DHCPv4 messages use \textbf{UDP} port \textbf{67} for server, and \textbf{UDP} port \textbf{68}. In other words, DHCPv4 messages sent from the client to server use UDP source port 68 and destination port 67, DHCPv4 messages sent from server to client use UDP source port 67 and destination port 68. \\
 
-\subsection{Message format}
+The figure shows the format of a DHCPv4 message. The fields are as follows:
 
-\paragraph{Operation (OP) code}specifies general type of message: request (1), reply (2).
+\begin{itemize}
+\item \textbf{OP code} specifies general type of message: request (1), reply (2).
+
+\item \textbf{Hardware type:} Ethernet (1), Frame Relay (15), Serial (20)
+
+\item \textbf{Hop} controls the forwarding of messages. Set to 0 by a client before transmitting a request.
+
+\item \textbf{Transaction identifier} used by client to match the request with replies from DHCPv4 server.
+
+\item \textbf{Seconds:} amount of time (in seconds) elapsed since a client attempted to acquire or renew a lease.
+
+\item \textbf{Flag} is used by a client that does not know its IPv4 address when it sends a request. Only one of the 16 bits—the broadcast flag—is used. A value of 1 in this field tells the DHCPv4 server or relay agent receiving the request that the reply should be sent as a broadcast.
+
+\end{itemize}
 
 \begin{figure}[hbtp]
 \caption{DHCPv4 message format}
@@ -56,29 +70,10 @@ DHCPv4 messages UDP encapsulation. The server uses port 67, the client uses port
 \includegraphics[ width=0.8\textwidth ]{pictures/DHCPmessage.PNG}
 \end{figure}
 
-\paragraph{Hardware type} Ethernet (1), Frame Relay (15), Serial (20)
+\paragraph{DHCP-DISCOVER:}When the client boots, it has no way of knowing the subnet to which it belongs. Therefore, destination
+IPv4 address of DCHP-DISCOVER is 255.255.255.255, the destination MAC address is FF:FF:FF:FF:FF:FF. The source MAC address is the MAC address of the client. The client does not have a configured IPv4 address yet, so the source IPv4 address is 0.0.0.0 
 
-\paragraph{Hop}Controls the forwarding of messages. Set to 0 by a client before transmitting a request.
-
-\paragraph{Transaction identifier} used by client to match the request with replies from DHCPv4 server.
-
-\paragraph{Seconds} amount of time (in seconds) elapsed since a client attempted to acquire or renew a lease.
-
-\paragraph{Flag}Used by a client that does not know its IPv4 address when it sends a
-request. Only one of the 16 bits—the broadcast flag—is used. A value of 1 in
-this field tells the DHCPv4 server or relay agent receiving the request that the
-reply should be sent as a broadcast.
-
-\subsection{DHCP-DISCOVER}
-
-When the client boots, it has no way of knowing the subnet to which it belongs. Therefore, destination
-IPv4 address of DCHP-DISCOVER is 255.255.255.255, the destination MAC address is FF:FF:FF:FF:FF:FF. The source MAC address is the MAC address of the client. The client does not have a configured IPv4 address
-yet, so the source IPv4 address is 0.0.0.0 
-
-\subsection{DHCP-OFFER}
-
-DHCP-OFFER contains initial configuration information
-for the client: IPv4 address for client, subnet mask, lease duration, and IPv4 address of the DHCPv4 server. The DHCPOFFER message can be configured to include other information, such as the lease renewal time and DNS address.
+\paragraph{DHCP-OFFER} contains initial configuration information for the client: IPv4 address for client, subnet mask, lease duration, and IPv4 address of the DHCPv4 server. The DHCPOFFER message can be configured to include other information, such as the lease renewal time and DNS address.
 
 
 \section{Configuration}
@@ -126,16 +121,22 @@ R1(dhcp-config)# dns-server 192.168.11.5
 R1(dhcp-config)# domain-name example.com
 \end{verbatim}
 
-\item[Step 5. Verification] The \verb|show ip dhcp binding| command displays a list of all IPv4 address to MACaddress bindings that have been provided by the DHCPv4 service. The \verb|show ip dhcp server statistics| command verifies that messages are being received or sent by the router. This command displays count information regarding the number of DHCPv4 messages that have been sent and received.
+\item[Step 5.] Verification: The \verb|show ip dhcp binding| command displays a list of all IPv4 address to MAC address bindings that have been provided by the DHCPv4 service. The \verb|show ip dhcp server statistics| command verifies that messages are being received or sent by the router. The \verb|show ip dhcp conflict| command displays all address conflicts recorded by the DHCPv4 server.
 
 \begin{verbatim}
 R1# show run | sec dhcp
 R1# show ip dhcp binding
 R1# show ip dhcp statistics
+R1# show ip dhcp conflict
 \end{verbatim}
+
 \end{description}
 
+\note  If there is a switch between the client and the DHCPv4 server, and the client is unable to obtain the DHCP configuration, switch port configuration issues may be the cause. These causes may include issues from trunking and channeling, STP, and RSTP. \emph{PortFast} and \emph{Edge port} configurations resolve the most common DHCPv4 client issues that occur with an initial installation of a Cisco switch.
+
 \subsection{DHCPv4 client}
+
+Routers in small office/home office (SOHO) and branch sites have to be configured (by ISP) as DHCPv4 clients in a similar manner to client computers. In the simplest configuration, the Ethernet interface (not Serial interface) of the router is used to connect to a cable or DSL modem. To configure an Ethernet interface of a router as a DHCP client, use the following command:
 
 \begin{verbatim}
 SOHO(config)# interface g0/1
@@ -148,18 +149,18 @@ SOHO(config-if)# no shutdown
 
 \section{General Operation}
 
-When the client boots up, it sends DHCPv6 SOLICIT message to FF02::1:2, which is the multicast all-DHCPv6-server address. One or more servers respond with a DHCPv6 ADVERTISE unicast message to inform the client that the server is available for DHCPv6 service. The client responds with either a DHCPv6 REQUEST or a DHCPv6 INFORMATION-REQUEST unicast message: 
+When the client boots up, it sends DHCPv6 SOLICIT message to \textbf{FF02::1:2}, which is the multicast all-DHCPv6-server address. One or more servers respond with a DHCPv6 ADVERTISE unicast message to inform the client that the server is available for DHCPv6 service. The client responds with either a DHCPv6 REQUEST or a DHCPv6 INFORMATION-REQUEST unicast message: 
 
 \begin{itemize}
 \item DHCPv6 INFORMATION-REQUEST unicast message is used for Stateless DHCPv6 (i.e. SLAAC, Stateless DHCPv6 and SLAAC) to request only additional information, such as DNS server addresses, domain name.
-\item DHCPv6 REQUEST unicast message is used for Stateful DHCPv6 to ask for IP configuration parameters from the server.
+\item DHCPv6 REQUEST unicast message is used for Stateful DHCPv6 to ask for all IP configuration parameters from the server.
 \end{itemize}
 
 The server sends a DHCPv6 REPLY unicast message to the client containing the information requested in the DHCPv6 REQUEST or DHCPv6 INFORMATION REQUEST message.
 
 \section{SLAAC}
 
-Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M flag and the O flag are set to 0 in the RA. In SLAAC, a host automatically obtains its IP configuration from an IPv6-enabled router. The host generates its own unique IPv6 address. A DHCPv6 server is not required. SLAAC operation includes the following steps:
+Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M flag and the O flag are set to 0 in the RA. In SLAAC, a host automatically obtains its IP configuration from an IPv6-enabled router. The host generates its own global unicast IPv6 address. A DHCPv6 server is not required. SLAAC operation includes the following steps:
 
 \begin{enumerate}
 \item Client asks for IPv6 configuration by sending an RS to the router R1.
@@ -175,11 +176,23 @@ Stateless Address AutoConfiguration (SLAAC) is enabled by default. Both the M fl
 \end{figure}
 
 
-To configure SLAAC, use the \verb|no ipv6 nd managed-config-flag| and \verb|ipv6 nd other-config-flag| in router interface configuration mode.
+To configure SLAAC, use the following commands:
+
+\begin{verbatim}
+R1(config)# ipv6 unicast-routing
+R1(config)#
+R1(config)# interface g0/1
+R1(config-if)# ipv6 nd managed-config-flag
+R1(config-if)# ipv6 nd other-config-flag
+R1(config-if)# end
+R1# show ipv6 dhcp pool 
+R1# show ipv6 interface
+R1# debug ipv6 dhcp detail
+\end{verbatim}
 
 \section{SLAAC and Stateless DHCPv6}
 
-A host obtains IP configuration (prefix, prefix-length, default gateway) using SLAAC and additional information (DNS server, domain name, etc.) from a stateless DHCPv6 server. The host generates its own unique IPv6 address. \\
+A host obtains IP configuration (prefix, prefix-length, default gateway) using SLAAC and additional information (DNS server, domain name, etc.) from a stateless DHCPv6 server. The host generates its own global unicast IPv6 address. \\
 
 There are four steps to configure a router as a DHCPv6 server:
 
@@ -259,8 +272,7 @@ R1(config-if)# ipv6 nd managed-config-flag
 R1(config-if)# end
 \end{verbatim}
 
-The \verb|show ipv6 dhcp pool| command verifies the name of the DHCPv6 pool and its parameters. The \verb|show ipv6 dhcp binding| command in Example 8-22 displays the automatic
-binding between the link-local address of the client and the address that the server assigns. 
+The \verb|show ipv6 dhcp pool| command verifies the name of the DHCPv6 pool and its parameters. The \verb|show ipv6 dhcp binding| command displays the automatic binding between the link-local address of the client and the address that the server assigns. 
 
 \section{Router as DHCPv6 client}
 
