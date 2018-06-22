@@ -1,13 +1,19 @@
 hostname R1
 no ip domain-lookup
-enable secret class
+
+enable algorithm-type scrypt secret class
+username Huy algorithm-type scrypt secret cisco
 service password-encryption
 banner motd ^CUnauthorized access is not allowed^C
 
 line con 0
  password cisco
  logging synchronous
- login
+ login local
+line vty 0 4
+ login local
+ transport input ssh
+exit
 
 int s0/0/0
 ip address 10.1.1.1 255.255.255.252

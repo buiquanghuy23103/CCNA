@@ -1,0 +1,16 @@
+R1(config)# aaa new-models
+
+R1(config)# radius server Server-R
+R1(config-config-server-tacacs)# address ipv4 192.168.1.101 auth-port 1812 acct-port 1813
+R1(config-config-server-tacacs)# single-connection
+R1(config-config-server-tacacs)# key RADIUS-Pa55w0rd
+R1(config-config-server-tacacs)# exit
+
+R1(config)# aaa authentication dot1x default group radius
+
+R1(config)# dot1x system-auth-control
+
+R1(config)# interface f0/1
+R1(config-if)# sw mode access
+R1(config-if)# authentication port-control auto
+R1(config-if)# dot1x pae authenticator

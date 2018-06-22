@@ -1,0 +1,69 @@
+\chapter{Firewall}
+
+\section{ACL}
+
+ACLs can be used to mitigate IP address spoofing and denial of service (DoS) attacks. Use ACL to block inbound packets from the following addresses:
+
+\begin{itemize}
+\item All zeros addresses
+\item Broadcast addresses
+\item Local host addresses (127.0.0.0/8)
+\item Reserved private addresses (RFC 1918)
+\item IP multicast address range (224.0.0.0/4)
+\end{itemize}
+
+Hackers can use ICMP echo packets (pings) to discover network, generate DoS flood attacks, or alter host routing tables. Both ICMP echo and redirect messages should be blocked \emph{inbound} by the router. Several ICMP messages are recommended for proper network operation and should be allowed into the internal network:
+
+\begin{itemize}
+\item Echo reply -- Allows users to ping external hosts.
+\item Source quench - Requests that the sender decrease the traffic rate of messages.
+\item Unreachable - Generated for packets that are administratively denied by an ACL.
+\end{itemize}
+
+Several ICMP messages are required for proper network operation and should be allowed to exit the network:
+
+\begin{itemize}
+\item Echo -- Allows users to ping external hosts.
+\item Parameter problem -- Informs the host of packet header problems.
+\item Packet too big -- Enables packet maximum transmission unit (MTU) discovery.
+\item Source quench -- Throttles down traffic when necessary.
+\end{itemize}
+
+As a rule, block all \emph{other} ICMP message types \emph{outbound}.\\
+
+If SNMP is necessary, exploitation of SNMP vulnerabilities can be mitigated by applying interface ACLs to filter SNMP packets from non-authorized systems.  The most effective means of exploitation prevention is to disable the SNMP server on IOS devices for which it is not required. 
+
+\note See also \emph{CCNA notebook} for ACL configuration and IPv6 ACL.
+
+\section{Firewall}
+
+\subsection{Introduction}
+
+All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. There are many types of firewalls: Packet filtering firewall, Stateful firewall, Application gateway firewall (proxy firewall), etc.\\
+
+\tableStart[\caption{Packet Filtering Firewall Benefits and Limitations}\label{tab:Firewall1}] { |p{5\xm}|p{5\xm}| }
+\head{Advantages} & \head{Disadvantages}\w
+Simple implementation & Susceptible to IP spoofing \w
+Low impact on network performance & Not reliably filter fragmented packets\w
+Initial degree of security at the network layer & Use complex ACLs, which can be difficult to implement and maintain\w
+Almost all the tasks of a high-end firewall at a much lower cost &  Stateless: examine each packet individually rather than in the context of the state of a connection.\w
+\tableEnd
+
+\textbf{Stateful firewalls} are the most versatile and the most common firewall technologies in use. Unlike a stateless firewall that uses static packet filtering, stateful filtering tracks each connection and confirms that they are valid. Stateful firewalls use a state table to keep track of the actual communication process. Benefits: prevent spoofing and DoS attacks, provide more stringent control over security. Limitations: cannot prevent Application Layer attacks, does not filter UDP and ICMP packets, cannot track connections that use dynamic port negotiation, not support authentication.\\
+
+Designed with advanced malware protection, the Cisco ASA with FirePOWER services is also called the \textbf{Cisco ASA Next-Generation Firewall} because it is an adaptive, threat-focused firewall. It is designed to provide defense across the entire attack continuum, which includes before, during, and after attacks.
+
+\subsection{Classic firewall}
+
+Classic Firewall (CBAC) is a stateful firewall that provides four main functions: traffic filtering, traffic inspection, intrusion detection, and generation of audits and alerts. It can also examine NAT, PAT information, P2P connections. Classic Firewall only provides filtering for those protocols that are specified by an administrator. It can only detects and protects against external attacks that travel through the firewall, but not attacks originating from within the protected network. 
+
+\subsection{Firewall in network design}
+
+\section{Zone-based policy firewall}
+
+\subsection{Overview}
+
+\subsection{Operation}
+
+\subsection{Configuration}
+
