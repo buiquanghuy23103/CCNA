@@ -1,0 +1,62 @@
+\chapter{Intrusion Prevention System (IPS)}
+
+\section{Introduction}
+
+Firewalls can only do so much and cannot protect against malware and zero-day attacks. A zero-day attack is a computer attack that tries to exploit software vulnerabilities that are unknown or undisclosed by the software vendor. \\
+
+\textbf{Intrusion Detection Systems (IDSs)} were implemented to passively monitor the traffic on a network. IDS-enabled device copies the traffic stream and analyzes the copied traffic rather than the actual forwarded packets. \textbf{Working offline}, it compares the captured traffic stream with known malicious signatures. Working offline means several things:
+
+\begin{itemize}
+\item IDS works passively
+\item IDS device is physically positioned in the network so that traffic must be mirrored in order to reach it
+\item Network traffic does not pass through the IDS unless it is mirrored
+\end{itemize}
+
+%Although the traffic is monitored and perhaps reported, . IDS advantage: not negatively affect the packet flow of the forwarded traffic. IDS isadvantage: cannot stop malicious single-packet attacks from reaching the target before responding to the attack. \\
+
+\textbf{Intrusion Prevention System (IPS)} was upon IDS technology. However, an IPS device is implemented in \textbf{inline mode}. This means that all ingress and egress traffic must flow through it for processing. An IPS does not allow packets to enter the trusted side of the network without first being analyzed. It can detect and immediately address a network problem. \\
+%
+%IPS advantage: stop single-packet attacks from reaching the target system. IPS disadvantage: a poorly configured IPS, or a non-proportional IPS solution, can negatively affect the packet flow of the forwarded traffic.\\
+
+The biggest difference between IDS and IPS is that an IPS responds immediately and does not allow any malicious traffic to pass, whereas no action is taken on malicious packets by the IDS.\\
+
+IDS and IPS technologies share several characteristics:
+
+\begin{itemize}
+\item Deployed as sensors
+\item Use signatures\footnote{A signature is a set of rules that an IDS or IPS uses to detect malicious activity.} to detect patterns in network traffic
+\item Can detect atomic signature patterns (single-packet) or composite signature patterns (multi-packet)
+\end{itemize}
+
+\tableStart[\caption{Pros and Cons of IDS}\label{IDS}] { |p{6\xm}|p{6\xm} }
+& \head{Advantages} & \head{Disadvantages}\w
+\head{IDS}
+\tableEnd
+
+\subsection{Zero-day attacks}
+
+\subsection{IDS vs IPS}
+
+\subsection{Network-based IPS}
+
+\subsection{Cisco switched port analyzer}
+
+\section{IPS Signatures}
+
+\subsection{Characteristics}
+
+\subsection{Alarms}
+
+\subsection{Actions}
+
+\subsection{Manage and monitor}
+
+\subsection{Global correlation}
+
+\section{Implementation}
+
+\subsection{Configuration}
+
+\subsection{Modification}
+
+\subsection{Verification}

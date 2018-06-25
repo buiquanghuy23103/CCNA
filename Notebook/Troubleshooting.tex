@@ -213,20 +213,117 @@ R1(config)# ip sla schedule 1 start-time now life forever
 
 \item \textbf{Framing errors:} A framing error occurs when a frame does not end on an 8-bit byte boundary. Causes: noisy serial line, an improperly designed cable (too long or not properly shielded), faulty NIC, \emph{duplex mismatch}, or an incorrectly configured CSU line clock.
 
-\item \textbf{STP failures or loops:} a high rate of STP topology changes, inconsistent configuration of STP timers, overloaded CPU. 
+\item \textbf{STP failures or loops:} STP topology changes, inconsistent configuration of STP timers, overloaded CPU. 
 \end{itemize}
 
 \subsection{Network layer}
 
 \begin{itemize}
-\item \textbf{General network issues:} installation of new routes, static or dynamic, or removal of other routes. 
+\item \textbf{General network issues:} change in the topology (down link, install new routes, etc.), someone is currently working on the network infrastructure
 
 \item \textbf{Connectivity issues:} power problems, cabling problems, bad ports, and ISP problems. 
 
-\item \textbf{Routing table, or Topology database:} missing or unexpected routes. Use \verb|debug| commands to view routing updates and routing table maintenance.
+\item \textbf{Routing table:} missing or unexpected routes, improper routing protocol configuration
 
-\item \textbf{Neighbor issues:} check to see if there are any problems with the routers forming neighbor adjacencies.
+\item \textbf{Neighbor issues:} routing protocol configuration, down link, routing protocol authentication
 \end{itemize}
+
+\subsection{Transport layer}
+
+The most common issues with ACLs are caused by improper configuration. There are several areas where ACL misconfigurations commonly occur:
+
+\begin{itemize}
+\item Wrong interface or traffic direction (inbound, outbound)
+\item Order of access control entries
+\item Addresses and IPv4 wildcard masks
+\item Selection of transport layer protocol
+\end{itemize}
+
+\section{Troubleshooting end-to-end connectivity}
+
+
+When there is no end-to-end connectivity, and the administrator chooses to troubleshoot with a bottom-up approach, these are common steps the administrator can take:
+
+\begin{enumerate}
+\item Check physical connectivity at the point where network communication stops. The problem might be with a faulty cable or interface, or involve misconfigured or faulty hardware.
+\item Check for duplex mismatches.
+\item Check data link and network layer. This includes IPv4 ARP tables, IPv6 neighbor tables, MAC address tables, and VLAN assignments.
+\item Verify Default Gateway
+\item Verify correct route from the source to the destination. 
+\item Verify the transport layer
+\item Verify ACLs
+\item Ensure that DNS settings are correct. There should be a DNS server that is accessible.
+\end{enumerate}
+
+\subsection{Check physical connectivity}
+
+The most commonly used Cisco IOS commands for this purpose are \code{sh process cpu}, \code{sh memory}, and \code{sh int}. This topic discusses the \code{sh int} command. The output of the \code{sh int} command in the figure lists a number of important statistics that can be checked:
+
+\begin{figure}[hbtp]
+\caption{The output of show interface command}
+\centering
+\includegraphics[scale=0.8]{pictures/ShowInterface.PNG}
+\end{figure}
+
+\textbf{Input queue drops} signify that at some point, more traffic was delivered to the router than it could process. This could be normal during 
+traffic peaks. However, it could be an indication that the CPU cannot process packets in time. \\
+
+\textbf{Output queue drops} indicate that packets were dropped due to congestion on the interface. Seeing output drops is normal for any point where the aggregate input traffic is higher than the output traffic. However, consistently seeing output drops can be an indicator that you need to implement or modify QoS.\\
+
+\textbf{Input errors} indicate errors that are experienced during the reception of the frame, such as CRC errors. High numbers of CRC errors could indicate cabling problems, interface hardware problems, or duplex mismatches.\\
+
+\textbf{Output errors} indicate collisions during the transmission of a frame, and collisions, especially late collisions, often indicate duplex mismatches.
+
+The network administrator corrects duplex mismatches using \code{duplex auto} interface configuration command.
+
+\subsection{Check data link and network layer}
+
+When troubleshooting end-to-end connectivity, it is useful to verify mappings between destination IP addresses and Layer 2 Ethernet addresses on individual segments. In IPv4, this functionality is provided by ARP. In IPv6, the ARP functionality is replaced by the neighbor discovery process and ICMPv6. The neighbor table caches IPv6 addresses and their resolved MAC addresses.\\
+
+The \code{arp} Windows command displays and modifies entries in the ARP cache that are used to store IPv4 addresses and their resolved Ethernet physical (MAC) addresses. The cache can be cleared by using the \code{arp -d} Windows command if the network administrator wants to repopulate the cache with updated information.\\
+
+The \code{netsh interface ipv6 show neighbor} Windows command lists all devices that are currently in the neighbor table. The neighbor table for Linux and MAC OS X can be displayed using \code{ip neigh show} command.\\
+
+Use the \code{show mac address-table} command to display the MAC address table on the switch.  Use \code{show vlan} command can be used to validate VLAN assignments on a switch.
+
+\subsection{Verify Default Gateway}
+
+Use \code{show ip route} Cisco IOS command and the \code{route print} Windows command to verify the presence of the IPv4 default gateway. If the IPv4 addressing information was obtained automatically from a DHCPv4 server, then the configuration on the DHCP server must be examined. \\
+
+In IPv6, the default gateway can be configured manually, using stateless autoconfiguration (SLAAC), or by using DHCPv6. Use the \code{show ipv6 route} Cisco IOS command to check for the IPv6 default route and use the \code{ipconfig} Windows command to verify if a PC has an IPv6 default gateway.
+
+\subsection{Verify correct route}
+
+Use the\code{show ip route} and \code{show ipv6 route} command on a router to examine the routing table. 
+
+\subsection{Verify transport layer}
+
+Two of the most common issues that affect transport layer connectivity include ACL configurations and NAT configurations. A common tool for testing transport layer functionality is the Telnet utility.
+
+\note While Telnet can be used to test the transport layer, for security reasons, SSH should be used to remotely manage and configure devices.
+
+Although the Telnet server application runs on port number 23, a different port number can be specified on the client to connect to any TCP port that must be tested. This indicates whether the connection is accepted (as indicated by the word Open in the output), refused, or times out. Given an example, the administrator Telnets from PC1 to the server HQ using port 80 (Figure \ref{Telnet}). The output verifies that the server is not accepting connections on port 80.
+
+\begin{figure}[hbtp]
+\caption{Use Telnet to verify transport layer}\label{Telnet}
+\centering
+\includegraphics[scale=0.8]{pictures/Telnet.PNG}
+\end{figure}
+
+\subsection{Verify DNS configuration}
+
+Use the running configuration file to view the DNS configuration information on the switch or router. When there is no DNS server installed, it is possible to enter names to IP mappings directly into the switch or router configuration. Use the \code{ip host} command to enter name to IPv4 mapping to the switch or router. The \code{ipv6 host} command is used for the same mappings using IPv6. To display the name-to-IP-address mapping information on the Windows-based PC, use the \code{nslookup} command.
+
+\begin{sexylisting}{Assign a name to a router or switch}
+ip host KEVIN-SERVER 172.16.1.100
+ipv6 host HUY-SERVER 2001:db8:acad:4::100
+
+ping KEVIN-SERVER
+ping HUY-SERVER
+\end{sexylisting}
+
+Because domain names and DNS are a vital component of accessing servers on the network, many times the user thinks the “network is down” when the problem is actually with the DNS server.
+
 \section{Scenarios}
 
 \begin{example}

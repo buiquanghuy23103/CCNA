@@ -2,42 +2,44 @@
 
 \section{Securing network}
 
-\subsection{Attack vector}
+\subsection{Introduction}
 
-An attack vector is a path or other means by which an attacker can gain access to a server, host, or network. Many attack vectors originate from outside the corporate network. For example, attackers may target a network, through the Internet, in an attempt to disrupt network operations and create a denial of service (DoS) attack.\\
+An attack vector is a path or other means by which an attacker can gain access to a server, host, or network. Attack vectors can originate from outside (external threat) or inside (internal threat) the corporate network. Internal threats have the potential to cause greater damage than external threats because employees have direct access to infrastructure devices as well as the knowledge of the corporate network.\\
 
-Attack vectors can also originate from inside the network. An internal user, such as an employee, can accidently or intentionally steal and copy confidential data to removable media. Internal threats also have the potential to cause greater damage than external threats because internal users have direct access to the building and its infrastructure devices. Employees also have knowledge of the corporate network, its resources, and its confidential data.\\
+\textbf{Security Artichoke} is the analogy used to describe what a hacker must do to launch an attack in a Borderless network. They  remove certain \emph{artichoke leafs}, and each \emph{leaf} of the network may reveal some sensitive data. And leaf after leaf, it all leads the hacker to more data.\\
 
-Network security professionals must implement tools and apply techniques for mitigating both external and internal threats.
+\textbf{Cryptography} is the study and practice of hiding information. It ensures three components of information security: Confidentiality, Integrity, and Availability.\\
 
-\subsection{Data loss}
-
-Various Data Loss Prevention (DLP) controls must be implemented to protect the organization's data. Common data loss vectors are shown in the following list:
-
-\begin{itemize}
-\item \textbf{Email/Social networking:} instant messaging software and social media sites
-\item \textbf{Unencrypted devices:} a stolen laptop typically contains confidential data. If the information is not stored using encryption algorithm, the attacker can retrieve valuable confidential data.
-\item \textbf{Cloud storage service:} sensitive data can be loss if access to cloud service is compromised.
-\item \textbf{USB storage:} employees may perform unauthorized data transfer to USB; data stored in USB devices can be lost due to physical damage
-\item \textbf{Hard copy:} confidential data on paper should be shredded when no longer required
-\item \textbf{Improper access control:} stolen passwords or weak passwords
-\end{itemize}
+A \textbf{Security Policy} is a formal statement of the rules by which people that are given access to the technology and information assets of an organization, must abide.
+%
+%\subsection{Data loss}
+%
+%Various Data Loss Prevention (DLP) controls must be implemented to protect the organization's data. Common data loss vectors are shown in the following list:
+%
+%\begin{itemize}
+%\item \textbf{Email/Social networking:} instant messaging software and social media sites
+%\item \textbf{Unencrypted devices:} a stolen laptop typically contains confidential data. If the information is not stored using encryption algorithm, the attacker can retrieve valuable confidential data.
+%\item \textbf{Cloud storage service:} sensitive data can be loss if access to cloud service is compromised.
+%\item \textbf{USB storage:} employees may perform unauthorized data transfer to USB; data stored in USB devices can be lost due to physical damage
+%\item \textbf{Hard copy:} confidential data on paper should be shredded when no longer required
+%\item \textbf{Improper access control:} stolen passwords or weak passwords
+%\end{itemize}
 
 \subsection{Network topology}
 
-\paragraph{Campus Area Networks:} The main focus of this course is on securing Campus Area Networks (CANs). CANs consists of interconnected LANs within a limited geographic area. Figure \ref{CANsec} displays a sample CAN with a defense in-depth approach using various security features and security devices to secure it.
+%\paragraph{Campus Area Networks:} The main focus of this course is on securing Campus Area Networks (CANs). CANs consists of interconnected LANs within a limited geographic area. Figure \ref{CANsec} displays a sample CAN with a defense in-depth approach using various security features and security devices to secure it.
+%
+%\begin{figure}[hbtp]
+%\caption{CAN security}\label{CANsec}
+%\centering
+%\includegraphics[scale=0.5]{pictures/CANsec.PNG}
+%\end{figure}
 
-\begin{figure}[hbtp]
-\caption{CAN security}\label{CANsec}
-\centering
-\includegraphics[scale=0.5]{pictures/CANsec.PNG}
-\end{figure}
+\paragraph{SOHO network:} Attackers may want to use someone's Internet connection for free or illegal activity, or view financial transactions. Home networks and SOHOs are typically protected using a consumer \emph{grade router}, such as a \emph{Linksys home wireless router}. 
 
-\paragraph{SOHO network:} Attackers may want to use someone's Internet connection for free, use the Internet connection for illegal activity, or view financial transactions, such as online purchases. Home networks and SOHOs are typically protected using a consumer \emph{grade router}, such as a \emph{Linksys home wireless router}. 
+\paragraph{WAN network:} Main site and Regional site are protected by an ASA (stateful firewall and VPN). Branch site is secured using hardened ISR and VPN connection to the main site. The SOHO and Mobile users connect to the main site using Cisco Anyconnect VPN client. 
 
-\paragraph{WAN network:} Network security professionals must use secure devices on the edge of the networks. The Main site and Regional site are protected by an ASA, which provides stateful firewall features and establishes VPN tunnels to various destinations. The branch site is secured using hardened ISR, which can establish an always-on VPN connection to the main site. The SOHO and Mobile users connect to the main site using Cisco Anyconnect VPN client. 
-
-\paragraph{Data center network:} Data center networks are interconnected to corporate sites using \emph{VPN} technology with \emph{ASA} devices and \emph{integrated data center switches}, such as a high-speed Nexus switches. Data center physical security can be divided into two areas: Outside perimeter security and Inside perimeter security. 
+\paragraph{Data center network:} Data center networks are interconnected to corporate sites using VPN and ASA devices along with \emph{integrated data center switches}, such as a high-speed Nexus switches. Data center physical security can be divided into two areas: Outside perimeter security and Inside perimeter security. 
 %\emph{Security traps} (Inside perimeter security) provide access to the data halls where data center data is stored. A person must first enter the security trap using their badge ID proximity card. After the person is inside the security trap, biometric verifications are used to open the second door. The user must repeat the process to exit the data hall.
 
 \paragraph{Cloud and virtual network:} This kind of network uses virtual machines (VM) to provide services to their clients.  VMs are also prone to specific targeted attacks as shown in the following list. The Cisco Secure Data Center is a solution to secure Cloud and virtual network. The core components of this solution provide: Secure Segmentation, Threat Defense, and Visibility.
@@ -48,12 +50,12 @@ Various Data Loss Prevention (DLP) controls must be implemented to protect the o
 \item \textbf{Antivirus storm:} Multiple VMs attempt to download antivirus file at the same time
 \end{itemize}
 
-\paragraph{Borderless Network:} To accommodate the BYOD trend, Cisco developed the Borderless Network. To support this network , Cisco devices support Mobile Device Management (MDM) features. MDM features secure, monitor, and manage mobile devices, including corporate-owned devices and employee-owned devices. Some critical MDM functions include:
+\paragraph{Borderless Network:} To accommodate the BYOD trend, Cisco developed the Borderless Network. To support this network, Cisco devices support Mobile Device Management (MDM) features. MDM features secure, monitor, and manage mobile devices, including corporate-owned devices and employee-owned devices. Some critical MDM functions include:
 
 \begin{itemize}
 \item Data encryption
 \item PIN enforcement
-\item Data wipe (lost devices can be remotely wiped out)
+\item Data wipe (data in lost devices can be remotely wiped out)
 \item Data Loss Prevention (DLP): prevent unauthorized users from accessing, prevent authorized users from doing malicious things to  critical data  
 \item Detect password bypasses such as Jalibreaking (Apple iOS) or Rooting (Android) and restrict devices' access to network and corporate assets
 \end{itemize}
@@ -62,9 +64,7 @@ Various Data Loss Prevention (DLP) controls must be implemented to protect the o
 
 \subsection{Who is a hacker?}
 
-Hacker is a common term used to describe a network attacker. The terms white hat hacker, black hat hacker, and grey hat hacker are often used to describe hackers. The \emph{white hat hackers} are ethical hackers that perform network penetration test to discover network vulnerabilities. The \emph{grey hat hackers} do unethical things but not for personal gain or to cause damage (e.g. disclose vulnerability publicly). The \emph{black hat hackers} violate computer and network security for personal gain and malicious purposes. \\
-
-The following list displays modern hacking terms and a brief description of each.\\
+\textbf{White hat hackers} perform \emph{ethical} network penetration test to discover network vulnerabilities. \textbf{Grey hat hackers} do unethical things, but not for personal gain or to cause damage (e.g. disclose vulnerability publicly). \textbf{Black hat hackers} violate computer and network security for personal gain and malicious purposes. The following list displays modern hacking terms and a brief description of each.\\
 
 \begin{itemize}
 \item Script kiddies -- inexperienced hackers running scripts, tools, programs, etc. to cause harm but not for profit
@@ -108,9 +108,9 @@ The following list displays modern hacking terms and a brief description of each
 
 A \textbf{virus} is malicious code that is attached to executable files which are often legitimate programs. Most viruses require end user \emph{activation}. A simple virus may install itself at the first line of code on an executable file. When activated, the virus might check the disk for other executables so that it can infect all the files it has not yet infected. Most viruses are now \emph{spread} by USB memory drives, CDs, DVDs, network shares, and email. Email viruses are now the most common type of virus.\\
 
-A \textbf{Trojan horse} is malware that carries out malicious operations under the guise of a desired function. A Trojan horse comes with malicious code hidden inside of it. This malicious code exploits the \emph{privileges} of the user that \emph{runs} it. Often, Trojans are found attached to online games. \\
+A \textbf{Trojan horse} is malware that carries out malicious operations under the guise of a desired function. A Trojan horse comes with malicious code hidden inside of it. This malicious code exploits the \emph{privileges} of the user that \emph{runs} it. Trojans are often found attached to online games. \\
 
-\textbf{Worms} \emph{replicate} themselves by independently exploiting vulnerabilities in networks. Worms usually \emph{slow down} networks. Whereas a virus requires a host program to run, worms can \emph{run by themselves}. Other than the initial infection, they no longer require user participation. After a host is infected, the worm is able to \emph{spread very quickly} over the network. Most worm attacks consist of three components:
+\textbf{Worms} \emph{run by themselves}, \emph{replicate} and then \emph{spread very quickly} to slow down networks. They does not require user participation. After a host is infected, the worm is able to  over the network. Most worm attacks consist of three components:
 
 \begin{itemize}
 \item \textbf{Enabling vulnerability:} A worm installs itself using an exploit mechanism, such as an email attachment, an executable file, or a Trojan horse.
@@ -120,7 +120,7 @@ A \textbf{Trojan horse} is malware that carries out malicious operations under t
 
 \note Worms never really stop on the Internet. After they are released, they continue to propagate until all possible sources of infection are properly patched.\\
 
-Some examples of modern malware:
+Some other examples of modern malware:
 
 \begin{itemize}
 \item Ransomware -- deny access to the infected computer system, then demand a paid ransom for the restriction to be removed.
@@ -150,11 +150,11 @@ The method used in this course classifies attacks in three major categories: Rec
 \item Baiting -- a hacker leaves a malware-infected physical device, such as a USB flash drive in a public location such as a corporate washroom. The finder finds the device and loads it onto their computer, unintentionally installing the malware.
 \end{itemize}
 
-\textbf{Denial-of-Service (DoS)} attacks are highly publicized network attacks and relatively simple to conduct. A DoS attack results in some sort of interruption of service to users, devices, or applications. There are two major sources of DoS attacks:
+\textbf{Denial-of-Service (DoS)} attacks create interruption of service. They are popular and simple to conduct. There are two major sources of DoS attacks:
 
 \begin{itemize}
-\item Maliciously Formatted Packets -- a maliciously formatted packet is forwarded to a host and the receiver is unable to handle an unexpected condition. This causes the receiving device to crash or run very slowly.
-\item Overwhelming Quantity of Traffic -- This is when a network, host, or application is unable to handle an enormous quantity of data, causing the system to crash or become extremely slow.
+\item \emph{Maliciously Formatted Packets} is forwarded to a host and the receiver is unable to handle an unexpected condition, which leads to slow or crashed system.
+\item \emph{Overwhelming Quantity of Traffic} causes the system to crash or become extremely slow.
 \end{itemize}
 
 \textbf{A Distributed DoS Attack (DDoS)} is similar in intent to a DoS attack, except that a DDoS attack increases in magnitude because it originates from multiple, coordinated sources. As an example, a DDoS attack could proceed as follows:
@@ -167,24 +167,16 @@ The method used in this course classifies attacks in three major categories: Rec
 
 \section{Mitigating Threats}
 
-\subsection{Defending networks}
-
-\textbf{Cryptography}, the study and practice of hiding information, is used extensively in modern network security. Cryptography ensures three components of information security: Confidentiality, Integrity, and Availability.\\
-
-The 12 \textbf{network security domains} are intended to serve as a common basis for developing organizational security standards and effective security management practices. They provide a convenient separation of the elements of network security. One of the most important domains is the \textbf{security policy domain}. A security policy is a formal statement of the rules by which people that are given access to the technology and information assets of an organization, must abide. \\
-
-\textbf{Security Artichoke} is the analogy used to describe what a hacker must do to launch an attack in a Borderless network. They  remove certain \emph{artichoke leafs}, and each \emph{leaf} of the network may reveal some sensitive data. And leaf after leaf, it all leads the hacker to more data. 
-
 \subsection{Cisco SecureX architecture}
 
 The Cisco SecureX architecture is designed to provide effective security for any user, using any device, from any location, and at any time. This architecture includes the following five major components:
 
 \begin{itemize}
-\item \textbf{Scanning Engines:} the workhorses of policy enforcement; examine the content, authenticate uses, and identify applications.
-\item \textbf{Delivery Mechanisms:} introduce scanning elements into the network; Example: a module in switch or router, an image of Cisco security cloud
-\item \textbf{Security Intelligence Operations (SIO):} the brain; they distinguish good traffic from malicious traffic
-\item \textbf{Policy Management Consoles:} they are separated from the scanners that enforce the policy, by doing this, it is possible to span a single policy definition to multiple enforcement points
-\item \textbf{Next-Generation Endpoints:} critical piece that ties all everything together; they can be any of a multitude of devices; 
+\item \textbf{Scanning Engines:} examine the content, authenticate uses, and identify applications.
+\item \textbf{Delivery Mechanisms:} introduce scanning elements into the network, such as a module in switch or router, an image of Cisco security cloud
+\item \textbf{Security Intelligence Operations (SIO):} distinguish good traffic from malicious traffic
+\item \textbf{Policy Management Consoles:} span a single policy definition to multiple enforcement points; separated from the scanners
+\item \textbf{Next-Generation Endpoints:} ties all everything together
 \end{itemize}
 
 A \textbf{context-aware scanning element} is a network security device that examines packets on the wire, but also looks at external information to understand the full context of the situation. A context-aware policy uses a simplified descriptive business language to define security policies based on five parameters: person ID, application, device type, location, and access time.\\
@@ -193,7 +185,7 @@ To help keep the Cisco ESA, WSA, ASA, and IPS devices secure, Cisco designed the
 
 \subsection{Mitigating common network attacks}
 
-\paragraph{Malware:} The primary means of mitigating virus and Trojan horse attacks is antivirus software. Antivirus software helps prevent hosts from getting infected and spreading malicious code. Antivirus products are host-based. These products are installed on computers and servers to detect and eliminate viruses. However, they do not prevent viruses from entering the network.
+\paragraph{Malware:} The primary means of mitigating virus and Trojan horse attacks is antivirus software. Antivirus software are host-based product that prevents hosts from getting infected and spreading malicious code. However, they do not prevent viruses from entering the network.
 
 \paragraph{Worms:} They are more network-based than viruses. Worm mitigation requires diligence and coordination on the part of network security professionals. The response to a worm attack can be broken down into four phases:
 
@@ -212,16 +204,16 @@ To help keep the Cisco ESA, WSA, ASA, and IPS devices secure, Cisco designed the
 
 \subsection{Cisco Network Foundation Protection Framework}
 
-The Cisco Network Foundation Protection (NFP) framework provides comprehensive guidelines for protecting the network infrastructure. These guidelines form the foundation for continuous delivery of service. NFP logically divides routers and switches into three functional areas: Control plane, Management plane, and Data plane.\\
+The Cisco Network Foundation Protection (NFP) framework provides comprehensive guidelines for protecting the network infrastructure.  NFP logically divides routers and switches into three functional areas: Control plane, Management plane, and Data plane.\\
 
 \textbf{Control plane} security can be implemented using the following features: \emph{Routing protocol authentication}, \emph{CoPP}, and \emph{AutoSecure}. CoPP (Control Plane Policing) prevents unnecessary traffic from overwhelming the route processor. AutoSecure can lock down the management plane functions and the forwarding plane services and functions of a router.\\
 
 \textbf{Management plane} security can be implemented using the following features:
 
 \begin{itemize}
-\item Login and password policy (\verb|enable secret| command)
-\item Present legal notification (\verb|banner motd| command)
-\item \textbf{RBAC} (Role-based access control)  restricts user access based on the role of the user. In Cisco IOS, the role-based CLI access feature implements RBAC for router management access. The feature creates different \emph{views} that define which commands are accepted and what configuration information is visible. The central repository server can be an AAA server.
+\item Login and password policy
+\item Present legal notification
+\item \textbf{RBAC} (Role-based access control)  restricts user access based on the role of the user. In Cisco IOS, the role-based CLI access feature implements RBAC for router management access. 
 \item Authorize actions
 \item Enable management access reporting
 \end{itemize}
