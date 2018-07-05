@@ -37,9 +37,7 @@ There are a number of distinct types of VLANs:
 
 \subsection{What is tagging?}
 
-A \textbf{trunk} is a point-to-point link between two network devices that carries more than one VLAN. VLAN trunks allow all VLAN traffic to propagate between switches so that devices that are in the same VLAN, but connected to different switches.\\
-
-When Ethernet frames are placed on a trunk, information about the VLANs to which they belong must be added. This process, called \textbf{tagging}, is accomplished by using the IEEE \textbf{802.1Q} header.\\
+A \textbf{trunk} is a point-to-point link between two network devices that carries more than one VLAN. VLAN trunks allow all VLAN traffic to propagate between switches so that devices that are in the same VLAN, but connected to different switches. When Ethernet frames are placed on a trunk, information about the VLANs to which they belong must be added. This process, called \textbf{tagging}, is accomplished by using the IEEE \textbf{802.1Q} header.\\
 
 \begin{figure}[hbtp]
 \caption{Fields in Ethernet 801.Q frame}\label{tagging}
@@ -99,7 +97,7 @@ On the switch, the access is configured to send CDP packets that instruct an att
 
 \subsection{Create VLAN}
 
-A VLAN is created using the \verb|vlan vlan_id| global configuration command. This creates the VLAN and enters VLAN configuration mode. The VLAN can now be assigned a unique name using the \verb|name vlan_name| command.
+A VLAN is created using the \code{vlan <vlan-id>} global configuration command. This creates the VLAN and enters VLAN configuration mode. The VLAN can now be assigned a unique name using the \code{name <vlan-name>} subcommand.
 
 \begin{verbatim}
 S1(config)# vlan 20
@@ -114,8 +112,7 @@ S1(config)# vlan 100,102,105-107
 
 \subsection{Access port}
 
-After creating a VLAN, the next step is to assign access ports to the VLAN. First of all, the port must be assigned as an
-access port using the \verb|sw mode access| interface configuration command. Next, assign the port to a VLAN using the \verb|sw access vlan vlan_id| interface configuration command. Note that an access port can belong to only one VLAN at a time.
+After creating a VLAN, the next step is to assign access ports to the VLAN. First of all, the port must be assigned as an access port using the \verb|sw mode access| interface configuration command. Next, assign the port to a VLAN using the \verb|sw access vlan vlan_id| interface configuration command. Note that an access port can belong to only one VLAN at a time.
 
 \begin{verbatim}
 S1(config)# interface FastEthernet0/1
@@ -132,53 +129,43 @@ The entire VLAN configuration can be erased using \verb|delete vlan.dat|. This c
 
 \subsection{Trunk port}
 
-To configure a switch port on one end of a trunk link, use the \verb|sw mode trunk| interface configuration command. The native VLAN can also be changed (other than VLAN 1) using \verb|sw trunk native vlan vlan_id|. Always configure both ends of a trunk link with the same native VLAN. \\
+To configure a switch port on one end of a trunk link, use the \code{sw mode trunk} interface configuration command. The native VLAN can also be changed (other than VLAN 1) using \code{sw trunk native vlan <vlan-id>}. Always configure both ends of a trunk link with the same native VLAN. Use \code{sw trunk allowed vlan <vlan-list>} command to specify the list of VLANs to be allowed on the trunk link.\\
 
-Use \verb|sw trunk allowed vlan vlan-list| command to specify the list of VLANs to be allowed on the trunk link.\\
+\begin{sexylisting}{Trunking configuration}
+interface f0/1
+  sw trunk encapsulation dot1q
+  sw mode trunk
+  sw trunk native vlan 99
+  sw trunk allowed vlan 10,20,30,99
+end
+\end{sexylisting}
 
-\begin{verbatim}
-S1(config)# interface f0/1
-S1(config-if)# sw mode trunk
-S1(config-if)# sw trunk native vlan 99
-S1(config-if)# sw trunk allowed vlan 10,20,30,99
-S1(config-if)# end
-\end{verbatim}
-
-This configuration assumes the switches automatically use 802.1Q encapsulation on trunk links. Some switches may require manual configuration of the encapsulation. We have to configure 802.1Q encapsulation before trunking mode. Otherwise, the following message will appear:
+Please note that we have to configure 802.1Q encapsulation before trunking mode using \code{sw trunk encapsulation dot1q} command. Otherwise, the following message will appear:
 
 \begin{verbatim}
 Command rejected: An interface whose trunk encapsulation is "Auto" can not be configured to "trunk" mode. 
 \end{verbatim}
 
-Whenever this error message appears, use the following solution:
-
-\begin{verbatim}
-S1(config)# interface f0/1
-S1(config-if)# sw trunk encapsulation dot1q 
-S1(config-if)# sw mode trunk
-\end{verbatim}
-
-To reset a trunk to allow all VLANs, use the \verb|no sw trunk allowed vlan| interface configuration command. To reset the native VLAN to VLAN 1, use the \verb|no sw trunk native vlan| interface configuration command. To set the port to a non-trunking port, use the \verb|sw mode access| interface command.\\
+To reset a trunk to allow all VLANs, use the \code{no sw trunk allowed vlan} interface configuration command. To reset the native VLAN to VLAN 1, use the \code{no sw trunk native vlan} interface configuration command. To set the port to a non-trunking port, use the \code{sw mode access} interface command.
 
 \subsection{Voice VLAN}
 
 Consider the topology in Figure \ref{VoiceVLAN}. In this example, PC5 is connected to the Cisco IP phone, which in turn is connected to the F0/18 interface on S3. To implement this configuration, Data VLAN 20 (for PC) and Voice VLAN 150 (for IP phone) are created. 
 
-\begin{verbatim}
-S3(config)# vlan 20
-S3(config-vlan)# name Student
-S3(config-vlan)# vlan 150
-S3(config-vlan)# name Voice
-S3(config-vlan)# exit
-S3(config)# 
-S3(config)# interface f0/18
-S3(config-if)# sw mode access
-S3(config-if)# sw access vlan 20
-S3(config-if)# 
-S3(config-if)# mls qos trust cos
-S3(config-if)# sw voice vlan 150
-S3(config-if)# end
-\end{verbatim}
+\begin{sexylisting}{Voice VLAN example}
+vlan 20
+  name Student
+  vlan 150
+  name Voice
+exit
+
+interface f0/18
+  sw mode access
+  sw access vlan 20
+  mls qos trust cos
+  sw voice vlan 150
+end
+\end{sexylisting}
 
 \begin{figure}[hbtp]
 \caption{Sample topology with IP phone}\label{VoiceVLAN}
@@ -186,35 +173,33 @@ S3(config-if)# end
 \includegraphics[scale=0.6]{pictures/VoiceVLAN.PNG}
 \end{figure}
 
-The command \verb|mls qos trust cos| enables QoS classification based on the class of service (CoS) assigned by the IP phone. The command \verb|sw voice vlan 150| assigns  voice VLAN 150 to port F0/18. 
+The command \code{mls qos trust cos} enables QoS classification based on the class of service (CoS) assigned by the IP phone. The command \code{sw voice vlan 150} assigns  voice VLAN 150 to port F0/18. 
 
 \subsection{Verification}
 
 VLAN configurations can be validated using the following command:
 
-\begin{verbatim}
-S1# show vlan [brief | id vlan-id | name vlan-name | summary]
-
-S1# show vlan name student
-S1# show vlan summary
-S1# show vlan brief
-S1# show vlan id 20
-S1# show interfaces vlan 20
-\end{verbatim}
+\begin{sexylisting}{VLAN verification}
+show vlan name Student
+show vlan summary
+show vlan brief
+show vlan id 20
+show interfaces vlan 20
+\end{sexylisting}
 
 The trunking configuration is verified by the following commands:
 
-\begin{itemize}
-\item \verb|show interface switchport|
-\item \verb|show interface <int> switchport|
-\item \verb|show interfaces trunk| 
-\end{itemize}
+\begin{sexylisting}{Trunking configuration}
+show int switchport
+show int <int> switchport
+show int trunk
+\end{sexylisting}
 
 \subsection{Troubleshoot}
 
 \paragraph{IP address:} Each VLAN must correspond to a unique IP subnet. If two devices in the same VLAN have different subnet addresses, they cannot communicate. This is a common problem, and it is easy to solve by identifying the incorrect configuration and changing the subnet address to the correct one.
 
-\paragraph{Missing VLAN:} Verify whether the port is in the correct VLAN using \verb|show vlan| and \verb|show mac address-table int <int>|. Verify if the VLAN is present in the VLAN database using \verb|show vlan|. Use the \verb|show interfaces switchport| command to verify if the inactive VLAN is assigned to the port.
+\paragraph{Missing VLAN:} Verify whether the port is in the correct VLAN using \code{show vlan} and \code{sh mac address-table int <int>}. Verify if the VLAN is present in the VLAN database using \verb|show vlan|. Use the \verb|show interfaces switchport| command to verify if the inactive VLAN is assigned to the port.
 
 
 \paragraph{Native VLAN mismatches:} Trunk ports are configured with different native VLANs. This configuration error generates console notifications and can cause inter-VLAN routing issues. To solve the native VLAN mismatch, configure the native VLAN to be the same VLAN on both sides of the link.

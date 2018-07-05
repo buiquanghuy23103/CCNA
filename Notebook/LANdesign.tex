@@ -34,14 +34,16 @@ A \textbf{failure domain} is the area of a network that is impacted when a criti
 
 To minimize failure domain, routers or multilayer switches, are usually deployed in pairs, with access layer switches evenly divided between them. This configuration is referred to as a \textbf{switch block}. Each switch block acts independently of the others.
 
-\paragraph{Increasing Bandwidth:} Link aggregation allows an administrator to increase the amount of bandwidth between devices by creating one logical link made up of several physical links. EtherChannel is a form of link aggregation used in switched networks. The EtherChannel is seen as one logical link using an EtherChannel interface. Most configuration tasks are done on the EtherChannel interface, instead of on each individual port, ensuring configuration consistency throughout the links.
+\paragraph{Increasing Bandwidth:} Link aggregation allows an administrator to increase the amount of bandwidth between devices by creating one logical link made up of several physical links. The EtherChannel is seen as one logical link using an EtherChannel interface. Most configuration tasks are done on the EtherChannel interface, instead of on each individual port, ensuring configuration consistency throughout the links.
 
 \paragraph{Wireless connection:} To communicate wirelessly, end devices require a wireless NIC that incorporates a radio transmitter/receiver and the required software driver to make it operational. Additionally, a wireless router or a wireless access point (AP) is required for users to connect.
 
 \paragraph{Fine-tuning Routing Protocols:} Advanced routing protocols, such as OSPF and EIGRP are used in large networks. Link-state routing protocols such as Open Shortest Path First (OSPF) works well for larger hierarchical networks where fast convergence is important. Another popular routing protocol for larger networks is Enhanced Interior Gateway Routing Protocol (EIGRP). Cisco developed EIGRP as a proprietary distance vector routing protocol with enhanced capabilities.
 
 \section{Selecting network devices}
+
 \subsection{Switch hardwares}
+
 There are five categories of switches for enterprise networks:
 
 \begin{itemize}
@@ -56,6 +58,7 @@ There are five categories of switches for enterprise networks:
 \end{itemize}
 
 There are some terminologies that an administrator to be able to choose the right switch platform:
+
 \begin{itemize}
 \item \textbf{Port density} is the number of ports available on a single switch.
 \item \textbf{Forwarding rates} define the processing capabilities of a switch by rating how much data the switch can process per second.
@@ -63,7 +66,9 @@ There are some terminologies that an administrator to be able to choose the righ
 \item \textbf{PoE} (Power over Ethernet) allows the switch to deliver power to a device over the existing Ethernet cabling.  This feature can be used by IP phones and some wireless access points.
 \item \textbf{Multilayer switches}, so called Layer-3 switches,  are typically deployed in the core and distribution layers of an organization's switched network
 \end{itemize}
+
 \subsubsection{Router hardware}
+
 There are three categories of routers:
 \begin{itemize}
 \item \textbf{Branch Routers} -- Branch routers optimize branch services on a single platform while delivering an optimal application experience across branch and WAN infrastructures.

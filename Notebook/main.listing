@@ -1,5 +1,8 @@
-ip host KEVIN-SERVER 172.16.1.100
-ipv6 host HUY-SERVER 2001:db8:acad:4::100
-
-ping KEVIN-SERVER
-ping HUY-SERVER
+int f0/1
+  switchport port-security
+  switchport port-security mac-address sticky
+  switchport port-security violation restrict
+  switchport port-security maximum 2
+end
+show int
+show port-security int

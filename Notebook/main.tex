@@ -1,56 +1,59 @@
 \documentclass[10pt]{book}
 \usepackage{huy,math,titlepage,code}
+
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \newtheorem{example}{Example}[chapter]
 \newenvironment{solution}{\begin{proof}}{\end{proof}}
+
 \pagestyle{headings}
 \usepackage[margin=2cm]{geometry}
+\setcounter{tocdepth}{1} %shows two levels incl. section
 %===============
 \author{Huy Bui}
 \title{CCNA notebook}
 \date{\today}
 \begin{document}
 \titleAT{CCNA}
-\thispagestyle{empty}{\tableofcontents}
+\thispagestyle{empty}{\tableofcontents\listofcodes}
 
-\part{NETWORK FUNDAMENTALS}
-\include{ReferenceModel}
-\include{LANdesign}
-\include{WANconcepts}
-\include{NetworkEvolution}
-
-\part{SWITCHING TECHNOLOGIES}
-\include{Switch}
+%\part{NETWORK FUNDAMENTALS}
+%\include{ReferenceModel}
+%\include{LANdesign}
+%\include{WANconcepts}
+%\include{NetworkEvolution}
+%
+%\part{SWITCHING TECHNOLOGIES}
+%\include{Switch}
 \include{VLAN}
-\include{vtp}
-\include{stp}
-\include{EtherChannel}
+%\include{vtp}
+%\include{stp}
+%\include{EtherChannel}
+%
+%
+%\part{ROUTING TECHNOLOGIES}
+%\include{Router}
+%\include{IPv6}
+%\include{StaticRoute}
+%\include{eigrp}
+%\include{ospf}
+%
+%\part{WAN TECHNOLOGIES}
+%\include{PPP}
+%\include{GRE,eBGP}
+%\include{QoS}
+%
+%\part{INFRASTRUCTURE SERVICE}
+%\include{dhcp}
+%\include{hsrp}
+%
+%\part{INFRASTRUCTURE SECURITY}
+%\include{nat}
+%\include{ACL}
 
-
-\part{ROUTING TECHNOLOGIES}
-\include{Router}
-\include{IPv6}
-\include{StaticRoute}
-\include{eigrp}
-\include{ospf}
-
-\part{WAN TECHNOLOGIES}
-\include{PPP}
-\include{GRE,eBGP}
-\include{QoS}
-
-\part{INFRASTRUCTURE SERVICE}
-\include{dhcp}
-\include{hsrp}
-
-\part{INFRASTRUCTURE SECURITY}
-\include{nat}
-\include{ACL}
-
-\part{INFRASTRUCTURE MANAGEMENT}
-\include{Monitoring}
-\include{Troubleshooting}
-\include{cdp}
-\include{Maintenance}
+%\part{INFRASTRUCTURE MANAGEMENT}
+%\include{Monitoring}
+%\include{Troubleshooting}
+%\include{cdp}
+%\include{Maintenance}
 \end{document}

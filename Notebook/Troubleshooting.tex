@@ -136,35 +136,31 @@ Instead of using ping manually, a network engineer can use the IP SLA ICMP Echo 
 
 \subsection{Configuration}
 
-To create an IP SLA operation and enter IP SLA configuration mode, use the \verb|ip sla <operation-number>| global configuration command. From IP SLA configuration mode, you can configure the IP SLA operation as an ICMP Echo operation and enter ICMP echo configuration mode using the following command:
+To create an IP SLA operation and enter IP SLA configuration mode, use the \code{ip sla <operation-number>} global configuration command. From IP SLA configuration mode, you can configure the IP SLA operation as an ICMP Echo operation and enter ICMP echo configuration mode using the following command:
 
 \begin{verbatim}
-Router(config-ip-sla)# icmp-echo { dest-ip-address | dest-hostname } 
-						[ source-ip { ip-address | hostname } 
-						| source-interface interface-id ] 
+icmp-echo {dest-ip-address | dest-hostname} [source-ip {ip-address | hostname} | source-interface interface-id] 
 \end{verbatim}
 
-Next, set the rate at which a specified IP SLA operation repeats using the \verb|frequency <seconds>| command. To schedule the IP SLA operation, use the following global configuration command:
+Next, set the rate at which a specified IP SLA operation repeats using the \code{frequency <seconds>} command. To schedule the IP SLA operation, use the following global configuration command:
 
 \begin{verbatim}
-Router(config)# ip sla schedule operation-number 
-                [ life { forever | seconds }] 
-                [ start-time { hh : mm [: ss ] [ month day | day month ] 
-                | pending | now | after hh:mm:ss ] [ ageout seconds ] 
+ip sla schedule operation-number [life {forever | seconds}] [start-time {hh:mm[:ss] [month day | day month] 
+                |pending | now| after hh:mm:ss] [ageout seconds] 
                 [ recurring ] 
 \end{verbatim}
 
 \subsection{Sample}
 
-The configuration below configures an IP SLA operation with an operation number of 1.  Each operation can be referred to by its operation-number. The \verb|icmp-echo| command identifies the destination address to be monitored. The frequency command is setting the IP SLA rate to 30 second intervals. The \verb|ip sla schedule| command is scheduling the IP SLA operation number 1 to start immediately (now) and continue until manually cancelled (forever).
+The configuration below configures an IP SLA operation with an operation number of 1.  Each operation can be referred to by its operation-number. The \code{icmp-echo} command identifies the destination address to be monitored. The frequency command is setting the IP SLA rate to 30 second intervals. The \verb|ip sla schedule| command is scheduling the IP SLA operation number 1 to start immediately (now) and continue until manually cancelled (forever).
 
-\begin{verbatim}
-R1(config)# ip sla 1
-R1(config-ip-sla)# icmp-echo 192.168.1.5
-R1(config-ip-sla)# frequency 30
-R1(config-ip-sla)# exit
-R1(config)# ip sla schedule 1 start-time now life forever
-\end{verbatim}
+\begin{sexylisting}{IP SLA example}
+ip sla 1
+  icmp-echo 192.168.1.5
+  frequency 30
+  exit
+ip sla schedule 1 start-time now life forever
+\end{sexylisting}
 
 \section{Troubleshooting tools}
 

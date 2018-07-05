@@ -20,49 +20,24 @@ Figure \ref{ProtocolEncap}  demonstrate the complete protocol encapsulation duri
 
 Whereas the TCP/IP model layers (table \ref{TCP}) are referred to only by name, the seven OSI model layers (table \ref{OSI}) are more often referred to by number rather than by name. For instance, the physical layer is referred to as Layer 1 of the OSI model.
 
-\begin{table}[hbtp]
-\centering\caption{The OSI Reference Model}\label{OSI}
-\begin{tabular}{cl p{12cm} }
-\toprule
-\head{Number} & \head{Layer} & \head{Description} \\
-\midrule
+\tableStart[\caption{The OSI Reference Model}\label{OSI}] {|cl p{12cm}|}
+\head{Number} & \head{Layer} & \head{Description} \w
+7 & Application & contain protocols used for process-toprocess communications\w
+6 & Presentation & provide for common representation of the data transferred between application layer services\w
+5 & Session & organize dialog and manage data exchange\w
+4 & Transport & segment, transfer, and reassemble\w
+3 & Network & exchange the individual pieces of data over the network \w
+2 & Data Link & exchange data frames between devices over a common media\w
+1 & Physical & describe the mechanical, electrical media to create physical connections for bit transmission\w
+\tableEnd
 
-7 & Application & contain protocols used for process-toprocess communications\\
-
-6 & Presentation & provide for common representation of the data transferred between application layer services\\
-
-5 & Session & organize dialog and manage data exchange\\
-
-4 & Transport & segment, transfer, and reassemble\\
-
-3 & Network & exchange the individual pieces of data over the network \\
-
-2 & Data Link & exchange data frames between devices over a common media\\
-
-1 & Physical & describe the mechanical, electrical media to create physical connections for bit transmission\\
-
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[hbtp]
-\centering\caption{The TCP/IP Reference Model}\label{TCP}
-\begin{tabular}{c p{12cm} }
-\toprule
-\head{Layer} & \head{Description} \\
-\midrule
-
-Application & represent data to user plus encoding and dialog control\\
-
-Transport & support communication between various devices across diverse networks\\
-
-Internet & determine best path through the network \\
-
-Network Access & control hardware devices and media\\
-
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{The TCP/IP Reference Model}\label{TCP}] {|c|p{12cm}|}
+\head{Layer} & \head{Description} \w
+Application & represent data to user plus encoding and dialog control\w
+Transport & support communication between various devices across diverse networks\w
+Internet & determine best path through the network \w
+Network Access & control hardware devices and media\w
+\tableEnd
 
 \section{Physical layer}
 
@@ -88,9 +63,7 @@ There are three basic forms of network media: Copper cable (electrical pulses), 
 
 \subsection{Copper cable}
 
-Copper cable is inexpensive and easy to install but limited by distance and signal interference. \\
-
-There are two sources of interference:
+Copper cable is inexpensive and easy to install but limited by distance and signal interference. There are two sources of signal interference:
 
 \begin{itemize}
 \item \textbf{EMI or RIF:} distort and corrupt the data signals; potential source: radio waves, electromagnetic devices, such as fluorescent lights or electric motors. To counter the negative effects of EMI and RFI, some types of copper cables are wrapped in metallic shielding and require proper grounding connections.
@@ -108,61 +81,33 @@ There are three main types of copper media used in networking:
 \item \textbf{Coaxial cable} contains two conductors that share the same axis. 
 \end{itemize}
 
-\begin{table}[hbtp]
-\centering\caption{UTP Categories}\label{UTPcat}
-\begin{tabular}{ll}
-\toprule
-\head{Category} & \head{Speed} \\
-\midrule
-Cat3 Cable (UTP) & 10Mb/s\\
-Cat5 & 100 -- 1000 Mb/s\\
-Cat5e& 1000 Mb/s \\
-Cat6 &  1000 Mb/s -- 10 Gb/s \\
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{UTP Categories}\label{UTPcat}] {|l|l|}
+\head{Category} & \head{Speed} \w
+Cat3 Cable (UTP) & 10Mb/s\w
+Cat5 & 100 -- 1000 Mb/s\w
+Cat5e& 1000 Mb/s \w
+Cat6 &  1000 Mb/s -- 10 Gb/s \w
+\tableEnd
 
-\begin{table}[hbtp]
-\centering\caption{Copper cable types}
-\begin{tabular}{l p{4cm} p{10cm} }
-\toprule
+\tableStart[\caption{Copper cable types}] {|l|p{4cm}|p{10cm}|}
 \head{UTP cable} & \head{Standard} & \head{Application} \\
-\midrule
-
-Straight-through & Both ends T568A or T568B & PC to switch, switch to router \\
-
-Crossover & One end T568A, the other end T568B & switch to switch, router to router, PC to router \\
-
-Rollover & Cisco proprietary & Connects a workstation serial port to a router console port \\
-
-\bottomrule
-\end{tabular}
-\end{table}
+Straight-through & Both ends T568A or T568B & PC to switch, switch to router \w
+Crossover & One end T568A, the other end T568B & switch to switch, router to router, PC to router \w
+Rollover & Cisco proprietary & Connects a workstation serial port to a router console port \w
+\tableEnd
 
 \subsection{Fiber optic}
 
 Optical fiber cable transmits data over longer distances and at higher bandwidths than any other networking media. Unlike copper wires, fiber-optic cable can transmit signals with less attenuation and is completely immune to EMI and RFI. 
 
-\begin{table}[hbtp]
-\centering\caption{Fiber Cable Components}
-\begin{tabular}{l p{12cm} }
-\toprule
-\head{Component} & \head{Description} \\
-\midrule
-
-Core & The core is actually the light transmission element at the center of the optical fiber. This core is typically silica or glass. Light pulses travel through the fiber core.\\
-
-Cladding & It tends to act like a mirror by reflecting light back into the core of the fiber. This keeps light in the core as it travels down the fiber.\\
-
-Buffer & Used to help shield the core and cladding from damage.\\
-
-Strengthening material & Surrounds the buffer, prevents the fiber cable from being stretched when it is being pulled. The material used is often the same material used to produce bulletproof vests.\\
-
-Jacket & a PVC jacket that protects the fiber against abrasion, moisture, and other contaminants.\\
-
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{Fiber Cable Components}]{|l|p{12cm}|
+\head{Component} & \head{Description} \w
+Core & The core is actually the light transmission element at the center of the optical fiber. This core is typically silica or glass. Light pulses travel through the fiber core.\w
+Cladding & It tends to act like a mirror by reflecting light back into the core of the fiber. This keeps light in the core as it travels down the fiber.\w
+Buffer & Used to help shield the core and cladding from damage.\w
+Strengthening material & Surrounds the buffer, prevents the fiber cable from being stretched when it is being pulled. The material used is often the same material used to produce bulletproof vests.\w
+Jacket & a PVC jacket that protects the fiber against abrasion, moisture, and other contaminants.\w
+\tableEnd
 
 Light pulses representing the transmitted data as bits on the media are generated by either Lasers or LEDs. Fiber-optic cables are broadly classified into two types:
 
@@ -275,27 +220,17 @@ For each device, an ARP cache timer removes ARP entries that have not been used 
 
 \paragraph{ARP request} If there is no entry is found in ARP table for a particular IPv4 address, then the device sends an ARP request. ARP messages are encapsulated directly within an Ethernet frame. There is no IPv4 header (Figure \ref{ARPrequest}). Destination MAC address is a broadcast address. ARP messages have a type field of \textbf{0x806}. 
 
-\begin{table}[hbtp]
-\centering\caption{ARP request message}\label{ARPrequest}
-\begin{tabular}{|c|c|c|c|}
-\toprule
-Destination MAC & Source MAC & \textbf{Target} IPv4 & Target MAC \\
-FF-FF & 00-0A & 192.68.1.5 & -- \\
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{ARP request message}\label{ARPrequest}] {|c|c|c|c|}
+Destination MAC & Source MAC & \textbf{Target} IPv4 & Target MAC \w
+FF-FF & 00-0A & 192.68.1.5 & -- \w
+\tableEnd
 
-\paragraph{ARP reply} Only the device with an IPv4 address associated with the target IPv4 address in the ARP request will respond with an ARP reply. Only the device that originally sent the ARP request will receive the unicast ARP reply. The ARP reply is encapsulated in an Ethernet frame (Figure \ref{ARPreply}).
+\paragraph{ARP reply} Only the device with an IPv4 address associated with the target IPv4 address in the ARP request will respond with an ARP reply. Only the device that originally sent the ARP request will receive the unicast ARP reply. The ARP reply is encapsulated in an Ethernet frame (Table \ref{ARPreply}).
 
-\begin{table}[hbtp]
-\centering\caption{ARP request message}\label{ARPreply}
-\begin{tabular}{|c|c|c|c|}
-\toprule
-Destination MAC & Source MAC & \textbf{Sender} IPv4 & Sender MAC \\
-00-0A & 00-0B & 192.68.1.5 & 00-0B \\
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{ARP request message}\label{ARPreply}] {|c|c|c|c|}
+Destination MAC & Source MAC & \textbf{Sender} IPv4 & Sender MAC \w
+00-0A & 00-0B & 192.68.1.5 & 00-0B \w
+\tableEnd
 
 \paragraph{ARP broadcasts}  If a large number of devices were to be powered up, and all start sending ARP requests, there could be some reduction in performance for a short period of time. 
 
@@ -434,64 +369,57 @@ Use \verb|show version| to check the version of the Cisco IOS, the version of th
 
 \subsection{Router configuration}
 
-\begin{table}[hbtp]
-\centering\caption{Initial Router Configuration Tasks}
-\begin{tabular}{ll}
-\toprule
-\head{Task} & \head{Commands}\\
-\midrule
-
-Configure the device name & \verb|Router(config)# hostname name|\\ \hline
+\tableStart[\caption{Initial router configuration}] {|l|l|}
+\head{Task} & \head{Commands}\w
+Configure the device name & \verb|hostname BranchRouter| \w
 
 Secure user EXEC mode & 
 \begin{minipage}{4in}
 \begin{verbatim}
-Router(config)# line console 0
-Router(config-line)# password password
-Router(config-line)# login
+line console 0
+  password cisco12345
+  login
 \end{verbatim} 
-\end{minipage} \\ \hline
+\end{minipage} \w
 
 Secure remote Telnet/SSH access & 
 \begin{minipage}{4in}
 \begin{verbatim}
-Router(config)# line vty 0 4
-Router(config-line)# password password
-Router(config-line)# login
+line vty 0 4
+  password cisco12345
+  login
 \end{verbatim} 
-\end{minipage} \\ \hline
+\end{minipage} \w
 
-Secure privilege EXEC mode & \verb|Router(config)# enable secret password|\\ \hline
+Secure privilege EXEC mode & \verb|Router(config)# enable secret password|\w
 
-Secure all passwords & \verb|Router(config)# service password-encryption|\\ \hline
+Secure all passwords & \verb|Router(config)# service password-encryption|\w
 
-Provide legal notification & \verb|Router(config)# banner motd "message"|\\ \hline
+Provide legal notification & \verb|Router(config)# banner motd "message"|\w
 
-Save the configuration & \verb|Router# copy run start|\\ \hline
+Save the configuration & \verb|Router# copy run start|\w
 
 Configure the interface & 
 \begin{minipage}{3in}
 \begin{verbatim}
-Router(config)# interface <int>
-Router(config-if)# ip address ip-address subnet-mask
-Router(config-if)# description description-text
-Router(config-if)# no shutdown
+interface s0/0/0
+  ip address 192.168.100.1 255.255.255.0
+  description Connect to R1
+  no shutdown
 \end{verbatim}
-\end{minipage}\\ \hline
+\end{minipage}\w
 
 Verify interface configuration & 
 \begin{minipage}{3in}
 \begin{verbatim}
-Router# show interface
-Router# show ip interface
-Router# show ip interface brief
-Router# show ip route
+show interface
+show ip interface
+show ip interface brief
+show ip route
 \end{verbatim}
-\end{minipage}\\ \hline
+\end{minipage}\w
 
-\bottomrule
-\end{tabular}
-\end{table}
+\tableEnd
 
 \section{Transport layer}
 
@@ -616,30 +544,22 @@ There are different types of port numbers:
 \item \textbf{Dynamic or Private Ports} (49152 -- 65535): These are assigned dynamically by the client's OS to identify the application during communication.
 \end{itemize}
 
-\begin{table}[hbtp]
-\centering
-\begin{tabular}{lll}
-\toprule
-\head{Port number} & \head{Protocol} & \head{Application}\\
-\midrule
-
-20 & TCP & FTP (data)\\
-21 & TCP & FTP (client)\\
-22 & TCP & SSH\\
-23 & TCP & Telnet\\
-25 & TCP & SMTP\\
-53 & UDP, TCP & DNS\\
-67, 68 & UDP & DHCP\\
-69 & UDP & TFTP\\
-80 & TCP & HTTP\\
-443 & TCP & HTTPS\\
-110 & TCP & POP3\\
-143 & TCP & IMAP\\
-161 & UDP & SNMP\\
-
-\bottomrule
-\end{tabular}
-\end{table}
+\tableStart[\caption{Protocol port number}] {|l|l|l|}
+\head{Port number} & \head{Protocol} & \head{Application}\w
+20 & TCP & FTP (data)\w
+21 & TCP & FTP (client)\w
+22 & TCP & SSH\w
+23 & TCP & Telnet\w
+25 & TCP & SMTP\w
+53 & UDP, TCP & DNS\w
+67, 68 & UDP & DHCP\w
+69 & UDP & TFTP\w
+80 & TCP & HTTP\w
+443 & TCP & HTTPS\w
+110 & TCP & POP3\w
+143 & TCP & IMAP\w
+161 & UDP & SNMP\w
+\tableEnd
 
 \section{Application layer}
 
@@ -681,7 +601,7 @@ When the server receives the message, it either places the message in a local ac
 
 \subsection{DNS}
 
-In data networks, devices are labeled with numeric IP addresses to send and receive data over networks. Domain names were created to convert the numeric address into a simple, recognizable name. For example, a domain name, such as http://www.cisco.com, is much easier for people to remember than 198.133.219.25, which is the actual numeric address for this server. \\
+In data networks, devices are labeled with numeric IP addresses to send and receive data over networks. Domain names were created to convert the numeric address into a simple, recognizable name. For example, a domain name, such as \verb|http://www.cisco.com|, is much easier for people to remember than 198.133.219.25, which is the actual numeric address for this server. \\
 
 The DNS (Domain Name Service)  defines an automated service that matches resource names with the required numeric network address. The steps involved in DNS resolution are as follows:
 
@@ -701,7 +621,7 @@ The DNS server stores different types of resource records used to resolve names.
 \item MX – A mail exchange record
 \end{itemize}
 
-When a client makes a query, the server's DNS process first looks at its own records to resolve the name. If it is unable to resolve the name using its stored records, it contacts other servers to resolve the name. After a match is found and returned to the original requesting server, the server temporarily stores the numbered address in the event that the same name is requested again. The DNS Client service on Windows PCs also stores previously resolved names in memory. The \verb|ipconfig /displaydns| command displays all of the cached DNS entries.\\
+When a client makes a query, the server's DNS process first looks at its own records to resolve the name. If it is unable to resolve the name using its stored records, it contacts other servers to resolve the name. After a match is found and returned to the original requesting server, the server temporarily stores the numbered address in the event that the same name is requested again. The DNS Client service on Windows PCs also stores previously resolved names in memory. The \code{ipconfig /displaydns} command displays all of the cached DNS entries.\\
 
 \begin{figure}[hbtp]
 \caption{A hierarchy of DNS server}\label{DNSprocess}
@@ -712,7 +632,7 @@ When a client makes a query, the server's DNS process first looks at its own rec
 
 The DNS protocol uses a hierarchical system to create a database to provide name resolution (Figure \ref{DNSprocess}). The naming structure is broken down into small, manageable zones. Each DNS server maintains a specific database file and is only responsible for managing name-to-IP mappings for that small portion of the entire DNS structure.\\
 
-The different top-level domains represent either the type of organization or the country of origin. Examples of top-level domains are: \textbf{.com} (business or industry), \textbf{.org} (non-profit organization), \textbf{.fi} (Finland), etc.\\
+The different top-level domains represent either the type of organization or the country of origin. Examples of top-level domains are: .com (business or industry), .org (non-profit organization), .fi (Finland), etc.\\
 
 Computer operating systems also have a utility called \emph{nslookup} that allows the user to manually query the name servers to resolve a given host name. This utility can also be used to troubleshoot name resolution issues and to verify the current status of the name servers. When the nslookup command is issued, the default DNS server configured for your host is displayed. 
 
@@ -722,6 +642,7 @@ FTP transfers data between a client and a server. To successfully transfer data,
 
 \begin{itemize}
 \item The \textbf{client} establishes the first connection to the server for control traffic using \textbf{TCP} port \textbf{21}, consisting of client \emph{commands} and server \emph{replies}.
+
 \item The client establishes the second connection to the server for the \emph{actual data transfer} using \textbf{TCP} port \textbf{20}. This connection is created every time there is data to be transferred. The data transfer can happen in either direction. The client can download (pull) data from the server, or the client can upload (push) data to the server.
 \end{itemize}
 

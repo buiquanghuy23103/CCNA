@@ -121,58 +121,58 @@ Because IPv6 ACLs must be configured with both a source and a destination, they 
 \begin{example}
 The figure shows an example of an ACL designed to permit a single network. Only traffic from the 192.168.10.0/24 network will be permitted out the Serial 0/0/0 interface.
 \begin{verbatim}
-R1(config)# access-list 1 permit 192.168.10.0 0.0.0.255
-R1(config)# interface s0/0/0
-R1(config)# ip access-group 1 out
+access-list 1 permit 192.168.10.0 0.0.0.255
+interface s0/0/0
+ip access-group 1 out
 \end{verbatim}
 \end{example}
 
 \begin{example}
 Figure below shows the commands used to configure a standard named ACL on router R1, interface G0/0, which denies host 192.168.11.10 access to the 192.168.10.0 network.
 \begin{verbatim}
-R1(config)# ip access-list standard NO_ACCESS
-R1(config-std-nacl)# deny host 192.168.11.10
-R1(config-std-nacl)# permit any
-R1(config-std-nacl)# exit
-R1(config)# interface g0/0
-R1(config-if)# ip access-group NO_ACCESS out
+ip access-list standard NO_ACCESS
+  deny host 192.168.11.10
+  permit any
+  exit
+interface g0/0
+  ip access-group NO_ACCESS out
 \end{verbatim}
 \end{example}
 
 \begin{example}
 Design an IPv4 named access list HQServer to prevent any computers attached to the g0/0 interface of the Branch router from accessing HQServer.pka (172.16.0.1). All other traffic is permitted. Configure the access list on the appropriate router, apply it to the appropriate interface and in the appropriate direction.
 \begin{verbatim}
-Branch(config)# ip access-list extended HQServer
-Branch(config-ext-nacl)# deny ip any host 172.16.0.1
-Branch(config-ext-nacl)# permit ip any any
-Branch(config-ext-nacl)# exit
-Branch(config)# int g0/0
-Branch(config-if)# ip access-group HQServer in
+ip access-list extended HQServer
+  deny ip any host 172.16.0.1
+  permit ip any any
+  exit
+int g0/0
+  ip access-group HQServer in
 \end{verbatim}
 \end{example}
 
 \begin{example}
 Design an IPv4 named access list BranchServer to prevent any computers attached to the Gigabit Ethernet 0/0 interface of the HQ router from accessing the HTTP and HTTPS service of the Branch server (172.16.128.1/20). All other traffic is permitted. Configure the access list on the appropriate router, apply it to the appropriate interface and in the appropriate direction.
 \begin{verbatim}
-HQ(config)# ip access-list extended BranchServer
-HQ(config-ext-nacl)# deny tcp any host 172.16.128.1 eq 80
-HQ(config-ext-nacl)# deny tcp any host 172.16.128.1 eq 443
-HQ(config-ext-nacl)# permit ip any any
-HQ(config-ext-nacl)# exit
-HQ(config)# int g0/0
-HQ(config-if)# ip access-group HQServer in
+access-list extended BranchServer
+  deny tcp any host 172.16.128.1 eq 80
+  deny tcp any host 172.16.128.1 eq 443
+  permit ip any any
+  exit
+int g0/0
+ ip access-group HQServer in
 \end{verbatim}
 \end{example}
 
 \begin{example}
  Design an IPv6 access-list named NO-B1 to prevent any IPv6 traffic originating on B1 (2001:DB8:ACAD:B1::2/64) to reach the BranchServer.pka (2001:DB8:ACAD:B2::3/64). No traffic should be permitted from B1 to BranchServer.pka. Apply the IPv6 access to the most appropriated location (interface and direction).
 \begin{verbatim}
-Branch(config)# ipv6 access-list NO-B1
-Branch(config-ipv6-acl)# deny ipv6 host 2001:DB8:ACAD:B1::2 host 2001:DB8:ACAD:B2::3
-Branch(config-ipv6-acl)# permit ipv6 any any
-Branch(config-ipv6-acl)# exit
-Branch(config)# int g0/1
-Branch(config-if)# ipv6 traffic-filter NO-B1 out
+ipv6 access-list NO-B1
+  deny ipv6 host 2001:DB8:ACAD:B1::2 host 2001:DB8:ACAD:B2::3
+  permit ipv6 any any
+  exit
+int g0/1
+  ipv6 traffic-filter NO-B1 out
 \end{verbatim}
 \end{example}
 
@@ -196,14 +196,14 @@ Configure an extended IPv4 ACL named INTOHQ such that:
 \item Apply the ACL to the Central S0/0/0 interface.
 \end{itemize}
 \begin{verbatim}
-R1(config)# ip access-list extended INTOHQ
-R1(config-std-nacl)# permit tcp any host 172.16.10.5 eq 53
-R1(config-std-nacl)# permit udp any host 172.16.10.5 eq 53
-R1(config-std-nacl)# permit tcp any host 172.16.10.10 eq 80
-R1(config-std-nacl)# permit tcp any any established
-R1(config-std-nacl)# exit
-R1(config)# interface s0/0/0
-R1(config-if)# ip access-group INTOHQ in
+ip access-list extended INTOHQ
+  permit tcp any host 172.16.10.5 eq 53
+  permit udp any host 172.16.10.5 eq 53
+  permit tcp any host 172.16.10.10 eq 80
+  permit tcp any any established
+  exit
+int s0/0/0
+  ip access-group INTOHQ in
 \end{verbatim}
 \end{example}
 
@@ -217,13 +217,13 @@ Configure an extended ACL named SNMPACCESS such that
 \item Apply this ACL on the Central router, G0/0 interface.
 \end{itemize}
 \begin{verbatim}
-R1(config)# ip access-list extended SNMPACCESS
-R1(config-std-nacl)# permit udp host 192.168.10.5 host 192.168.10.1 eq 161
-R1(config-std-nacl)# deny udp any host 192.168.10.1 eq 161
-R1(config-std-nacl)# permit ip any any
-R1(config-std-nacl)# exit
-R1(config)# interface g0/0
-R1(config-if)# ip access-group SNMPACCESS in
+ip access-list extended SNMPACCESS
+  permit udp host 192.168.10.5 host 192.168.10.1 eq 161
+  deny udp any host 192.168.10.1 eq 161
+  permit ip any any
+  exit
+ interface g0/0
+  ip access-group SNMPACCESS in
 \end{verbatim}
 \end{example}
 
