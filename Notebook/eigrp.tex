@@ -150,19 +150,13 @@ This is a conditional formula. If $K5=0$, the last term is replaced by 1. Defaul
 
 \paragraph{Delay:} EIGRP uses the sum of all delays along the path to the destination. The sum of these delays is divided by 10. See also table \ref{delay-value} for default delay values. For example, along the path R1$\rightarrow$R2$\rightarrow$R3, the s0/0/1 interface on R2 has a delay of 20,000 microseconds, the g0/0 interface on R3 has a delay of 10 microseconds. The delay is $ \left( 20000 + 10 \right) \div 10 = 2001 $.
 
-\begin{table}[h!]
-\centering
-\caption{Default delay values}
-\label{delay-value}
-\begin{tabular}{|l|l|}
-\hline
-Media            & Delay \\ \hline
-Ehternet         & 1000  \\ \hline
-Fast Ethernet    & 100   \\ \hline
-Gigabit Ethernet & 10    \\ \hline
-Serial link      & 20000 \\ \hline
-\end{tabular}
-\end{table}
+\tableStart[\caption{Default delay values}\label{delay-value}] {|l|l|}
+\head{Media}            & \head{Delay} \w
+Ehternet         & 1000  \w
+Fast Ethernet    & 100   \w
+Gigabit Ethernet & 10    \w
+Serial link      & 20000 \w
+\tableEnd
 
 \subsection{DUAL algorithm}
 
@@ -226,120 +220,49 @@ EIGRP uses the Null0 interface to avoid the above problem. The Null0 interface i
 
 \section{Configuration}
 
-\subsection{EIGRP for IPv4}
+\begin{sexylisting}{EIGRP for IPv4}
+router eigrp 10
 
-\begin{enumerate}
-\item Enable EIGRP routing with AS number
-	\begin{verbatim}
-	R1(config)# router eigrp 10
-	\end{verbatim}
-	
-\item (Optional) Disable auto summarization using \verb|no auto-summary| command.
-	
-\item Advertise the directly connected networks using the wildcard mask
-	\begin{verbatim}
-	R1(config-router)# do show ip route | inc C
-	R1(config-router)# network 10.1.1.0 0.0.0.3
-	R1(config-router)# network 192.168.1.0 0.0.0.255 
-	R1(config-router)# network 10.3.3.0 0.0.0.3
-	\end{verbatim}
-	
-\item Configure passive interfaces 
-	\begin{verbatim}
-	R1(config-router)# passive-interface g0/0
-	R1(config-router)# passive-interface g0/1
-	\end{verbatim}
-	
-\item If there are too many passive interfaces, you can make all interfaces of the router to be passive using \verb|passive-interface default|, then configure necessary interface to be active again using \verb|no passive-interface|
-	\begin{verbatim}
-	R1(config-router)# passive-interface default
-	R1(config-router)# no passive-interface s0/0/0
-	R1(config-router)# no passive-interface s0/0/1
-	\end{verbatim}
-	
-\item On border router, propagate its default static route to other routers
-    \begin{verbatim}
-    R1(config-router)# redistribute static
-    \end{verbatim}
+no auto-summary
 
-\item Examine the EIGRP neighbor table (figure \ref{neigborTable}), routing table using \verb|show ip route eigrp| (figure \ref{EIGRProutingTable}), topology table using \verb|show ip eigrp topology| (figure \ref{EIGRPtopologyTable}), EIGRP routing parameters, passive interfaces and networks advertised (figure \ref{EIGRPparameters}).
-	\begin{figure}[hbtp]
-	\caption{Examine EIGRP neigbor table}\label{neigborTable}
-	\centering
-	\includegraphics[scale=0.8]{pictures/neigborTable.PNG}
-	\end{figure}
-	
-	\begin{figure}[hbtp]
-		\caption{EIGRP routing table}\label{EIGRProutingTable}
-		\centering
-		\includegraphics[scale=0.8]{pictures/EIGRProutingTable.PNG}
-		\end{figure}
- 	
-	\begin{figure}[hbtp]
-			\caption{EIGRP topology table}\label{EIGRPtopologyTable}
-			\centering
-			\includegraphics[scale=0.8]{pictures/EIGRPtopologyTable.PNG}
-			\end{figure}
+do show ip route | inc C
+network 10.1.1.0 0.0.0.3
+network 192.168.1.0 0.0.0.255 
 
+passive-interface default
+no passive-interface s0/0/0
+  
+#redistribute static
+end
 
-	\begin{figure}[hbtp]
-	\caption{EIGRP routing parameters and networks advertised}\label{EIGRPparameters}
-	\centering
-	\includegraphics[scale=0.8]{pictures/EIGRPparameters.PNG}
-	\end{figure}
-						
-\end{enumerate}
+show ip route eigrp
+show ip protocol
+show ip eigrp neighbors
+show ip eigrp topology
+\end{sexylisting}
+		
+\note Only use \code{redistribute static} command on border router to propagate its default static route to other routers. 
 
-\subsection{EIGRP for IPv6}
+\begin{sexylisting}{EIGRP for IPv6}
+ipv6 unicast-routing
 
-\begin{enumerate}
-\item Enable IPv6 routing on the router
-	\begin{verbatim}
-	R1(config)# ipv6 unicast-routing 
-	\end{verbatim}
-	
-\item Enable EIGRP for IPv6
-	\begin{verbatim}
-	R1(config)# ipv6 router eigrp 1 
-	R1(config-router)# no shutdown 
-	\end{verbatim}	
-	
-\item Assign a router ID to each router and 
-	\begin{verbatim}
-	R1(config)# ipv6 router eigrp 1 
-	R1(config-router)# eigrp router-id 1.1.1.1
-	\end{verbatim}
+ipv6 router eigrp 1 
+  no shutdown
+  eigrp router-id 1.1.1.1
+  passive-interface default
+  no passive-interface s0/0/0
+  #redistribute static
 
-\item Configure passive interfaces
-	\begin{verbatim}
-	R1(config)# ipv6 router eigrp 1 
-	R1(config-router)# passive-interface g0/0 
-	\end{verbatim}
-	
-\item If there are too many passive interfaces, you can make all interfaces of the router to be passive using \verb|passive-interface default|, then configure necessary interface to be active again using \verb|no passive-interface|
-	\begin{verbatim}
-	R1(config-router)# passive-interface default
-	R1(config-router)# no passive-interface s0/0/0
-	R1(config-router)# no passive-interface s0/0/1
-	\end{verbatim}	
-	
-\item Configure EIGRP for IPv6 with AS number on each interface
-	\begin{verbatim}
-	R1(config)# interface g0/0 
-	R1(config-if)# ipv6 eigrp 1 
-	R1(config-if)# no shutdown
-	\end{verbatim}
-	
-\item On border router, propagate its default static route to other routers
-    \begin{verbatim}
-    R1(config-router)# redistribute static
-    \end{verbatim}
-	
-\item Examine the neighbor adjacencies using \verb|show ipv6 eigrp neighbors|, routing table using \verb|show ipv6 route eigrp|, topology table using \verb|show ipv6 eigrp topology|. Verify the parameters and current state of the EIGRPv6 using \verb|show ipv6 protocols|.
-	
-\end{enumerate}
+interface g0/0 
+	ipv6 eigrp 1 
+	no shutdown
+end
 
-\subsection{Tuning EIGRP}
+show ipv6 route eigrp
+show ipv6 protocols
+show ipv6 eigrp neighbors	
+show ipv6 eigrp topology
+\end{sexylisting}
 
 \paragraph{Bandwidth utilization:} By default, EIGRP uses only up to \textbf{50\%} of an interface's bandwidth for EIGRP information. This prevents the EIGRP process from over-utilizing a link and not allowing enough bandwidth for the routing of normal traffic. Use the following command to configure the 80\% of bandwidth that can be used by EIGRP (AS = 100) on an interface.
 

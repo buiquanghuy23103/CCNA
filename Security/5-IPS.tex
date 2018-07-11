@@ -12,7 +12,7 @@ Firewalls can only do so much and cannot protect against malware and zero-day at
 \item Network traffic does not pass through the IDS unless it is mirrored
 \end{itemize}
 
-\textbf{IDS advantage:} No impact on the network (delay, jitter) even if there is a sensor failure or overload. \textbf{IDS isadvantage:} cannot stop trigger packets, correct tuning required for response action. \\
+\textbf{IDS advantage:} No impact on the network (delay, jitter) even if there is a sensor failure or overload. \textbf{IDS disadvantage:} cannot stop trigger packets, correct tuning required for response action. \\
 
 \textbf{Intrusion Prevention System (IPS)} was upon IDS technology. However, an IPS device is implemented in \textbf{inline mode}. This means that all ingress and egress traffic must flow through it for processing. An IPS does not allow packets to enter the trusted side of the network without first being analyzed. It can detect and immediately address a network problem. \\
 
@@ -32,7 +32,7 @@ IDS and IPS technologies share several characteristics:
 
 \subsection{Characteristics}
 
-Signatures have three distinctive attributes: Type, Trigger (alarm), Action. Signature types are generally categorized as atomic or composite.
+Signatures have three distinctive attributes: Type, Trigger (alarm), Action. Signature types are generally categorized as atomic or composite.\\
 
 An \textbf{atomic signature} consists of a single packet, activity, or event that is examined to determine if it matches a configured signature. Because these signatures can be matched on a single event, they do not require an intrusion system to maintain state\footnote{State refers to situations in which multiple packets of information are required, but the packets of information are not necessarily received at the same time.} information. Detecting atomic signatures consumes minimal resources. For example, a LAND attack has an atomic signature because it sends a spoofed TCP SYN packet, therefore, one packet is enough to identify this type of attack.\\
 
@@ -62,7 +62,7 @@ The heart of any IPS signature is the signature alarm (signature trigger). Anyth
 
 The table shows four types of IPS alarms 
 
-\tableStart[\caption{Alarm types}\label{AlarmType}] { |l|l||l|l| }
+\tableStart[\caption{Alarm types}\label{AlarmType}] { |l|l|l|l| }
 \head{Alarm type} & \head{Status} & \head{Alarm} & \head{Outcome}\w
 False positive & normal &  $\bullet$ & tune alarm\w
 False negative & dangerous & & tune alarm\w
@@ -86,16 +86,174 @@ True negative & normal & & ideal setting\w
 
 \paragraph{Log activities for later analysis:} an IPS can be enabled to log the attacker packets, pair packets, or just the victim packets. \textbf{Logging attacker packets} is the action that starts IP logging on the packets that contain attacker's address and sends an alert.\textbf{Logging pair packets} is the action that starts IP logging on the packets that contain attacker-victim address pair and sends an alert. \textbf{Logging victim packets} is the action that starts IP logging on the packets that contain victim address and sends an alert. Note that the alerts are stored in Event Store.
 
-\paragraph{Deny the Activity:} 
+\paragraph{Deny the Activity:} an IPS can be enabled to deny the specific packets, or the attacker packets, or connection. \textbf{Denying the attacker packets} is the action that terminates the current and future packets from a particular attacker address for a period of time. There is a sliding timer for each attacker. If attacker A is currently denied, but issues another attack, then the timer for attacker A is reset and this attacker remain denied until the timer expires. \textbf{Denying the connection} is the action that terminates packets come from the current TCP flow.
+
+\paragraph{Reset, Block, and Allow Traffic:} The \textbf{TCP Reset} Signature Action terminates TCP connections by generating a packet for the connection with the TCP RST flag set. Deny packet and deny flow actions do not automatically cause TCP reset actions to occur. \textbf{Blocking} is the action that updates ACL on \emph{one} of the infrastructure devices. After a configured period of time, the IPS device removes the ACL. One advantage of the blocking action is that a single IPS device can stop traffic at multiple locations throughout the network, regardless of the location of the IPS device. The \textbf{Allow Signature} action define exceptions to configured signatures. Configuring exceptions enables administrators to take a more restrictive approach to security because they can first deny everything and then allow only the activities that are needed.
 
 \subsection{Manage and monitor}
 
+There are four factors to consider when planning a monitor strategy: Management method, Event correlation, Security staff, and Incident response  plan. There are three GUI-based IPS device managers available: Cisco Configuration Professional, Cisco IPS Manager Express (IME), and Cisco Security Manager.
+
+\paragraph{Management method:} IPS sensors can be managed individually (small network) or centrally (large network).  In a larger network, a centralized management system that allows the administrator to configure and manage all IPS devices from a single central system should be deployed. 
+
+\paragraph{Event correlation:} Event correlation refers to the process of correlating attacks and other events that are happening simultaneously at different points across a network. A correlation tool correlates the alerts based on their time-stamps. Therefore, the administrator should enable NTP on all network devices with a common system time. Another factor that facilitates event correlation is deploying a centralized monitoring facility on a network. By monitoring all IPS events at a single location, an administrator greatly improves the accuracy of event correlation.
+
+\paragraph{Security staff:} IPS devices tend to generate numerous alerts and other events during network traffic processing. Large enterprises require appropriate security staff to analyze this activity and determine how well the IPS is protecting the network. 
+
+\paragraph{Incident response plan:} If a system is compromised on a network, a response plan must be in place. The compromised system should be restored to the state it was in before the attack. 
+
+\paragraph{SDEE:} When an attack signature is detected, the Cisco IOS IPS feature can send a syslog message or an alarm in Secure Device Event Exchange (SDEE) format, as shown in the figure \ref{SDEE}. The SDEE protocol was developed to improve communication of events generated by security devices. It primarily communicates IDS events, but the protocol is intended to be extensible and allows additional event types to be included as they are defined.
+
+\begin{figure}[hbtp]
+\caption{IPS send either syslog message to a syslog server or SDEE to a management app}\label{SDEE}
+\centering
+\includegraphics[scale=0.7]{pictures/SDEE.PNG}
+\end{figure}
+
+
 \subsection{Global correlation}
 
+In addition to maintaining signature packs, Cisco IPS includes a security feature called Cisco Global Correlation. With global correlation, Cisco IPS devices receive regular threat updates from a centralized Cisco threat database called the Cisco SensorBase Network. \\
+
+\begin{figure}[hbtp]
+\caption{Global Correlation}\label{GlobalCorrelation}
+\centering
+\includegraphics[scale=1]{pictures/GlobalCorrelation.PNG}
+\end{figure}
+
+When participating in global correlation, the Cisco SensorBase Network provides information to the IPS sensor about IP addresses with a reputation, as shown in the figure \ref{GlobalCorrelation}. The sensor uses this information to determine which actions to perform when harmful traffic is received from a host with a known reputation. Since the global correlation database changes rapidly, the sensor must periodically download global correlation updates from the global correlation servers. It is possible to view reputation scores in events and see the reputation score of attackers.\\
+
+The SensorBase Network is part of a larger, back-end security ecosystem, known as the \textbf{Cisco Security Intelligence Operation (SIO)}. The purpose of Cisco SIO is to detect threat activity, research and analyze threats, and provide real-time updates and best practices to keep organizations informed and protected. Cisco SIO consists of three elements:
+
+\begin{itemize}
+\item \emph{Threat intelligence} from the Cisco SensorBase Network
+\item \emph{Threat Operations Center}, which is the combination of automated and human processing and analysis
+\item \emph{Automated and best practices content} that is pushed to network elements in the form of dynamic updates
+\end{itemize}
+
+A \textbf{reputation} is based on a commonly held opinion. IP addresses, mail servers, URLs, and other entities can all have a reputation. Many of today’s network protection technologies and filtering systems depend on lists to determine if the information is good (whitelist) or bad (blacklist). IPS sensors use reputation filters to deny IP addresses or URLs that are blacklisted before the sensor does further analysis on the traffic.
 \section{Implementation}
 
 \subsection{Configuration}
 
+\subsubsection{Step 1. Download the IOS IPS files}
+
+Prior to configuring IPS, it is necessary to download the IOS IPS signature package files, as shown in Figure 1, and a public crypto key from cisco.com. Only registered customers can download the package files and key.
+
+\begin{itemize}
+\item \verb|IOS-Sxxx-CLI.pkg| -- The latest signature package.
+\item \verb|realm-cisco.pub.key.txt| -- The public crypto key used by IOS IPS.
+\end{itemize}
+
+\subsubsection{Step 2. Create an IOS IPS configuration directory in Flash}
+
+The second step is to create a directory in flash to store the signature files and configurations. The \code{mkdir <dir-name>} privileged EXEC command creates the directory in Flash. Other useful commands include \code{rename <current-name> <new-name>}, which allows the name of the directory to be changed. 
+
+\subsubsection{Step 3. Configure an IOS IPS Crypto Key}
+
+The third step is to configure the crypto key used by IOS IPS. This key is located in the \verb|realm-cisco.pub.key.txt| file that was obtained in Step 1. The crypto key verifies the digital signature for the master signature file \verb|sigdef-default.xml|. The content of the file is signed by a Cisco private key to guarantee its authenticity and integrity.\\
+
+Open the text file to configure the IOS IPS crypto key. Next, copy the contents of the file, and paste the contents to the router at the global configuration prompt. The text file issues the various commands to generate the RSA key.\\
+
+If the key is configured incorrectly, an error message is generated as follow
+
+\begin{verbatim}
+%IPS-3-INVALID_DIGITAL_SIGNATURE: Invalid Digital Signature found (key not found)
+\end{verbatim}
+
+In such case, the key must be removed and then reconfigured. Use the \code{no crypto key pubkey-chain rsa} and the \code{no named-key realm-cisco.pub signature} commands. Then repeat the procedure in Step 3 to reconfigure the key. Finally, enter the \code{show run} command to confirm that the crypto key is configured.
+
+\subsubsection{Step 4. Enable IOS IPS}
+
+The fourth step is to configure IOS IPS, which is a process that consists of four sub-steps.
+
+\begin{enumerate}
+\item \textbf{Identify the IPS rule name and specify the location:} Create a rule name associated with an optional extended or standard ACL. All traffic that is permitted by the ACL is subject to inspection by the IPS. Next, configure the IPS signature storage location as directory \verb|flash:IPS| (created in step 2).
+
+\item \textbf{Enable SDEE and logging event notification:} To use SDEE, the HTTP or HTTPS server must first be enabled with the \code{ip http server} or \code{ip https server} command. Enable SDEE event notification by using the \code{ip ips notify sdee} command. Logging notification is enabled by default. If the logging console is enabled, IPS log messages are displayed on the console. Use the \code{ip ips notify log} command to enable logging.
+
+\item \textbf{Configure the signature category:} All signatures are grouped into categories. The three most common categories are \verb|all|, \verb|basic|, and \verb|advanced|. The signatures that IPS uses to scan traffic can be retired or unretired. \textbf{Retiring} a signature means that IPS does not compile that signature into memory for scanning. \textbf{Un-retiring} a signature instructs IPS to compile the signature into memory and use it to scan traffic. When IOS IPS is first configured, all signatures in the all category should be retired. Then, selected signatures should be unretired in a less memory-intensive category. 
+
+\item \textbf{Apply the IPS rule to interfaces} 
+\end{enumerate}
+
+\note Do not unretire the \verb|all| category. The \verb|all| signature category contains all signatures in a signature release. The IPS cannot compile and use all the signatures at one time because it will run out of memory.
+
+\note The order in which the signature categories are configured on the router is also important. IOS IPS processes the category commands in the order listed in the configuration. Some signatures belong to multiple categories. If multiple categories are configured and a signature belongs to more than one of them, IOS IPS uses the signature’s properties in the last configured category, for example, retired, unretired, or actions.
+
+\subsubsection{Step 5. Loading IOS IPS Signature Package to the Router}
+
+The last step is for the administrator to upload the signature package to the router. The most common methods are FTP or TFTP. 
+
+\begin{sexylisting}{Enable IPS}
+ip ips name IOSIPS list ALLOW-HTTP
+ip ips config location flash:IPS
+
+ip http server
+ip https server
+ip ips notify sdee
+ip ips notify log
+
+ip ips signature-category
+  category all
+  retired true
+exit
+  category ios_ips basic
+  retired false
+end  
+
+conf t
+
+interface g0/0
+  ip ips IOSIPS in
+interface g0/1
+  ip ips IOSIPS in
+  ip ips IOSIPS out
+end
+
+copy tftp://192.168.1.3/IOS-S416-CLI.pkg idconf
+# copy ftp://ftp_user:password@Server_IP_addr/signature_packg  idconf
+
+show ip ips signature count 
+\end{sexylisting}
+
 \subsection{Modification}
+
+\begin{sexylisting}{Retire a specific signature}
+ip ips signature-definition
+  signature 6130 10
+  status
+    retired true
+end 
+\end{sexylisting}
+
+\begin{sexylisting}{Change actions of a signature}
+ip ips signature-definition
+  signature 6130 10
+  engine
+    event-action produce alert
+    event-action deny-packet-inline
+    event-action reset-tcp-connection
+end    
+\end{sexylisting}
+
+\tableStart[\caption{Parameters of event-action command}\label{event-action}] {|l|p{8\xm}|}
+\verb|deny-packet-inline| & Terminates the current and future packets from a particular attacker address for a period of time\w
+\verb|deny-connection-inline| & Terminates packets come on this TCP flow.
+
+\tableEnd
+
+\paragraph{Deny the Activity:} an IPS can be enabled to deny the specific packets, or the attacker packets, or connection. \textbf{Denying the attacker packets} is the action that terminates the current and future packets from a particular attacker address for a period of time. There is a sliding timer for each attacker. If attacker A is currently denied, but issues another attack, then the timer for attacker A is reset and this attacker remain denied until the timer expires. \textbf{Denying the connection} is the action that terminates packets come from a particular TCP port.
+
+\paragraph{Reset, Block, and Allow Traffic:} The \textbf{TCP Reset} Signature Action terminates TCP connections by generating a packet for the connection with the TCP RST flag set. Deny packet and deny flow actions do not automatically cause TCP reset actions to occur. \textbf{Blocking} is the action that updates ACL on \emph{one} of the infrastructure devices. After a configured period of time, the IPS device removes the ACL. One advantage of the blocking action is that a single IPS device can stop traffic at multiple locations throughout the network, regardless of the location of the IPS device. The \textbf{Allow Signature} action define exceptions to configured signatures. Configuring exceptions enables administrators to take a more restrictive approach to security because they can first deny everything and then allow only the activities that are needed.
+
+\begin{sexylisting}{Change actions of a signature category}
+ip ips signature-definition
+  category ios_ips basic
+    event-action produce alert
+    event-action deny-packet-inline
+    event-action reset-tcp-connection
+end  
+\end{sexylisting}
 
 \subsection{Verification}

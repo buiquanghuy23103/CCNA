@@ -1,8 +1,8 @@
 \chapter{Router}
 
-The primary function of a router is: Determine the best path to send packets and Forward packets toward their destination.
+\section{Introduction}
 
-\section{Packet-Forwarding Mechanisms}
+The primary function of a router is: Determine the best path to send packets and Forward packets toward their destination. There are three Packet-Forwarding Mechanisms: 
 
 \begin{itemize}
 \item \textbf{Process switching:} Process switching starts finding a path every time a packet arrives, even if the destination is the same for a stream of packets. This mechanism is slow and old-fashioned.
@@ -11,8 +11,6 @@ The primary function of a router is: Determine the best path to send packets and
 
 \item \textbf{Cisco Express Forwarding (CEF):} CEF builds a Forwarding Information Base (FIB), and an adjacency table, then stores them in the data plane. The FIB contains precomputed reverse lookups, next-hop information for routes including the interface, and Layer 2 information. Therefore, when a network has converged, the FIB and adjacency tables contain all the information a router would have to consider when forwarding a packet. This enables forwarding of packets to occur at the data plane without consulting the control plane.
 \end{itemize}
-
-\section{Router Switching Function}
 
 The router performs the following three major steps (Figure \ref{SwitchingFunc}):
 

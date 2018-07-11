@@ -1,18 +1,10 @@
 \chapter{EtherChannel}
 
-\section{Advantages}
+\section{Introduction}
 
-\begin{itemize}
-\item Most configuration tasks can be done on the EtherChannel interface instead of each individual port, ensuring configuration consistency throughout the links.
-\item EtherChannel creates an aggregation that is seen as one logical link. 
-\item EtherChannel provides redundancy.
-\item Load balancing takes place between links that are part of the same EtherChannel. 
-\item EtherChannel relies on existing switch ports. There is no need to upgrade the link to a faster and more expensive connection to have more bandwidth.
-\end{itemize}
+EtherChannel creates an aggregation that is seen as one logical link, which provides redundancy and load balancing. Most configuration tasks can be done on the EtherChannel interface instead of each individual port, ensuring configuration consistency throughout the links. EtherChannel implementation is cost effective, because this protocol relies on existing switch ports, which means there is no need to upgrade the link to a faster and more expensive connection to have more bandwidth.\\
 
-\section{Port Aggregation Protocol (PagP)}
-
-PAgP (pronounced ``Pag – P”) is a \textbf{Cisco-proprietary} protocol that aids in the  creation of EtherChannel links. PAgP helps create the EtherChannel link by detecting the configuration of each side and ensuring that links are compatible so that the EtherChannel link can be enabled when needed. PAgP can be configured in one of three models:
+\textbf{PAgP} (pronounced ``Pag – P”) is a \textbf{Cisco-proprietary} protocol that aids in the creation of EtherChannel links. PAgP helps create the EtherChannel link by detecting the configuration of each side and ensuring that links are compatible so that the EtherChannel link can be enabled when needed. PAgP can be configured in one of three models:
 
 \begin{itemize}
 \item \textbf{On} -- This mode forces the interface to channel without PAgP. Interfaces configured in this mode do not exchange PAgP packets.
@@ -23,25 +15,16 @@ PAgP (pronounced ``Pag – P”) is a \textbf{Cisco-proprietary} protocol that a
 The modes must be compatible on each side as shown in table \ref{PAgP-mode}. Otherwise, the status of port-channel will become \verb|err-disabled|.
 
 
-\begin{table}[htbp]
-\centering \caption{PAgP Establishment}
-\label{PAgP-mode}
-\begin{tabular}{|l|l|l|}
-\hline
-S1             & S2                & EtherChannel establishment \\ \hline
-Desirable      & Auto/Desirable    & Yes                        \\ \hline
-On             & On                & Yes                        \\ \hline
-Auto           & Auto/On           & No                         \\ \hline
-Not configured & Auto/Desirable/On & No                         \\ \hline
-Desirable      & on                & No                         \\ \hline
-\end{tabular}
-\end{table}
+\tableStart[\caption{PAgP Establishment}\label{PAgP-mode}] {|l|l|l|}
+\head{S1}             & \head{S2}                & \head{EtherChannel establishment} \w
+Desirable      & Auto/Desirable    & Yes                        \w
+On             & On                & Yes                        \w
+Auto           & Auto/On           & No                         \w
+Not configured & Auto/Desirable/On & No                         \w
+Desirable      & on                & No                         \w
+\tableEnd
 
-
-
-\section{Link Aggregation Control Protocol (LACP)}
-
-LACP is a \emph{standard-based} protocol and is a part of an \emph{802.3ad} that aids in the  creation of EtherChannel links. Because LACP is an IEEE standard, it can be used to facilitate EtherChannels in \emph{multivendor} environments, including Cisco devices. LACP allows for eight active links, and also eight standby links. A standby link will become active should one of the current active links fail. PAgP can be configured in one of three models:
+\textbf{LACP} is a \textbf{standard-based} protocol and is a part of an \emph{802.3ad} that aids in the  creation of EtherChannel links. Because LACP is an IEEE standard, it can be used to facilitate EtherChannels in \emph{multivendor} environments, including Cisco devices. LACP allows for eight active links, and also eight standby links. A standby link will become active should one of the current active links fail. PAgP can be configured in one of three models:
 
 \begin{itemize}
 \item \textbf{On} -- This mode forces the interface to channel without LACP. Interfaces configured in this mode do not exchange LACP packets.
@@ -50,23 +33,19 @@ LACP is a \emph{standard-based} protocol and is a part of an \emph{802.3ad} that
 \end{itemize}
 
 The modes must be compatible on each side as shown in table \ref{LACP-mode}.
-\begin{table}[htbp]
-\centering\caption{LACP Establishment}
-\label{LACP-mode}
-\begin{tabular}{|l|l|l|}
-\hline
-S1             & S2                & EtherChannel establishment \\ \hline
-Active      & Passive/Active    & Yes                        \\ \hline
-On             & On                & Yes                        \\ \hline
-Passive           & Passive/On           & No                         \\ \hline
-Not configured & Passive/Active/On & No                         \\ \hline
-Active      & on                & No                         \\ \hline
-\end{tabular}
-\end{table}
+
+\tableStart[\caption{LACP Establishment}\label{LACP-mode}] {|l|l|l|}
+\head{S1}             & \head{S2}                & \head{EtherChannel establishment} \w
+Active      & Passive/Active    & Yes                        \w
+On             & On                & Yes                        \w
+Passive           & Passive/On           & No                         \w
+Not configured & Passive/Active/On & No                         \w
+Active      & on                & No                         \w
+\tableEnd
 
 \section{Configuration}
 
-\subsection{Implementation restrictions}
+\subsection{Restrictions}
 
 The EtherChannel provides full-duplex bandwidth between one switch and another switch or host. Currently each EtherChannel can consist of up to eight compatibly-configured Ethernet ports. However, interface types cannot be mixed. For example, Fast Ethernet and Gigabit Ethernet cannot be mixed within a single EtherChannel.\\
 
@@ -84,22 +63,22 @@ EtherChannel creates a one-to-one relationship; that is, one EtherChannel link c
 
 \subsection{Configuration}
 
-\paragraph{Step 1:} Specify the interfaces that compose the EtherChannel group using the \verb|interface range <interface>| global configuration mode command. A good practice is to start by shutting down those interfaces, so that any incomplete configuration does not create activity on the link. At the end of this step, make sure that none of restrictions above are broken.
+\begin{enumerate}
+\item Specify the interfaces that compose the EtherChannel group using the \verb|interface range <interface>| global configuration mode command. A good practice is to start by shutting down those interfaces, so that any incomplete configuration does not create activity on the link. At the end of this step, make sure that none of restrictions above are broken.
 
-\paragraph{Step 2:} Create the port channel interface with a channel group number. The mode active keywords identify this as an LACP EtherChannel configuration.
+\item Create the port channel interface with a channel group number. The mode active keywords identify this as an LACP EtherChannel configuration.
 
-\begin{verbatim}
-S1(config)# interface range f0/1-2
-S1(config-if-range)# shutdown
-S1(config-if-range)# channel-group 1 mode active
-S1(config-if-range)# no shutdown
-\end{verbatim}
+\item Change layer 2 settings on port channel interface, so that two sides of the EtherChannel link have the same configuration.
+\end{enumerate}
 
-\paragraph{Step 3:} Change layer 2 settings on port channel interface, so that two sides of the EtherChannel link have the same configuration.
+\begin{sexylisting}{EtherChannel}
+interface range f0/1-2
+  shutdown
+  channel-group 1 mode active
+  no shutdown
+interface port-channel 1
+  no shutdown
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,20,99  
+\end{sexylisting}
 
-\begin{verbatim}
-S1(config)# interface port-channel 1
-S1(config-if)# no shutdown
-S1(config-if)# switchport mode trunk
-S1(config-if)# switchport trunk allowed vlan 1,10,20,99
-\end{verbatim}

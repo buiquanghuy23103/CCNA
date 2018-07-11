@@ -1,8 +1,15 @@
-int f0/1
-  switchport port-security
-  switchport port-security mac-address sticky
-  switchport port-security violation restrict
-  switchport port-security maximum 2
-end
-show int
-show port-security int
+#ROUTER R1
+username R3 secret class
+interface s0/0/0
+  encapsulation ppp
+  ppp authentication pap
+  ppp pap sent-username R1 password cisco
+  no shutdown
+
+#ROUTER R3
+username R1 secret cisco
+interface s0/0/0
+  encapsulation ppp
+  ppp authentication pap
+  ppp pap sent-username R3 password class
+  no shutdown

@@ -12,9 +12,7 @@ There are many advantages to using PPP, including the fact that it is not propri
 \includegraphics[ width=0.8\textwidth ]{pictures/PPPlayers.PNG}
 \end{figure}
 
-PPP contains three main components: HDLC-like framing, LCP, and NCPs. \\
-
-Figure \ref{PPPlayers} maps the layered architecture of PPP against the OSI model. PPP and OSI share the same physical layer, but PPP distributes the functions of LCP and NCP differently. Most of the work done by PPP happens at the data link and network layers, by LCP and NCPs.
+PPP contains three main components: HDLC-like framing, LCP, and NCPs. Figure \ref{PPPlayers} maps the layered architecture of PPP against the OSI model. PPP and OSI share the same physical layer, but PPP distributes the functions of LCP and NCP differently. Most of the work done by PPP happens at the data link and network layers, by LCP and NCPs.
 
 \section{Operation}
 
@@ -120,70 +118,75 @@ IPCP is an example of NCP. IPCP is responsible for configuring, enabling, and di
 
 \section{Configuration}
 
-\paragraph{Basic:} To set PPP as the encapsulation method used by a serial interface, use the encapsulation ppp interface configuration command.
-	\begin{verbatim}
-	interface s0/0/0
-		encapsulation ppp
-		no shutdown
-	\end{verbatim}
-	
-\paragraph{Compression:} Point-to-point software compression on serial interfaces can be configured after PPP encapsulation is enabled. If the traffic already consists of compressed files, such as .zip, .tar, or .mpeg, do not use this option.
-	\begin{verbatim}
-	compress [predictor | stac]	
-	\end{verbatim}
-	
-\paragraph{Quality check:} The \verb|ppp quality 80| command ensures that the link meets the quality requirement set (80\%); otherwise, the link closes down.
+To set PPP as the encapsulation method used by a serial interface, use the \code{encapsulation ppp} interface configuration command. Point-to-point software compression on serial interfaces can be configured after PPP encapsulation is enabled. If the traffic already consists of compressed files, such as .zip, .tar, or .mpeg, do not use this option. The \code{ppp quality 80} command ensures that the link meets the quality requirement set (80\%); otherwise, the link closes down.
 
+\begin{sexylisting}{Basic PPP configuration}
+interface s0/0/0
+  encapsulation ppp
+  ppp quality 80
+  compress [predictor | stac]
+  no shutdown
+\end{sexylisting}
+	
 \paragraph{Multilink PPP:} provides a method for spreading traffic across multiple physical WAN links. allows packets to be fragmented and sends these fragments simultaneously over multiple point-to-point links to the same remote address. 
-	\begin{verbatim}
-	interface s0/0/0
-		no ip address
-		encapsulation ppp
-		ppp multilink	
-		ppp multilink group 1
-		no shutdown
-		
-	interface s0/0/1
-		no ip address
-		encapsulation ppp
-		ppp multilink	
-		ppp multilink group 1
-		no shutdown
-		
-	interface Multilink 1
-		ip address 10.0.1.1 255.255.255.252
-		ppp multilink	
-		ppp multilink group 1			
-	\end{verbatim}
+
+\begin{sexylisting}{Multilink PPP}
+interface s0/0/0
+  no ip address
+  encapsulation ppp
+  ppp multilink	
+  ppp multilink group 1
+  no shutdown
+	
+interface s0/0/1
+  no ip address
+  encapsulation ppp
+  ppp multilink	
+  ppp multilink group 1
+  no shutdown
+	
+interface Multilink 1
+  ip address 10.0.1.1 255.255.255.252
+  ppp multilink	
+  ppp multilink group 1
+\end{sexylisting}
 	
 \paragraph{CHAP Authentication:} The hostname (e.g. R3, R2, ISP) on one router must match the username the other router has configured in the command \verb|username <name> password <password>| . The passwords must also match.
-	\begin{verbatim}
-	Router(config)# hostname ISP
-	ISP(config)# username R3 secret cisco
-	ISP(config)# interface s0/0/0
-	ISP(config-if)# ppp authentication chap
-	
-	Router(config)# hostname R3
-	R3(config)# username ISP secret cisco
-	R3(config)# interface serial0/1/0
-	R3(config-if)# ppp authentication chap	
-	\end{verbatim}
-	
+
+\begin{sexylisting}{CHAP authentication}
+#ROUTER ISP
+hostname ISP
+username R3 secret cisco
+interface s0/0/0
+  encapsulation ppp
+  ppp authentication chap
+  no shutdown  
+
+#ROUTER R3
+hostname R3
+username ISP secret cisco
+interface serial0/1/0
+  encapsulation ppp
+  ppp authentication chap	
+  no shutdown
+\end{sexylisting}
+
 \paragraph{PAP Authentication:} The PAP username and password are configured in the command \verb|ppp pap sent-username|. Theses username and password must match those specified with the \verb|username <name> password <password>| command on the other router.
-	\begin{verbatim}
-	R1(config)# username R3 secret class
-	R1(config)# interface s0/0/0
-	R1(config-if)# ppp authentication pap
-	R1(config-if)# ppp pap sent-username R1 password cisco
+
+\begin{sexylisting}{PAP authentication}
+#ROUTER R1
+username R3 secret class
+interface s0/0/0
+  encapsulation ppp
+  ppp authentication pap
+  ppp pap sent-username R1 password cisco
+  no shutdown
 	
-	R3(config)# username R1 secret cisco
-	R3(config)# interface s0/0/0
-	R3(config-if)# ppp authentication pap
-	R3(config-if)# ppp pap sent-username R3 password class	
-	
-	username R3 secret class
-	ppp pap sent-username R3 password class
-	
-	username R1 secret cisco
-	ppp pap sent-username R1 password cisco
-	\end{verbatim}
+#ROUTER R3	
+username R1 secret cisco
+interface s0/0/0
+  encapsulation ppp
+  ppp authentication pap
+  ppp pap sent-username R3 password class	
+  no shutdown
+\end{sexylisting}

@@ -226,94 +226,48 @@ Also keep the following notes in mind:
 \item  The dead interval must be larger than Hello interval.
 \end{itemize}
 
-\subsection{OSPF for IPv4}
+\begin{sexylisting}{OSPF for IPv4}
+router ospf 1
 
-\begin{enumerate}
-\item Enable OSPF routing with process ID
-	\begin{verbatim}
-	R1(config)# router ospf 1
-	\end{verbatim}
-	
-\item Configure the network statements for directly connected network
-	\begin{verbatim}
-	R1(config-router)# network 192.168.1.0 0.0.0.255 area 0 
-	R1(config-router)# network 192.168.12.0 0.0.0.3 area 1 
-	R1(config-router)# network 192.168.13.0 0.0.0.3 area 2
-	\end{verbatim}
-	
-\item Configure passive interfaces
-	\begin{verbatim} 
-	R1(config-rtr)# passive-interface g0/0 
-	R1(config-rtr)# passive-interface g0/1
-	\end{verbatim}	
+network 192.168.1.0 0.0.0.255 area 0 
+network 192.168.12.0 0.0.0.3 area 55
 
-\item If there are too many passive interfaces, you can make all interfaces of the router to be passive using \verb|passive-interface default|, then configure necessary interface to be active again using \verb|no passive-interface|
-	\begin{verbatim}
-	R1(config-router)# passive-interface default
-	R1(config-router)# no passive-interface s0/0/0
-	R1(config-router)# no passive-interface s0/0/1
-	\end{verbatim}		
-	
-\item Propagating a default static route. \note Do not use \verb|redistribute static| as this command will not recognize default static route (due to auto summarization, it only recognizes classful route).
-	\begin{verbatim}
-	R1(config)# router ospf 1
-	R1(config-router)# default-information originate
-	\end{verbatim}
-	
-\item Verify configuration using the following commands:
-	\begin{itemize}
-	\item \verb|show ip protocols|
-	\item \verb|show ip ospf neighbor|
-	\item \verb|show ip route ospf|
-	\item \verb|show ip ospf|
-	\item \verb|show ip ospf interface brief|
-	\end{itemize}		
-\end{enumerate}
+passive-interface default
+no passive-interface s0/0/0
 
-\subsection{OSPF for IPv6}
+#default-information originate
+end
 
-\begin{enumerate}
-\item Enable IPv6 routing on the router
-	\begin{verbatim}
-	R1(config)# ipv6 unicast-routing 
-	\end{verbatim}
-	
-\item Enable OSPF for IPv6
-	\begin{verbatim}
-	R1(config)# ipv6 router ospf 1 
-	R1(config-rtr)# no shutdown 
-	\end{verbatim}	
-	
-\item Assign a router ID to each router
-	\begin{verbatim}
-	R1(config)# ipv6 router ospf 1 
-	R1(config-rtr)# router-id 1.1.1.1
-	\end{verbatim}
+show ip ospf
+show ip route ospf
+show ip protocols
+show ip ospf neighbor
+show ip ospf interface brief
+\end{sexylisting}
 
-\item Configure passive interfaces
-	\begin{verbatim}
-	R1(config)# ipv6 router ospf 1 
-	R1(config-rtr)# passive-interface g0/0 
-	\end{verbatim}
-	
-\item If there are too many passive interfaces, you can make all interfaces of the router to be passive using \verb|passive-interface default|, then configure necessary interface to be active again using \verb|no passive-interface|
-	\begin{verbatim}
-	R1(config-router)# passive-interface default
-	R1(config-router)# no passive-interface s0/0/0
-	R1(config-router)# no passive-interface s0/0/1
-	\end{verbatim}	
-	
-\item Configure OSPF for IPv6 with area number on each interface
-	\begin{verbatim}
-	R1(config)# interface g0/0 
-	R1(config-if)# ipv6 ospf 1 area 0
-	R1(config-if)# no shutdown
-	R1(config-if)# interface g0/1       
-	R1(config-if)# ipv6 ospf 1 area 55
-	R1(config-if)# no shutdown
-	\end{verbatim}     
-	
-\end{enumerate}	
+\note Do not use \verb|redistribute static| as this command will not recognize default static route (due to auto summarization, it only recognizes classful route).
+
+\begin{sexylisting}{OSPF for IPv6}
+ipv6 unicast-routing
+
+ipv6 router ospf 1
+  no shutdown
+  router-id 1.1.1.1
+  passive-interface default
+  no passive-interface s0/0/0
+exit
+
+interface g0/0 
+  ipv6 ospf 1 area 0
+  no shutdown
+end
+
+show ipv6 ospf
+show ipv6 route ospf
+show ipv6 protocols
+show ipv6 ospf neighbor
+show ipv6 ospf interface brief  
+\end{sexylisting}
 
 \subsection{Summarization}
 
