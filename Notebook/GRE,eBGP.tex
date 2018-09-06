@@ -4,50 +4,33 @@
 
 Ethernet links do not natively support PPP. A solution to this problem is PPP over Ethernet (PPPoE). PPPoE creates a PPP tunnel over an Ethernet connection. This allows PPP frames to be sent across the Ethernet cable to the ISP from the customer’s router.\\
 
-To create a PPP tunnel, the configuration uses a \emph{dialer interface}. A dialer interface is a virtual interface. The PPP configuration is placed on the dialer interface, not the physical interface. 
+To create a PPP tunnel, the configuration uses a \emph{dialer interface}. A dialer interface is a virtual interface. The PPP configuration is placed on the dialer interface, not the physical interface. The PPP CHAP is then configured with hostname Cust1 and password cisco123. Then, dialer interface is linked to the Ethernet interface with the \verb|dialer pool| command. Remember to set MTU to 1492 to accommodate PPPoE headers. The physical Ethernet interface g0/1 with PPPoE is enabled with the command \verb|pppoe enable| interface configuration command. Then it is linked to the Dialer interface with the \verb|pppoe-client dial-pool-number <number>| interface configuration command.
 
-\begin{verbatim}
+
+\begin{sexylisting}{PPPoE}
 interface dialer 1
   encapsulation ppp
   ip address negotiated
-\end{verbatim}
-
-The PPP CHAP is then configured with hostname Cust1 and password cisco123.
- 
-\begin{verbatim}
 interface dialer 1
   ppp authentication chap callin
   ppp chap host name Cust1
-  ppp chap password cisco123
-\end{verbatim}
-
-Dialer interface is linked to the Ethernet interface with the \verb|dialer pool| command. Remember to set MTU to 1492 to accommodate PPPoE headers.
-
-\begin{verbatim}
+  ppp chap password cisco123  
 interface dialer 1
   dialer pool 1
   mtu 1492
-  no shutdown
-\end{verbatim}
-
-The physical Ethernet interface g0/1 with PPPoE is enabled with the command \verb|pppoe enable| interface configuration command. Then it is linked to the Dialer interface with the \verb|pppoe-client dial-pool-number <number>| interface configuration command.
-
-\begin{verbatim}
+  no shutdown  
 interface g0/1
   no ip address
   pppoe enable
   pppoe-client dial-pool-number 1
-\end{verbatim}
+end
 
-Finally, use the following commands to verify PPPoE:
-
-\begin{verbatim}
 show ip int brief
 show int dialer 1
 show ip route
 show pppoe session
-debug ppp {negotiation | authentication | events}
-\end{verbatim}
+debug ppp {negotiation | authentication | events}  
+\end{sexylisting}
 
 \section{GRE}
 

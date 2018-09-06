@@ -1,4 +1,25 @@
-\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Basic PPP configuration}}{8}{tcb@cnt@sexylisting.1}
-\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Multilink PPP}}{9}{tcb@cnt@sexylisting.2}
-\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: CHAP authentication}}{9}{tcb@cnt@sexylisting.3}
-\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: PAP authentication}}{10}{tcb@cnt@sexylisting.4}
+\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Setting boot environment variable}}{47}{tcb@cnt@sexylisting.1}
+\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Basic switch management}}{49}{tcb@cnt@sexylisting.2}
+\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: Duplex configuration}}{50}{tcb@cnt@sexylisting.3}
+\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: Auto-MDIX}}{50}{tcb@cnt@sexylisting.4}
+\contentsline {tcolorbox}{\numberline {5}{\ignorespaces Listing 5: SSH configuration}}{50}{tcb@cnt@sexylisting.5}
+\contentsline {tcolorbox}{\numberline {6}{\ignorespaces Listing 6: Port security configuration}}{51}{tcb@cnt@sexylisting.6}
+\contentsline {tcolorbox}{\numberline {7}{\ignorespaces Listing 7: Trunking}}{58}{tcb@cnt@sexylisting.7}
+\contentsline {tcolorbox}{\numberline {8}{\ignorespaces Listing 8: Voice VLAN example}}{59}{tcb@cnt@sexylisting.8}
+\contentsline {tcolorbox}{\numberline {9}{\ignorespaces Listing 9: VLAN verification}}{59}{tcb@cnt@sexylisting.9}
+\contentsline {tcolorbox}{\numberline {10}{\ignorespaces Listing 10: Trunking verification}}{59}{tcb@cnt@sexylisting.10}
+\contentsline {tcolorbox}{\numberline {11}{\ignorespaces Listing 11: Router-on-a-stick}}{61}{tcb@cnt@sexylisting.11}
+\contentsline {tcolorbox}{\numberline {12}{\ignorespaces Listing 12: Multiplayer switch}}{62}{tcb@cnt@sexylisting.12}
+\contentsline {tcolorbox}{\numberline {13}{\ignorespaces Listing 13: STP}}{74}{tcb@cnt@sexylisting.13}
+\contentsline {tcolorbox}{\numberline {14}{\ignorespaces Listing 14: EtherChannel}}{77}{tcb@cnt@sexylisting.14}
+\contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: EIGRP for IPv4}}{98}{tcb@cnt@sexylisting.15}
+\contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: EIGRP for IPv6}}{99}{tcb@cnt@sexylisting.16}
+\contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: OSPF for IPv4}}{107}{tcb@cnt@sexylisting.17}
+\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: OSPF for IPv6}}{108}{tcb@cnt@sexylisting.18}
+\contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Basic PPP configuration}}{116}{tcb@cnt@sexylisting.19}
+\contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: Multilink PPP}}{117}{tcb@cnt@sexylisting.20}
+\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: CHAP authentication}}{117}{tcb@cnt@sexylisting.21}
+\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: PAP authentication}}{118}{tcb@cnt@sexylisting.22}
+\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: PPPoE}}{119}{tcb@cnt@sexylisting.23}
+\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: IP SLA example}}{173}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Assign a name to a router or switch}}{177}{tcb@cnt@sexylisting.25}

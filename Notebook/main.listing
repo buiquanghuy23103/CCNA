@@ -1,15 +1,5 @@
-#ROUTER R1
-username R3 secret class
-interface s0/0/0
-  encapsulation ppp
-  ppp authentication pap
-  ppp pap sent-username R1 password cisco
-  no shutdown
+ip host KEVIN-SERVER 172.16.1.100
+ipv6 host HUY-SERVER 2001:db8:acad:4::100
 
-#ROUTER R3
-username R1 secret cisco
-interface s0/0/0
-  encapsulation ppp
-  ppp authentication pap
-  ppp pap sent-username R3 password class
-  no shutdown
+ping KEVIN-SERVER
+ping HUY-SERVER
