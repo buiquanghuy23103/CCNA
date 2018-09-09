@@ -1,38 +1,6 @@
-zone security PRIVATE
-zone security INTERNET
-zone security DMZ
-int g0/1
-  zone-member security PRIVATE
-int s0/0/0
-  zone-member security INTERNET
-int g0/0
-  zone-member security DMZ
-exit
-
-class-map type inspect match-all PRIVATE-ACL-CLASS
-  match access-group 100
-class-map type inspect match-any PRIVATE-INTERNET-CLASS
-  match protocol http
-  match protocol https
-  match protocol dns
-exit
-
-policy-map type inspect PRIV-TO-PUB-POLICY
-  class type inspect PRIVATE-ACL-CLASS
-  inspect
-  class type inspect PRIVATE-INTERNET-CLASS
-  inspect
-  class class-default
-exit
-
-zone-pair security PRIVATE-2-INTERNET source PRIVATE destination INTERNET
-  service-policy type inspect  PRIV-TO-PUB-POLICY
-end
-
-show run | begin class-map
-show run | begin class-map
-show class-map type inspect
-show zone security
-show zone-pair security
-show policy-map type inspect
-show policy-map type inspect zone-pair sessions
+show running-config
+show ip ips
+show ip ips all
+show ip ips configuration
+show ip ips signatures
+show ip ips statistics

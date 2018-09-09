@@ -1,24 +1,29 @@
-\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Secret password type 9}}{14}{tcb@cnt@sexylisting.1}
-\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Login security commands}}{14}{tcb@cnt@sexylisting.2}
-\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: Configuring SSH}}{16}{tcb@cnt@sexylisting.3}
-\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: Privilege level configuration}}{16}{tcb@cnt@sexylisting.4}
-\contentsline {tcolorbox}{\numberline {5}{\ignorespaces Listing 5: CLI View configuration}}{17}{tcb@cnt@sexylisting.5}
-\contentsline {tcolorbox}{\numberline {6}{\ignorespaces Listing 6: Superview configuration}}{17}{tcb@cnt@sexylisting.6}
-\contentsline {tcolorbox}{\numberline {7}{\ignorespaces Listing 7: Restore a primary bootset}}{18}{tcb@cnt@sexylisting.7}
-\contentsline {tcolorbox}{\numberline {8}{\ignorespaces Listing 8: Configure SCP with local AAA}}{19}{tcb@cnt@sexylisting.8}
-\contentsline {tcolorbox}{\numberline {9}{\ignorespaces Listing 9: Logging service}}{21}{tcb@cnt@sexylisting.9}
-\contentsline {tcolorbox}{\numberline {10}{\ignorespaces Listing 10: SNMPv2 configuration}}{22}{tcb@cnt@sexylisting.10}
-\contentsline {tcolorbox}{\numberline {11}{\ignorespaces Listing 11: SNMPv3 configuration}}{23}{tcb@cnt@sexylisting.11}
-\contentsline {tcolorbox}{\numberline {12}{\ignorespaces Listing 12: NTP authentication}}{24}{tcb@cnt@sexylisting.12}
-\contentsline {tcolorbox}{\numberline {13}{\ignorespaces Listing 13: OSPF interface authentication}}{25}{tcb@cnt@sexylisting.13}
-\contentsline {tcolorbox}{\numberline {14}{\ignorespaces Listing 14: OSPF area authentication}}{25}{tcb@cnt@sexylisting.14}
-\contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: OSPF SHA authentication}}{25}{tcb@cnt@sexylisting.15}
-\contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: Local AAA authentication example}}{27}{tcb@cnt@sexylisting.16}
-\contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: Create a TACACS+ server}}{29}{tcb@cnt@sexylisting.17}
-\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Create a RAIDUS server}}{29}{tcb@cnt@sexylisting.18}
-\contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Configure Authentication to Use the AAA Server}}{30}{tcb@cnt@sexylisting.19}
-\contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: AAA Authorization Configuration}}{30}{tcb@cnt@sexylisting.20}
-\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: AAA Authorization Configuration}}{30}{tcb@cnt@sexylisting.21}
-\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: 802.1X configuration}}{33}{tcb@cnt@sexylisting.22}
-\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: Classic Firewall configuration}}{38}{tcb@cnt@sexylisting.23}
-\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: ZPF configuration}}{40}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Secret password type 9}}{12}{tcb@cnt@sexylisting.1}
+\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Login security commands}}{12}{tcb@cnt@sexylisting.2}
+\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: Configuring SSH}}{13}{tcb@cnt@sexylisting.3}
+\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: Privilege level configuration}}{14}{tcb@cnt@sexylisting.4}
+\contentsline {tcolorbox}{\numberline {5}{\ignorespaces Listing 5: CLI View configuration}}{15}{tcb@cnt@sexylisting.5}
+\contentsline {tcolorbox}{\numberline {6}{\ignorespaces Listing 6: Superview configuration}}{15}{tcb@cnt@sexylisting.6}
+\contentsline {tcolorbox}{\numberline {7}{\ignorespaces Listing 7: Restore a primary bootset}}{16}{tcb@cnt@sexylisting.7}
+\contentsline {tcolorbox}{\numberline {8}{\ignorespaces Listing 8: Configure SCP with local AAA}}{16}{tcb@cnt@sexylisting.8}
+\contentsline {tcolorbox}{\numberline {9}{\ignorespaces Listing 9: Logging service}}{18}{tcb@cnt@sexylisting.9}
+\contentsline {tcolorbox}{\numberline {10}{\ignorespaces Listing 10: SNMPv2 configuration}}{20}{tcb@cnt@sexylisting.10}
+\contentsline {tcolorbox}{\numberline {11}{\ignorespaces Listing 11: SNMPv3 configuration}}{20}{tcb@cnt@sexylisting.11}
+\contentsline {tcolorbox}{\numberline {12}{\ignorespaces Listing 12: NTP authentication}}{21}{tcb@cnt@sexylisting.12}
+\contentsline {tcolorbox}{\numberline {13}{\ignorespaces Listing 13: OSPF interface authentication}}{22}{tcb@cnt@sexylisting.13}
+\contentsline {tcolorbox}{\numberline {14}{\ignorespaces Listing 14: OSPF area authentication}}{22}{tcb@cnt@sexylisting.14}
+\contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: OSPF SHA authentication}}{23}{tcb@cnt@sexylisting.15}
+\contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: Local AAA authentication example}}{25}{tcb@cnt@sexylisting.16}
+\contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: Create a TACACS+ server}}{27}{tcb@cnt@sexylisting.17}
+\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Create a RAIDUS server}}{27}{tcb@cnt@sexylisting.18}
+\contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Configure Authentication to Use the AAA Server}}{28}{tcb@cnt@sexylisting.19}
+\contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: AAA Authorization Configuration}}{28}{tcb@cnt@sexylisting.20}
+\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: AAA Authorization Configuration}}{28}{tcb@cnt@sexylisting.21}
+\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: 802.1X configuration}}{31}{tcb@cnt@sexylisting.22}
+\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: Classic Firewall configuration}}{36}{tcb@cnt@sexylisting.23}
+\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: ZPF configuration}}{38}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Enable IPS}}{47}{tcb@cnt@sexylisting.25}
+\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: Retire a specific signature}}{47}{tcb@cnt@sexylisting.26}
+\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: Change actions of a signature}}{48}{tcb@cnt@sexylisting.27}
+\contentsline {tcolorbox}{\numberline {28}{\ignorespaces Listing 28: Change actions of a signature category}}{48}{tcb@cnt@sexylisting.28}
+\contentsline {tcolorbox}{\numberline {29}{\ignorespaces Listing 29: IPS verification}}{48}{tcb@cnt@sexylisting.29}

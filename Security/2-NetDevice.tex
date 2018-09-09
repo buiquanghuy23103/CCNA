@@ -9,7 +9,7 @@ There are many approaches to secure the edge router:
 \begin{itemize}
 \item \textbf{Single router approach:}  a single router connects internal LAN to the Internet.  All security policies are configured on this device. This is commonly deployed in small networks such as branch and small office, SOHO sites. The required security features can be supported by ISRs.
 
-\item \textbf{Defense-in-depth approach:} there are three primary layers of defense: the edge router, the firewall, and an internal router that connects to the protected LAN (Figure \ref{DefInDepth}). The edge router first screens the traffic before forwarding to the dedicated firewall appliance. The firewall provides additional access control by tracking the state of the connections. By default, the firewall denies the initiation of connections from the outside (untrusted) networks. 
+\item \textbf{Defense-in-depth approach:} there are three primary layers of defense: the edge router, the firewall, and an internal router that connects to the protected LAN (Figure \ref{DefInDepth}). By default, the firewall denies the initiation of connections from the outside (untrusted) networks. 
 %However, it allows the internal users to establish connections to the untrusted networks and permits the responses to come back through the firewall. It can also perform user authentication.
 
 \item \textbf{DMZ approach:} A variation of the defense-in-depth approach is the  DMZ approach (Figure \ref{DMZ}). The firewall is set up to permit the required connections, such as HTTP, from the outside networks to the public servers in the DMZ. The firewall serves as the primary protection for all devices in the DMZ.
@@ -37,14 +37,14 @@ Three areas of router security must be maintained:
 \includegraphics[scale=0.5]{pictures/DMZ.PNG}
 \end{figure}
 
-A router can be accessed for administrative purposes locally or remotely. Local access to a router requires a direct connection to a console port, and using a computer that is running terminal emulation software. The most common remote access method involves allowing SSH, HTTPS, or SNMP connections to the router from a computer. Precautions should be taken when accessing the network remotely:
-
-\begin{itemize}
-\item Encrypt all traffic between the administrator computer and the router. Use SSH version 2 and HTTPS.
-\item Establish a dedicated management network
-\item Configure a packet filter to allow only the identified administration hosts and preferred protocols to access the router.
-\item Configure and establish a VPN connection to the local network before connecting to a router management interface.
-\end{itemize}
+%A router can be accessed for administrative purposes locally or remotely. Local access to a router requires a direct connection to a console port, and using a computer that is running terminal emulation software. The most common remote access method involves allowing SSH, HTTPS, or SNMP connections to the router from a computer. Precautions should be taken when accessing the network remotely:
+%
+%\begin{itemize}
+%\item Encrypt all traffic between the administrator computer and the router. Use SSH version 2 and HTTPS.
+%\item Establish a dedicated management network
+%\item Configure a packet filter to allow only the identified administration hosts and preferred protocols to access the router.
+%\item Configure and establish a VPN connection to the local network before connecting to a router management interface.
+%\end{itemize}
 
 \subsection{Administrative access}
 
@@ -54,7 +54,7 @@ When logging and managing information, the information flow between management h
 
 \paragraph{Strong password:} 
 
-On Cisco devices, password-leading spaces are ignored but spaces after the first character are not ignored. One method to create a strong password is to use a blank space in the password or create a phrase made of many words. This is called a \emph{passphrase}. A passphrase is often easier to remember than a complex password and more difficult to guess.
+To create a strong password, use a blank space in the password (only password-leading spaces are ignored) or create a phrase made of many words. This is called a \emph{passphrase}. A passphrase is often easier to remember than a complex password and more difficult to guess.
 
 \paragraph{Secret Password Algorithms:} 
 
@@ -78,7 +78,7 @@ login on-access log
 login on-failure log
 \end{sexylisting}
 
-The \code{login block-for} command can defend against DoS attacks by disabling logins for 60 seconds if more than 5 login failures occur in 15 seconds or less. Specifically, the login block-for command operates in two modes: Normal mode and Quite mode. When quiet mode is enabled, all login attempts, including valid administrative access, are not permitted. However, this behavior can be overridden using the \code{login quiet-mode} command. This command maps to an ACL that identifies the permitted hosts. \\
+The \code{login block-for} command can defend against DoS attacks by disabling logins for 60 seconds if more than 5 login failures occur in 15 seconds or less. Specifically, this command operates in two modes: \textbf{Normal} mode and \textbf{Quite} mode. When quiet mode is enabled, all login attempts, including valid administrative access, are not permitted. However, this behavior can be overridden using the \code{login quiet-mode} command with an ACL that identifies the permitted hosts. \\
 
 The \code{login delay} command specifies a number of seconds the user must wait between unsuccessful login attempts. The \code{login on-success} and \code{login on-failure} commands generate syslog messages for successful and unsuccessful login attempts. The \code{security auth failure rate} command can be configured to generate a log message when the login failure rate is exceeded.\\
 
@@ -201,13 +201,13 @@ From the root view, use the \code{show parser view all} command to see a summary
 
 \section{IOS image and Configuration files}
 
+\subsection{Backup and restore}
+
 The \textbf{Cisco IOS resilient configuration} feature maintains a secure working copy of the router IOS image file and a copy of the running configuration file. These secure files cannot be removed by the user and are referred to as the primary bootset.\\
 
-To secure the IOS image and enable Cisco IOS image resilience, use the \code{secure boot-image} command.  The Cisco IOS image resilience feature can only be disabled through a console session using the no form of the command. This command functions properly only when the system is configured to run an image from a flash drive with an ATA interface. Additionally, the running image must be loaded from secured storage. Images that are loaded from a remote location, such as a TFTP server, cannot be secured.\\
+To secure the IOS image and enable Cisco IOS image resilience, use the \code{secure boot-image} command. Once enabled, this feature can only be disabled through a console session. This command functions properly only when the system is configured to run an image from a flash drive with an ATA interface. Additionally, the running image must be loaded from secured storage. Images that are loaded from a remote location, such as a TFTP server, cannot be secured.\\
 
-To take a snapshot of the router running configuration and securely archive it in persistent storage, use the \code{secure boot-config} global configuration mode command.\\
-
-Secured files do not appear in the output of a dir command that is issued from the CLI. This is because the Cisco IOS file system prevents secure files from being listed. Use the \code{show secure bootset} command to verify the existence of the archive.\\
+To take a snapshot of the router running configuration and securely archive it in persistent storage, use the \code{secure boot-config} global configuration mode command.Use the \code{show secure bootset} command to verify the existence of the archive.\\
 
 \textbf{Restore a primary bootset} from a secure archive after the router has been tampered with:
 
@@ -232,6 +232,8 @@ Router(config)# end
 Router# copy flash0:rescue-cfg running-config
 \end{sexylisting}
 
+\subsection{Secure Copy Protocol(SCP)}
+
 The Cisco IOS Resilient feature provides a  secure and authenticated method for copying router configuration or router image files to a remote location, that is \textbf{Secure Copy Protocol (SCP) feature}. SCP relies on SSH and requires that AAA authentication.  The following commands configure the router for server-side SCP with local AAA:
 
 \begin{sexylisting}{Configure SCP with local AAA}
@@ -246,29 +248,21 @@ aaa authorization exec default local
 ip scp server enable
 \end{sexylisting}
 
-With the above configuration, R1 is now an SCP server and will use SSH connections to accept secure copy transfers from authenticated and authorized users. Transfers can originate from any SCP client (router, switch, or workstation). \\
+With the above configuration, R1 is now an SCP server and will use SSH connections to accept secure copy transfers from authenticated and authorized users. For example, you want to transfer a backup file from R2 to R1. On R2, use the \code{copy flash0:R2backup.cfg scp:} command.
 
-For example, you want to transfer a backup file from R2 to R1. On R2, use the copy command. Specify the source file location first \code{flash0:R2backup.cfg} and then the destination \code{scp:}. Answer the series of prompts to establish a connection to the SCP server on R1. On R1, you can enter the \code{debug ip scp} command to watch the transfer proceed.\\
+\subsection{Password recovery}
 
 An attacker could gain control of that device through the password recovery procedure. An administrator can mitigate this potential security breach by using the \code{no service password-recovery} global configuration mode command. This command disables all access to ROMmon mode. \\
 
-To recover a device with password-recovery disabled, initiate the break sequence within five seconds after the image decompresses during the boot. You are prompted to confirm the break key action. After the action is confirmed, the startup configuration is completely erased, the router boots with the factory default configuration, and therefore, the password recovery procedure is enabled. If you do not confirm the break action, the router boots normally with the no service password-recovery command enabled.
+To recover a device with password-recovery disabled, initiate the break sequence within \textbf{5} seconds after the image decompresses during the boot. You are prompted to confirm the break key action. After the action is confirmed, the startup configuration is completely erased, the router boots with the factory default configuration, and therefore, the password recovery procedure is enabled. If you do not confirm the break action, the router boots normally with the no service password-recovery command enabled.
 
 \section{Syslog}
 
 \subsection{Introduction}
 
-The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}. The syslog logging service provides three primary functions:
+The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}.\\
 
-\begin{itemize}
-\item Gather logging information
-\item Select the type of logging information
-\item Specify the destination of captured syslog messages
-\end{itemize}
-
-Syslog messages may be sent to an internal buffer. Messages sent to the internal buffer (RAM) are only viewable through the CLI of the device (console line, terminal line). Alternatively, syslog messages may be sent across the network to an external syslog server.\\
-
-To view syslog messages, a syslog server must be installed on a workstation. One advantage of viewing syslog messages on a syslog server is the ability to perform granular searches through the data. Also, a network administrator can quickly delete unimportant syslog messages from the database.
+Syslog messages may be sent to an internal buffer. Messages sent to the internal buffer (RAM) are only viewable through the CLI of the device (console line, terminal line). Alternatively, syslog messages may be sent across the network to an external syslog server. To view syslog messages, a syslog server must be installed on a workstation. One advantage of viewing syslog messages on a syslog server is the ability to perform granular searches through the data. Also, a network administrator can quickly delete unimportant syslog messages from the database.
 
 \subsection{Severity level and Facility}
 Cisco devices produce syslog messages as a result of network events. Every syslog message contains a \textbf{severity level} and a \textbf{facility}. The security level can be shown as a number. The smaller the number, the more critical syslog alarms (Table \ref{tab:Syslog}).\\
@@ -351,7 +345,7 @@ The SNMP manager uses the get and set actions to perform the operations, as desc
 
 \begin{table}[hbtp]
 \centering\caption{SNMP operations}\label{SNMPoperation}
-\begin{tabular}{l p{10cm} }
+\begin{tabular}{|l| p{10cm}| }
 \toprule
 \head{Operation} & \head{Description}\\
 \midrule
@@ -372,7 +366,7 @@ The SNMP manager uses the get and set actions to perform the operations, as desc
 
 \paragraph{Polls vs Traps:}
 
-An NMS periodically \emph{polls} the SNMP agents, which provide information to monitor traffic loads and to verify device configurations. Disadvantages: A delay between the time that an event occurs and the time that it is noticed (via polling) by the NMS; A trade-off between polling frequency and bandwidth usage. SNMP agent traps are used to mitigate these disadvantages. SNMP agents send traps to inform the NMS immediately of certain events.
+An NMS periodically \emph{polls} the SNMP agents, which provide information to monitor traffic loads and to verify device configurations. Disadvantages: A delay between the time that an event occurs and the time that it is noticed (via polling) by the NMS; A trade-off between polling frequency and bandwidth usage. SNMP \textit{agent traps} are used to mitigate these disadvantages. SNMP agents send traps to inform the NMS immediately of certain events.
 
 \paragraph{Community string:}
 
