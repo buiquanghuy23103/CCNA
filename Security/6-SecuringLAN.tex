@@ -2,13 +2,29 @@
 
 \section{Endpoint security}
 
-There are two internal LAN elements to secure:
+%There are two internal LAN elements to secure:
+%
+%\begin{itemize}
+%\item \textbf{Endpoints:} Hosts  such as laptops, desktops, servers, and IP phones
+%\item \textbf{Network infrastructure:} LAN infrastructure devices interconnect endpoints and typically include switches, wireless devices, and IP telephony devices.
+%\end{itemize}
+%
+%This section focuses on securing endpoints.
+
+New security architectures for the borderless network address these challenges by having endpoints use network scanning elements. Protecting endpoints in a borderless network can be accomplished using the following modern security solutions: Antimalware Protection (AMP), Email Security Appliance (ESA), Web Security Appliances (WSA), Network Admission Control (NAC).\\
+
+\subsection{Anti-malware protection}
+
+Cisco added Sourcefire's Advanced Malware Protection (AMP) technology to protect endpoints and networks more effectively than traditional host-based malware protection. It defeats malware across the extended network before, during, and after an attack.\\
+
+AMP accesses the collective security intelligence of the Cisco Talos Security Intelligence and Research Group (Talos). Talos detects and correlates threats in real time using the largest threat-detection network in the world.\\
+
+AMP protects before, during, and after an attack. AMP is available in a variety of formats:
 
 \begin{itemize}
-\item \textbf{Endpoints:} Hosts  such as laptops, desktops, servers, and IP phones
-\item \textbf{Network infrastructure:} LAN infrastructure devices interconnect endpoints and typically include switches, wireless devices, and IP telephony devices.
+\item AMP for Endpoints - integrates with Cisco AMP for Networks to deliver comprehensive protection across extended networks and endpoints.
+\item AMP for Networks - integrated into dedicated Cisco ASA Firewall and Cisco FirePOWER network security appliances.
+\item AMP for Content Security – integrated in Cisco Cloud Web Security or Cisco Web and Email Security Appliances to protect against email and web-based advanced malware attacks.
 \end{itemize}
-
-Protecting endpoints in a borderless network can be accomplished using the following modern security solutions: Antimalware Protection (AMP), Email Security Appliance (ESA), Web Security Appliances (WSA), Network Admission Control (NAC). 
 
 \section{Layer 2 security}

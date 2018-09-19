@@ -2,11 +2,11 @@
 
 \section{Introduction}
 
-AAA network security services provide the primary framework to set up access control on a network device. AAA is a way to control who is permitted to access a network (authenticate), what they can do while they are there (authorize), and to audit what actions they performed while accessing the network (accounting).
+AAA network security services provide the primary framework to set up access control on a network device. AAA is a way to control who is permitted to access a network (authenticate), what they can do while they are there (authorize), and to audit what actions they performed while accessing the network (accounting).\\
 
-\textbf{Authentication:} Cisco provides two common methods of implementing AAA authentication: Local AAA Authentication and Server-Based AAA Authentication. \textbf{Local AAA Authentication} uses a local database for authentication. This method stores usernames and passwords locally in the Cisco router. With \textbf{Server-Based AAA Authentication}, the central AAA server contains the usernames and password for all users.
+\textbf{Authentication:} Cisco provides two common methods of implementing AAA authentication: Local AAA Authentication and Server-Based AAA Authentication. \textbf{Local AAA Authentication} uses a local database for authentication. This method stores usernames and passwords locally in the Cisco router. With \textbf{Server-Based AAA Authentication}, the central AAA server contains the usernames and password for all users.\\
 
-\textbf{Authorization} is typically implemented using a AAA server-based solution. Authorization uses a created set of attributes that describes the user’s access to the network. These attributes are compared to the information contained within the AAA database, and a determination of restrictions. Authorization is implemented immediately and automatically after the user is authenticated.
+\textbf{Authorization} is typically implemented using a AAA server-based solution. Authorization uses a created set of attributes that describes the user’s access to the network. These attributes are compared to the information contained within the AAA database, and a determination of restrictions. Authorization is implemented immediately and automatically after the user is authenticated.\\
 
 \textbf{Accounting} is implemented using a AAA server-based solution. This service reports usage statistics back to the ACS server. 
 
@@ -14,14 +14,26 @@ AAA network security services provide the primary framework to set up access con
 
 \subsection{Configuration}
 
-Before enabling AAA, at least a local database entry must be configured. To enable AAA, the \code{aaa new-model} global configuration command must \emph{first} be configured. No other AAA commands are available until this command is entered. The \code{aaa authentication login} command allows the HUY users to log into the router vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines (including vty line). However, when the method list \code{SSH-LOGIN} is applied to vty lines, it overrides the default method.  If you want to erase these custom methods \code{SSH-LOGIN}, use \code{no authentication login} command.
+Before enabling AAA, at least a local database entry must be configured. To enable AAA, the \code{aaa new-model} global configuration command must \emph{first} be configured. No other AAA commands are available until this command is entered.\\
 
-\begin{sexylisting}{Local AAA authentication example}
+Create the default login authentication list by issuing the \code{authentication login default method1[method2][method3]} command. The following commands configure the list to first use RADIUS (\code{group radius}) for the authentication service, and then none. The keyword \code{none} means that if no RADIUS server can be reached and authentication cannot be performed, the router globally allows access without authentication. This is a safeguard measure in case the router starts up without connectivity to an active RADIUS server.\\
+
+The \code{aaa authentication login default} command allows the HUY users to log into the router vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines (vty, console, aux). However, if you want AAA authentication only applied to vty line, replace \code{default} by the name of the method list, for example \code{SSH-LOGIN}.
+
+\begin{sexylisting}{Default server-based AAA authentication}
 username HUY algorithm-type scrypt secret cisco12345
 
 aaa new-model
-aaa authentication login default local-case enable
-aaa authentication login SSH-LOGIN local-case
+aaa authentication login default group radius none
+
+aaa local authentication attempts max-fail 3
+\end{sexylisting}
+
+\begin{sexylisting}{Custom server-based AAA authentication}
+username HUY algorithm-type scrypt secret cisco12345
+
+aaa new-model
+aaa authentication login SSH-LOGIN group radius none
 
 line vty 0 4
 login authentication SSH-LOGIN
