@@ -10,15 +10,46 @@ AAA network security services provide the primary framework to set up access con
 
 \textbf{Accounting} is implemented using a AAA server-based solution. This service reports usage statistics back to the ACS server. 
 
-\section{Local AAA authentication}
+\section{Authentication}
 
-\subsection{Configuration}
+\subsection{Local AAA authentication}
 
-Before enabling AAA, at least a local database entry must be configured. To enable AAA, the \code{aaa new-model} global configuration command must \emph{first} be configured. No other AAA commands are available until this command is entered.\\
+Local AAA Authentication should be configured for smaller networks. Smaller networks are those networks that have one or two routers that provide access to a limited number of users. This method uses the local usernames and passwords stored on a router. Configuring local AAA services to authenticate administrator access requires a few basic steps:
 
-Create the default login authentication list by issuing the \code{authentication login default method1[method2][method3]} command. The following commands configure the list to first use RADIUS (\code{group radius}) for the authentication service, and then none. The keyword \code{none} means that if no RADIUS server can be reached and authentication cannot be performed, the router globally allows access without authentication. This is a safeguard measure in case the router starts up without connectivity to an active RADIUS server.\\
+\begin{itemize}
+  \item Add usernames and passwords to the local router database for users that need administrative access to the router.
+  \item Enable AAA globally on the router.
+  \item Configure AAA parameters on the router.
+  \item Confirm and troubleshoot the AAA configuration.  
+\end{itemize}
 
-The \code{aaa authentication login default} command allows the HUY users to log into the router vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines (vty, console, aux). However, if you want AAA authentication only applied to vty line, replace \code{default} by the name of the method list, for example \code{SSH-LOGIN}.
+\begin{sexylisting}{Local AAA default authentication}
+username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
+username JR-ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
+aaa new-model
+aaa authentication login default local-case
+\end{sexylisting}
+
+The above commands allow the ADMIN and JR-ADMIN users to log into the router via the console or vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines. Alternatively, a custom authentication method (or named method) can be configured using \code{list-name}. Unlike \code{default} method, a named method has to be assigned to a particular line (console, aux, or virtual line) using \code{login auth <list-name>} command.\\ 
+
+\begin{sexylisting}{Local AAA named authentication}
+  username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
+  username JR-ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
+  aaa new-model
+  aaa authentication login SSH-LOGIN local-case
+  line vty 0 4
+  login auth SSH-LOGIN
+  \end{sexylisting}
+
+The final portion of the command identifies the type of methods that will be queried to authenticate the users. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.
+
+\subsection{Server-based AAA authentication}
+
+% Before enabling AAA, at least a local database entry must be configured. To enable AAA, the \code{aaa new-model} global configuration command must \emph{first} be configured. No other AAA commands are available until this command is entered.\\
+
+% Create the default login authentication list by issuing the \code{authentication login default method1[method2][method3]} command. The following commands configure the list to first use RADIUS (\code{group radius}) for the authentication service, and then none. The keyword \code{none} means that if no RADIUS server can be reached and authentication cannot be performed, the router globally allows access without authentication. This is a safeguard measure in case the router starts up without connectivity to an active RADIUS server.\\
+
+% The \code{aaa authentication login default} command allows the HUY users to log into the router vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines (vty, console, aux). However, if you want AAA authentication only applied to vty line, replace \code{default} by the name of the method list, for example \code{SSH-LOGIN}.
 
 \begin{sexylisting}{Default server-based AAA authentication}
 username HUY algorithm-type scrypt secret cisco12345
@@ -60,7 +91,7 @@ The \code{aaa local authentication attempts max-fail} command locks the user acc
 
 To display a list of all locked-out users, use the \code{sh aaa local user lockout} command. To display the history of activities (attributes), use the \code{sh aaa user} command. This command does not provide information for all users who are logged into a device, but only for those who have been authenticated or authorized using AAA, or whose sessions are being accounted for by the AAA module. The \code{sh aaa sessions} command can be used to show the unique ID of a session. The \code{debug aaa authentication} command is instrumental when troubleshooting AAA problems. 
 
-\section{Server-based AAA authentication}
+\subsection{Server-based AAA authentication}
 
 \subsection{RADIUS vs TACACS+}
 
