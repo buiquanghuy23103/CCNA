@@ -84,7 +84,7 @@ The \code{login delay} command specifies a number of seconds the user must wait 
 
 Use the \code{show login} command to verify the login block-for command settings and current mode. The \code{show login failures} command displays additional information regarding the failed attempts, such as the IP address from which the failed login attempts originated.\\
 
-These login enhancements do \emph{not} apply to console connections. When dealing with console connections, it is assumed that only authorized personnel have physical access to the devices.
+\textbf{These login enhancements do \emph{not} apply to console connections.} When dealing with console connections, it is assumed that only authorized personnel have physical access to the devices.
 
 \note These login enhancements can only be enabled if the local database is used for authentication for local and remote access. If the lines are configured for password authentication only, then the enhanced login features are not enabled.
 
@@ -103,7 +103,7 @@ The five steps needed to configure a Cisco router to support SSH with local auth
 
 \begin{enumerate}
 \item Configure the IP domain name of the network
-\item Create RSA key to encrypt the SSH traffic
+\item Create RSA key to encrypt the SSH traffic (Once RSA keys are generated, SSH is automatically enabled)
 \item Ensure that there is a valid local database username entry.
 \item Enable vty inbound SSH sessions using the line vty commands
 \item Verify SSH and display the generated keys
@@ -137,7 +137,7 @@ Cisco IOS software has two methods of providing infrastructure access: privilege
 
 \subsection{Privilege levels}
 
-By default, the Cisco IOS software CLI has two levels of access to commands:
+There are 16 privilege levels (0 -- 15) that can be applied to user accounts. Levels 0, 1, and 15 have predefined settings. This leaves levels 2 through 14 available for custom levels of access. Below is the detailed settings of level 1 and 15:
 
 \begin{itemize}
 \item \textbf{Level 1:} User EXEC mode -- The lowest user privileges and allows only user-level commands available at the \verb|router>| prompt.
@@ -168,11 +168,10 @@ Role-based CLI enhances the security of the device by defining the set of CLI co
 \begin{itemize}
 \item \textbf{Root view:} Only a root view user can configure a new view and add or remove commands from the existing views.
 \item \textbf{CLI view:} A specific set of commands can be bundled into a CLI view.  A view does not inherit commands from any other view. Additionally, the same commands can be used in multiple views.
-\item \textbf{Superview:} A superview consists of one or more CLI views. Users who are logged into a superview can access all the commands that are configured for any of the CLI views that are part of the superview. Deleting a superview does not delete the associated CLI views. The CLI views remain available to be assigned to another superview.
-\item \note Commands cannot be configured for a superview. An administrator must add commands to the CLI view and add that CLI view to the superview.
+\item \textbf{Superview:} A superview consists of one or more CLI views. Users who are logged into a superview can access all the commands that are configured for any of the CLI views that are part of the superview. Deleting a superview does not delete the associated CLI views, and those views remain available to be assigned to another superview.
 \end{itemize}
 
-The following commands show how to create a CLI view:
+\note Commands cannot be configured for a superview. An administrator must add commands to the CLI view and add that CLI view to the superview.
 
 \begin{sexylisting}{CLI View configuration}
 aaa new-model
@@ -184,7 +183,9 @@ end
 enable view SUPPORT
 \end{sexylisting}
 
-In the above example, the \code{commands} command assigns all \code{show} commands to the EXEC mode of the view. To access existing views, enter the \code{enable view view-name} command in user mode and enter the password that was assigned to the custom view. Use the question mark (?) command to verify that the commands available in the view are correct.
+In the above example, the \code{commands exec include} command assigns all \code{show} commands to the EXEC mode of the view. To access existing views, enter the \code{enable view view-name} command in user mode and enter the password that was assigned to the custom view. Use the question mark (?) command to verify that the commands available in the view are correct.
+
+\note AAA must be enabled before configuring any views.
 
 \begin{sexylisting}{Superview configuration}
 parser view JR-ADMIN superview
@@ -262,7 +263,9 @@ To recover a device with password-recovery disabled, initiate the break sequence
 
 The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}.\\
 
-Syslog messages may be sent to an internal buffer. Messages sent to the internal buffer (RAM) are only viewable through the CLI of the device (console line, terminal line). Alternatively, syslog messages may be sent across the network to an external syslog server. To view syslog messages, a syslog server must be installed on a workstation. One advantage of viewing syslog messages on a syslog server is the ability to perform granular searches through the data. Also, a network administrator can quickly delete unimportant syslog messages from the database.
+Syslog operations include gathering information, selecting which type of information to capture, and redirecting the captured information to a storage location. The logging service stores messages in a logging buffer that is time-limited, and cannot retain the information when a router is rebooted. Syslog does not authenticate or encrypt messages.\\
+
+Syslog messages sent to an internal buffer (RAM) are only viewable through the CLI of the device (console line, terminal line). Alternatively, syslog messages can be sent to an external syslog server. To view syslog messages, a syslog server must be installed on a workstation. One advantage of viewing syslog messages on a syslog server is the ability to perform granular searches through the data. Also, a network administrator can quickly delete unimportant syslog messages from the database.
 
 \subsection{Severity level and Facility}
 Cisco devices produce syslog messages as a result of network events. Every syslog message contains a \textbf{severity level} and a \textbf{facility}. The security level can be shown as a number. The smaller the number, the more critical syslog alarms (Table \ref{tab:Syslog}).\\
@@ -339,30 +342,15 @@ Simple Network Management Protocol (SNMP) was developed to allow administrators 
 \item \textbf{MIB} (Management Information Base): store data about the device and operational statistics 
 \end{itemize}
 
-\paragraph{SNMP requests}
+\tableStart[\caption{SNMP requests}\label{SNMPoperation}]{|l|p{10cm}|}
+\head{Operation} & \head{Description}\w
+\verb|get-request| & Retrieves a value from a specific variable\w
+\verb|get-next-request| & Retrieves a value from a variable within a table\w
+\verb|get-bulk-request| & Retrieve large block of data such as multiple rows in a table\w
+\verb|get-response| & Replies to a \verb|get-request|, \verb|get-next-request|, and \verb|set-request|\w
+\verb|set-request| & Stores a value in a specific variable\w
+\tableEnd
 
-The SNMP manager uses the get and set actions to perform the operations, as described in the Figure \ref{SNMPoperation}.
-
-\begin{table}[hbtp]
-\centering\caption{SNMP operations}\label{SNMPoperation}
-\begin{tabular}{|l| p{10cm}| }
-\toprule
-\head{Operation} & \head{Description}\\
-\midrule
-
-\verb|get-request| & Retrieves a value from a specific variable\\
-
-\verb|get-next-request| & Retrieves a value from a variable within a table\\
-
-\verb|get-bulk-request| & Retrieve large block of data such as multiple rows in a table\\
-
-\verb|get-response| & Replies to a \verb|get-request|, \verb|get-next-request|, and \verb|set-request|\\
-
-\verb|set-request| & Stores a value in a specific variable\\
-
-\bottomrule
-\end{tabular}
-\end{table}
 
 \paragraph{Polls vs Traps:}
 
@@ -370,7 +358,7 @@ An NMS periodically \emph{polls} the SNMP agents, which provide information to m
 
 \paragraph{Community string:}
 
-SNMPv1 and SNMPv2c use community strings as plaintext password to control access to the MIB. There are two types of community strings: Read-only (\textbf{ro}) and Read-write (\textbf{rw}).\\
+SNMPv1 and SNMPv2c use community strings as plaintext password to control access to the MIB. There are two types of community strings: Read-only (\textbf{ro}) and Read-write (\textbf{rw}).
 
 \paragraph{Object ID:}
 MIB saves data in variables and organizes them hierarchically. Formally, the MIB defines each variable as an Object ID (OID). OIDs uniquely identify managed objects in the MIB hierarchy (figure \ref{OID-tree}). For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
@@ -450,7 +438,17 @@ sh clock
 
 \section{Cisco AutoSecure}
 
-AutoSecure makes recommendations for fixing security vulnerabilities and then modifies the security configuration of the router. It can lock down the management plane functions and the forwarding plane services and functions of a router. There are several management plane services and functions: firewall inspection, traffic filtering with ACLs, Secure password and login functions, Secure SSH access, Secure NTP, etc.\\
+AutoSecure makes recommendations for fixing security vulnerabilities and then modifies the security configuration of the router. It can lock down the functions of data and management plane. During AutoSecure setup, the following steps occur:
+
+\begin{enumerate}
+\item The AutoSecure command is entered
+\item The wizard gathers info about the outside interfaces
+\item Disable unnecessary services
+\item Prompt for a security banner
+\item Prompt for passwords and login features
+\item Secure interface
+\item Secure data plane
+\end{enumerate}
 
 Use the \code{auto secure} command to enable the Cisco AutoSecure feature setup. In interactive mode, the router prompts with options to enable and disable services and other security features. This is the \emph{default} mode, but it can also be configured using the \code{auto secure full} command.\\
 
@@ -462,17 +460,17 @@ When the AutoSecure command is initiated, a CLI wizard steps the administrator t
 
 \subsection{Routing protocol authentication}
 
-\paragraph{Routing Protocol Spoofing:} Routing systems can be attacked by disrupting peer network routers, or by falsifying or spoofing the information carried within the routing protocols. Spoofing routing information may generally be used to cause systems to misinform (lie to) each other, cause a DoS attack, or cause traffic to follow a path it would not normally follow. 
+Routing Protocol Authentications mitigate against attacks like redirection of traffic to an insecure link, and redirection of traffic to discard it. OSPF supports routing protocol authentication using either MD5 or SHA.
 
-\paragraph{OSPF MD5 Authentication:} OSPF supports routing protocol authentication using MD5  enabled globally for all interfaces or on a per interface basis.
+\subsubsection{OSPF MD5 authentication}
 
-\begin{sexylisting}{OSPF interface authentication}
+\begin{sexylisting}{OSPF MD5 interface authentication}
 interface s0/0/0
   ip ospf message-digest-key 1 md5 cisco12345
   ip ospf authentication message-digest
 \end{sexylisting}
 
-\begin{sexylisting}{OSPF area authentication}
+\begin{sexylisting}{OSPF MD5 area authentication}
 router ospf 100
   area 50 authentication message-digest
 
@@ -481,7 +479,9 @@ interface s0/0/0
 end
 \end{sexylisting}
 
-\note The interface setting overrides the global setting. OSPF adjacency is lost until MD5 authentication is matched between two routers.\\
+\note The interface setting overrides the global setting. OSPF adjacency is lost until MD5 authentication is matched between two routers.
+
+\subsubsection{OSPF SHA authentication}
 
 MD5 is now considered vulnerable to attacks. Therefore, the administrator should use SHA authentication. OSPF SHA authentication includes two major steps:
 
