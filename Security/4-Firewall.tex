@@ -37,11 +37,9 @@ If SNMP is necessary, exploitation of SNMP vulnerabilities can be mitigated by a
 
 \section{Firewall}
 
-\subsection{Introduction}
+All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. There are two configuration models for Cisco IOS Firewall: \hyperref[sec:ClassicFirewall]{Classic Firewall} and \hyperref[sec:ZPF]{Zone-based Policy Firewall (ZPF)}.\\
 
-All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. There are many types of firewalls: Packet filtering firewall, Stateful firewall, Application gateway firewall (proxy firewall), etc. \\
-
-There are two configuration models for Cisco IOS Firewall: \hyperref[sec:ClassicFirewall]{Classic Firewall} and \hyperref[sec:ZPF]{Zone-based Policy Firewall (ZPF)}. These models can be enabled concurrently on a router. However, the models cannot be combined on a single interface. \\
+\subsection{Packet filtering}
 
 \tableStart[\caption{Packet Filtering Firewall Benefits and Limitations}\label{tab:Firewall1}] { |p{5\xm}|p{5\xm}| }
 \head{Advantages} & \head{Disadvantages}\w
@@ -51,7 +49,11 @@ Initial degree of security at the network layer & Use complex ACLs, which can be
 Almost all the tasks of a high-end firewall at a much lower cost &  Stateless: examine each packet individually rather than in the context of the state of a connection.\w
 \tableEnd
 
-\textbf{Stateful firewalls} are the most versatile and the most common firewall technologies in use. Unlike a stateless firewall that uses static packet filtering, stateful filtering tracks each connection and confirms that they are valid. Stateful firewalls use a state table to keep track of the actual communication process. Benefits: prevent spoofing and DoS attacks, provide more stringent control over security. Limitations: cannot prevent Application Layer attacks, does not filter UDP and ICMP packets, cannot track connections that use dynamic port negotiation, not support authentication.\\
+\subsection{Statefull firewall}
+
+\textbf{Stateful firewalls} are the most versatile and the most common firewall technologies in use. Unlike a stateless firewall that uses static packet filtering, stateful filtering tracks each connection and confirms that they are valid. Stateful firewalls use a state table to keep track of the actual communication process. Benefits: prevent spoofing and DoS attacks, provide more stringent control over security. Limitations: cannot prevent Application Layer attacks, does not filter UDP and ICMP packets, cannot track connections that use dynamic port negotiation, not support authentication.
+
+\subsection{Next-Generation Firewall}
 
 Designed with advanced malware protection, the Cisco ASA with FirePOWER services is also called the \textbf{Cisco ASA Next-Generation Firewall} because it is an adaptive, threat-focused firewall. It is designed to provide defense across the entire attack continuum, which includes before, during, and after attacks.
 
