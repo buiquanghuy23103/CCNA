@@ -1,20 +1,18 @@
 \chapter{AAA model}
 
-\section{Introduction}
+AAA network security services provide the primary framework to set up access control on a network device. AAA is a way to control who is permitted to access a network (authenticate), what they can do while they are there (authorize), and to audit what actions they performed while accessing the network (accounting).
 
-AAA network security services provide the primary framework to set up access control on a network device. AAA is a way to control who is permitted to access a network (authenticate), what they can do while they are there (authorize), and to audit what actions they performed while accessing the network (accounting).\\
+% \textbf{Authentication:} Cisco provides two common methods of implementing AAA authentication: Local AAA Authentication and Server-Based AAA Authentication. \textbf{Local AAA Authentication} uses a local database for authentication. This method stores usernames and passwords locally in the Cisco router. With \textbf{Server-Based AAA Authentication}, the central AAA server contains the usernames and password for all users.\\
 
-\textbf{Authentication:} Cisco provides two common methods of implementing AAA authentication: Local AAA Authentication and Server-Based AAA Authentication. \textbf{Local AAA Authentication} uses a local database for authentication. This method stores usernames and passwords locally in the Cisco router. With \textbf{Server-Based AAA Authentication}, the central AAA server contains the usernames and password for all users.\\
+% \textbf{Authorization} is typically implemented using a AAA server-based solution. Authorization uses a created set of attributes that describes the user’s access to the network. These attributes are compared to the information contained within the AAA database, and a determination of restrictions. Authorization is implemented immediately and automatically after the user is authenticated.\\
 
-\textbf{Authorization} is typically implemented using a AAA server-based solution. Authorization uses a created set of attributes that describes the user’s access to the network. These attributes are compared to the information contained within the AAA database, and a determination of restrictions. Authorization is implemented immediately and automatically after the user is authenticated.\\
-
-\textbf{Accounting} is implemented using a AAA server-based solution. This service reports usage statistics back to the ACS server. 
+% \textbf{Accounting} is implemented using a AAA server-based solution. This service reports usage statistics back to the ACS server. 
 
 \section{Authentication}
 
 \subsection{Local}
 
-Local AAA Authentication should be configured for smaller networks. Smaller networks are those networks that have one or two routers that provide access to a limited number of users. This method uses the local usernames and passwords stored on a router. Configuring local AAA services to authenticate administrator access requires a few basic steps:
+Local AAA Authentication uses the local usernames and passwords stored on a router. A drawback of the this method is that user accounts must be configured locally on each device, which is an unscalable authentication solution. Therefore, local authentication should be configured for smaller networks with one or two routers. The local authentication can also serve as a backup method for if authentication servers are available. Configuring local AAA services to authenticate administrator access requires a few basic steps:
 
 \begin{itemize}
   \item Add usernames and passwords to the local router database for users that need administrative access to the router.
@@ -41,7 +39,7 @@ The above commands allow the ADMIN and JR-ADMIN users to log into the router via
   login auth SSH-LOGIN
   \end{sexylisting}
 
-The final portion of the command identifies the type of methods that will be queried to authenticate the users. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.
+The final portion of the \code{aaa authentication login} command identifies the type of methods that will be queried to authenticate the users, which is \code{local-case}. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.\\
 
 % \subsection{Server-based}
 
@@ -81,9 +79,9 @@ The final portion of the command identifies the type of methods that will be que
 % \code{group <group-name>} & Use a subset of RADIUS or TACACS+ servers \w
 % \tableEnd
 
-% The \code{aaa local authentication attempts max-fail} command locks the user account if the authentication fails. The locked out user account remains locked until it is manually cleared by an administrator using the \code{clear aaa local user lockout} privileged EXEC mode command. This command is different from \code{login delay} command, which introduces a delay between failed login attempts without locking the account.\\
+The \code{aaa local authentication attempts max-fail} command locks the user account if the authentication fails. The locked out user account remains locked until it is manually cleared by an administrator using the \code{clear aaa local user lockout} privileged EXEC mode command. This command is different from \code{login delay} command, which introduces a delay between failed login attempts without locking the account.\\
 
-% To display a list of all locked-out users, use the \code{sh aaa local user lockout} command. To display the history of activities (attributes), use the \code{sh aaa user} command. This command does not provide information for all users who are logged into a device, but only for those who have been authenticated or authorized using AAA, or whose sessions are being accounted for by the AAA module. The \code{sh aaa sessions} command can be used to show the unique ID of a session. The \code{debug aaa authentication} command is instrumental when troubleshooting AAA problems. 
+To display a list of all locked-out users, use the \code{sh aaa local user lockout} command. To display the history of activities (attributes), use the \code{sh aaa user} command. This command does not provide information for all users who are logged into a device, but only for those who have been authenticated or authorized using AAA, or whose sessions are being accounted for by the AAA module. The \code{sh aaa sessions} command can be used to show the unique ID of a session. The \code{debug aaa authentication} command is instrumental when troubleshooting AAA problems. The \code{debug tacacs events} command displays the opening and closing of a TCP connection to a TACACS+ server, the bytes that are read and written over the connection, and the TCP status of the connection.
 
 \subsection{Server-based}
 
@@ -208,7 +206,7 @@ The IEEE 802.1X standard defines a port-based access control and authentication 
 % \item Between the authenticator and the authentication server - EAP data is encapsulated using RADIUS.
 % \end{itemize}
 
-\subsection{Port Authorization State}
+% \subsection{Port Authorization State}
 
 When configured for 802.1X port-based authentication, the port starts in the \emph{unauthorized state}. While in this state, the port disallows all ingress and egress traffic except for 802.1X protocol packets. When a client is successfully authenticated, the port transitions to the \emph{authorized state}, allowing all traffic for the client to flow normally. \\
 
