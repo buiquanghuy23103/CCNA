@@ -17,20 +17,11 @@ A \textbf{Security Policy} is a formal statement of the rules by which people th
 
 \subsection{Network topology}
 
-%\paragraph{Campus Area Networks:} The main focus of this course is on securing Campus Area Networks (CANs). CANs consists of interconnected LANs within a limited geographic area. Figure \ref{CANsec} displays a sample CAN with a defense in-depth approach using various security features and security devices to secure it.
-%
-%\begin{figure}[hbtp]
-%\caption{CAN security}\label{CANsec}
-%\centering
-%\includegraphics[scale=0.5]{pictures/CANsec.PNG}
-%\end{figure}
-
 \paragraph{SOHO network:} Attackers may want to use someone's Internet connection for free or illegal activity, or view financial transactions. Home networks and SOHOs are typically protected using a consumer \emph{grade router}, such as a \emph{Linksys home wireless router}. 
 
 \paragraph{WAN network:} Main site and Regional site are protected by an ASA (stateful firewall and VPN). Branch site is secured using hardened ISR and VPN connection to the main site. The SOHO and Mobile users connect to the main site using Cisco Anyconnect VPN client. 
 
 \paragraph{Data center network:} Data center networks are interconnected to corporate sites using VPN and ASA devices along with \emph{integrated data center switches}, such as a high-speed Nexus switches. Data center physical security can be divided into two areas: Outside perimeter security and Inside perimeter security. 
-%\emph{Security traps} (Inside perimeter security) provide access to the data halls where data center data is stored. A person must first enter the security trap using their badge ID proximity card. After the person is inside the security trap, biometric verifications are used to open the second door. The user must repeat the process to exit the data hall.
 
 \paragraph{Cloud and virtual network:} This kind of network uses virtual machines (VM) to provide services to their clients.  VMs are also prone to specific targeted attacks as shown in the following list. The \textbf{Cisco Secure Data Center} is a solution to secure Cloud and virtual network. The core components of this solution provide: Secure Segmentation, Threat Defense, and Visibility.
 
@@ -41,55 +32,8 @@ A \textbf{Security Policy} is a formal statement of the rules by which people th
 \end{itemize}
 
 \paragraph{Borderless Network:} To accommodate the BYOD trend, Cisco developed the Borderless Network. To support this network, Cisco devices support Mobile Device Management (MDM) features. MDM features secure, monitor, and manage mobile devices, including corporate-owned devices and employee-owned devices. 
-%Some critical MDM functions include:
-%
-%\begin{itemize}
-%\item Data encryption
-%\item PIN enforcement
-%\item Data wipe (data in lost devices can be remotely wiped out)
-%\item Data Loss Prevention (DLP): prevent unauthorized users from accessing, prevent authorized users from doing malicious things to  critical data  
-%\item Detect password bypasses such as Jalibreaking (Apple iOS) or Rooting (Android) and restrict devices' access to network and corporate assets
-%\end{itemize}
 
 \section{Network threats}
-
-%\begin{itemize}
-%\item Script kiddies -- inexperienced hackers running scripts, tools, programs, etc. to cause harm but not for profit
-%\item Vulnerability broker -- white hat hackers discover exploits for reward
-%\item Hacktivists -- protest against political or social ideas by leaking sensitive information
-%\item Cyber criminals -- black hat hackers
-%\item State-sponsored -- either white hat or black hat hacker, who steals government secrets, sabotage network, and intelligence; their targets are foreign government, terrorist group, and corporations
-%\end{itemize}
-
-%\subsection{Hacker tools}
-%
-%\begin{itemize}
-%\item Password crackers -- repeatedly make guesses to crack the password; sometimes referred to as password recovery tool
-%\item Wireless hacking tool
-%\item Network scanning and hacking tools -- probe network devices for open TCP or UDP ports
-%\item Packet crafting tool -- probe and test firewall's robustness
-%\item Packet sniffer -- capture and analyze packets in Ethernet LAN or WLAN
-%\item Rootkit detector -- used by white hat hackers to detect installed root kits
-%\item Fuzzer -- discover computer's security vulnerability
-%\item Forensic tools -- sniff out any trace of evidence existing
-%\item Debuggers -- used by black hat hackers to reverse engineer binary files when writing exploits; used by white hat hackers to analyze malware
-%\item Hacking OS -- designed OS preloaded with tools and technologies optimized for hacking, such as Kali Linux, SELinux, Knoppix, Backbox Linux
-%\item Encryption tools
-%\item Vulnerability scanners exploitation tool
-%\item Vulnerability exploitation tool
-%\end{itemize}
-%
-%Hackers can use the previously mentioned attack tools or a combination of tools to create various attacks. The figure displays common types of hacking attacks.
-%
-%\begin{itemize}
-%\item Evesdropping
-%\item Data modification
-%\item IP address spoofing
-%\item Password-based -- If hackers discover a valid account, they could obtain a list of other users, change configurations, etc.
-%\item DoS
-%\item Man-in-the-Middle: hackers position themselves between the source and destination to monitor, capture, and control communication
-%\item Compromised key
-%\end{itemize}
 
 \subsection{Malware}
 
@@ -133,18 +77,6 @@ The method used in this course classifies attacks in three major categories: Rec
 \item Man-in-the-middle -- an unauthorized device positioned between two legitimate devices in order to redirect or capture traffic
 \item Buffer overflow -- too much data sent to a buffer memory
 \end{itemize}
-
-%\textbf{Social engineering} is an \textbf{access attack} that attempts to manipulate individuals into performing actions or divulging confidential information. 
-%Specific types of social engineering attacks include:
-%
-%\begin{itemize}
-%\item Pretexting -- a hacker calls an individual and lies to them in an attempt to gain access to privileged data
-%\item Phishing -- a malicious party sends a fraudulent email disguised as being from a legitimate, trusted source. The message intends to trick the recipient into installing malware on their device, or into sharing personal or financial information.
-%\item Spam -- use spam email to trick a user to click an infected link or download an infected file.
-%\item Tailgating -- This is when a hacker quickly follows an authorized person into a secure location. The hacker then has access to a secure area.
-%\item Something for Something (Quid pro quo) -- a hacker requests personal information from a party in exchange for something like a free gift.
-%\item Baiting -- a hacker leaves a malware-infected physical device, such as a USB flash drive in a public location such as a corporate washroom. The finder finds the device and loads it onto their computer, unintentionally installing the malware.
-%\end{itemize}
 
 \textbf{Denial-of-Service (DoS) attacks} prevent users from accessing a system. They are popular and simple to conduct. There are two major sources of DoS attacks:
 
@@ -203,7 +135,3 @@ The Cisco Network Foundation Protection (NFP) framework provides comprehensive g
 \item\textbf{Data plane} (Forwarding plane) is responsible for forwarding data. Its security can be implemented using \emph{ACLs}, \emph{antispoofing mechanisms}, and \emph{Layer 2 security} features. 
 
 \end{itemize}
-%\begin{itemize}
-%\item ACLs are used to secure the data plane in a variety of ways: Blocking unwanted traffic or users, Reducing the chance of DoS attacks, Mitigating spoofing attacks, Providing bandwidth control, Classifying traffic to protect the Management and Control planes.
-%\item Layer 2 security tools are integrated into the Cisco Catalyst switches: Port security, DHCP snooping, Dynamic ARP Inspection (DAI), and IP Source Guard.
-%\end{itemize}
