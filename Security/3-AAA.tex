@@ -140,7 +140,7 @@ When AAA authorization is not enabled, all users are allowed full access. After 
 To configure command authorization, use the \code{aaa authorization} command. The service type can specify the types of commands or services:
 \code{network} -- For network services such as PPP, \code{exec} -- For starting an exec (shell), \code{commands <level>} -- For exec (shell) commands. 
 
-\begin{sexylisting}{AAA Authorization Configuration}
+\begin{sexylisting}{Authorization Configuration}
 aaa authorization {network | commands <level> | exec} {default | <list-name>} 
   method1 ... method4
   
@@ -149,7 +149,7 @@ aaa authorization exec default group tacacs+
 
 To configure AAA accounting, use the \code{aaa accounting} command. 
 
-\begin{sexylisting}{AAA Authorization Configuration}
+\begin{sexylisting}{Accounting Configuration}
 aaa accounting {network | connection | exec} {default | <list-name>} 
          {statrt-stop | stop-only | none} [broadcast] method1 ... method4
 

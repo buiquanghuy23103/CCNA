@@ -1,0 +1,45 @@
+\chapter{ASA Firewall Models}
+
+\section{Introduction}
+
+\subsection{What is ASA?}
+
+Modern network design must include proper placement of one or more firewalls to protect resources. Cisco provides two firewall solutions: the firewall-enabled ISR and the Cisco Adaptive Security Appliance (ASA). This chapter will provide an introduction to the ASA platform.\\
+
+The ASA software combines firewall, VPN concentrator, and intrusion prevention functionality into one software image. There are four advanced ASA firewall features:
+
+\begin{itemize}
+\item ASA virtualization -- A single ASA can be partitioned into multiple virtual devices
+\item High availability with failover -- two identical ASAs can be paired into an active / standby failover configuration to provide device redundancy.
+\item Identity firewall - The ASA provides access control based on an association of IP addresses to Windows Active Directory login information.
+\item Support basic IPS features.
+\end{itemize}
+
+There are two firewall modes of operation available on ASA devices:
+
+\begin{itemize}
+\item The ASA is considered to be a router in the network and can perform NAT between connected networks. The focus of this chapter is on the routed mode.
+\item The ASA functions like a Layer 2 device and is not considered a router. It is only assigned an IP address on the local network for management purposes.
+\end{itemize}
+
+A \textbf{license} specifies the options that are enabled on a given ASA. To verify the license information on an ASA device, use the \code{show version} command, as shown in Figure 3, or the \code{show activation-key} command.\\
+
+\subsection{Security levels}
+
+The ASA assigns \textbf{security levels} to distinguish between inside and outside networks. Security levels define the level of trustworthiness of an interface. The higher the level, the more trusted the interface. The security level numbers range from 0 (untrustworthy) to 100 (very trustworthy). Each operational interface must have a name and a security level from 0 (lowest) to 100 (highest) assigned.\\
+
+When traffic moves from an interface with a higher security level to an interface with a lower security level, it is considered outbound traffic. Conversely, traffic moving from an interface with a lower security level to an interface with a higher security level is considered inbound traffic.\\
+
+Outbound traffic is allowed and inspected by default. Returning traffic is allowed because of stateful packet inspection. However, traffic that is coming from the outside network and going into either the DMZ or the inside network, is denied by default. Return traffic, originating on the inside network and returning via the outside interface, would be allowed. 
+
+\subsection{ASA Interactive Setup Initialization Wizard}
+
+You can erase ASA configuration using \code{write erase} and \code{reload} privileged EXEC commands. When the device is rebooted, the ASA wizard displays the prompt ''Pre-configure Firewall now through interactive prompts [yes]`` To cancel and display the ASA default user EXEC mode prompt, enter \code{no}. Otherwise, enter \code{yes} or simply press \code{Enter}. This initiates the wizard and the ASA interactively guides an administrator to configure the default settings.
+
+\section{Configuration}
+
+\subsection{Enter Global Configuration Mode}
+
+The default ASA user prompt of \code{ciscoasa>} is displayed when an ASA configuration is erased, the device is rebooted, and the user does not use the interactive setup wizard. To enter privileged EXEC mode, use the \code{enable} user EXEC mode command. Initially, an ASA does not have a password configured; therefore when prompted, leave the enable password prompt blank and press Enter.\\
+
+The ASA date and time should be set either manually or by using Network Time Protocol (NTP). To set the date and time, use the \code{clock set} privileged EXECcommand.

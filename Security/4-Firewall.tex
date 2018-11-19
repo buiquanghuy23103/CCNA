@@ -35,7 +35,8 @@ Several ICMP messages are required for proper network operation and should be al
 \item Source quench -- Throttles down traffic when necessary.
 \end{itemize}
 
-As a rule, block all \emph{other} ICMP message types \emph{outbound}.\\
+Traffic that originates within a router such as pings from a command prompt, remote access from a router to another device, or routing updates are not affected by outbound access lists. The traffic must flow through the router in order for the router to apply the ACEs.\\
+
 
 If SNMP is necessary, exploitation of SNMP vulnerabilities can be mitigated by applying interface ACLs to filter SNMP packets from non-authorized systems.  The most effective means of exploitation prevention is to disable the SNMP server on IOS devices for which it is not required. 
 
@@ -59,7 +60,14 @@ Stateful firewall monitors network traffic as it flows into and out of the organ
 
 \textbf{Benefits:} prevent spoofing and DoS attacks, provide more stringent control over security.\\ 
 
-\textbf{Limitations:} cannot prevent Application Layer attacks, does not filter UDP and ICMP packets, cannot track connections that use dynamic port negotiation, not support authentication.
+Limitations of stateful firewalls include the following:
+
+\begin{itemize}
+\item Stateful firewalls cannot prevent application layer attacks.
+\item Protocols such as UDP and ICMP are not stateful and do not generate information needed for a state table.
+\item An entire range of ports must sometimes be opened in order to support specific applications that open multiple ports.
+\item Stateful firewalls lack user authentication.
+\end{itemize}
 
 \subsection{Next-Generation Firewall}
 
@@ -142,11 +150,9 @@ There are four steps to configure this policy using a Classic Firewall:
 
 \subsection{Zone-based Policy Firewall (ZPF)}\label{sec:ZPF}
 
-The Classic Firewall applies firewall policy to interfaces. Zone-Based Policy Firewall uses zones to apply firewall policy.\\
+The Classic Firewall applies firewall policy to interfaces. Zone-Based Policy Firewall uses zones to apply firewall policy. ZPFs use the concept of zones to provide additional flexibility. A zone is a group of one or more interfaces that have similar functions or features. By default, the traffic between interfaces in the same zone is not subject to any policy and passes freely. However, all zone-to-zone traffic is blocked. In order to permit traffic between zones, a policy allowing or inspecting traffic must be configured.\\
 
-ZPFs use the concept of zones to provide additional flexibility. A zone is a group of one or more interfaces that have similar functions or features. By default, the traffic between interfaces in the same zone is not subject to any policy and passes freely. However, all zone-to-zone traffic is blocked. In order to permit traffic between zones, a policy allowing or inspecting traffic must be configured.\\
-
-There are several benefits of a ZPF:
+There are several \textbf{benefits} of a ZPF:
 
 \begin{itemize}
 \item Not dependent on ACLs.
@@ -154,15 +160,15 @@ There are several benefits of a ZPF:
 \item Policies are easy to read and troubleshoot with the Cisco Common Classification Policy Language (C3PL). C3PL can create traffic policies based on events and affect any given traffic with only one policy, instead of needing multiple ACLs and inspection actions.
 \end{itemize}
 
-There are three possible actions with Cisco IOS Zone-Based Policy Firewall:
+There are three possible \textbf{actions} with Cisco IOS Zone-Based Policy Firewall:
 
 \begin{itemize}
-  \item The inspect action configures Cisco IOS stateful packet inspection.
-  \item The drop action is similar to a deny ACE.
-  \item The pass action is similar to a permit ACE but does not track the state of connections or sessions.​
+\item The \textbf{inspect} action configures Cisco IOS stateful packet inspection
+\item The \textbf{drop} action is similar to a deny ACE
+\item The \textbf{pass} action is similar to a permit ACE but does not track the state of connections or sessions.
 \end{itemize}
 
-ZPF Rules for Transit Traffic between two interfaces depends on the zone that those interfaces belongs to:
+ZPF Rules for \textbf{Transit Traffic} between two interfaces depends on the zone that those interfaces belongs to:
 
 \begin{itemize}
 \item Neither intefaces is a zone member: Pass
@@ -171,7 +177,7 @@ ZPF Rules for Transit Traffic between two interfaces depends on the zone that th
 \item Only one interface is a zone member: Drop
 \end{itemize}
 
-The \emph{self zone} is a special zone which is the router itself and includes all the router interface IP addresses. By default, if the router (self zone) is the source or the destination, then all traffic is permitted. The only exception is if the source and destination are a zone-pair with a specific service-policy. In that case, the policy is applied to all traffic.
+The \textbf{self zone} is a special zone which is the router itself and includes all the router interface IP addresses. By default, if the router (self zone) is the source or the destination, then all traffic is permitted. The only exception is if the source and destination are a zone-pair with a specific service-policy. In that case, the policy is applied to all traffic.
 
 There are four steps to configure a ZPF zone (Take the topology in figure \ref{Zone} as an example):
 
@@ -247,7 +253,6 @@ The fourth step is to identify a zone pair (\\
 
 \begin{sexylisting}{ZPF Verification}
 show run | begin class-map
-show run | begin class-map
 show class-map type inspect
 show zone security
 show zone-pair security
@@ -257,7 +262,7 @@ show policy-map type inspect zone-pair sessions
 
 The service-policy is now active. HTTP, HTTPS, and DNS traffic sourced from the PRIVATE zone and destined for the PUBLIC zone will be inspected. Traffic sourced from the PUBLIC zone and destined for the PRIVATE zone will only be allowed if it is part of sessions originally initiated by PRIVATE zone hosts.
 
-\subsection{ZPF Configuration Considerations}
+\textbf{ZPF Configuration Considerations}
 
 \begin{itemize}
 \item The router never filters the traffic between interfaces in the same zone.
