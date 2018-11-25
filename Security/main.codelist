@@ -15,19 +15,21 @@
 \contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: OSPF SHA authentication}}{23}{tcb@cnt@sexylisting.15}
 \contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: Local default authentication}}{25}{tcb@cnt@sexylisting.16}
 \contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: Local named authentication}}{26}{tcb@cnt@sexylisting.17}
-\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Create a TACACS+ server}}{27}{tcb@cnt@sexylisting.18}
+\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Server-based authentication}}{27}{tcb@cnt@sexylisting.18}
 \contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Authorization Configuration}}{28}{tcb@cnt@sexylisting.19}
 \contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: Accounting Configuration}}{28}{tcb@cnt@sexylisting.20}
-\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: 802.1X configuration}}{29}{tcb@cnt@sexylisting.21}
-\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: Classic Firewall configuration}}{34}{tcb@cnt@sexylisting.22}
-\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: ZPF configuration}}{37}{tcb@cnt@sexylisting.23}
-\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: ZPF Verification}}{38}{tcb@cnt@sexylisting.24}
-\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Enable IPS}}{45}{tcb@cnt@sexylisting.25}
-\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: Retire a specific signature}}{45}{tcb@cnt@sexylisting.26}
-\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: Change actions of a signature}}{46}{tcb@cnt@sexylisting.27}
-\contentsline {tcolorbox}{\numberline {28}{\ignorespaces Listing 28: Change actions of a signature category}}{46}{tcb@cnt@sexylisting.28}
-\contentsline {tcolorbox}{\numberline {29}{\ignorespaces Listing 29: IPS verification}}{46}{tcb@cnt@sexylisting.29}
-\contentsline {tcolorbox}{\numberline {30}{\ignorespaces Listing 30: PVLAN}}{49}{tcb@cnt@sexylisting.30}
-\contentsline {tcolorbox}{\numberline {31}{\ignorespaces Listing 31: DHCP snooping}}{51}{tcb@cnt@sexylisting.31}
-\contentsline {tcolorbox}{\numberline {32}{\ignorespaces Listing 32: Dynamic ARP Inspection (DAI) configuration}}{51}{tcb@cnt@sexylisting.32}
-\contentsline {tcolorbox}{\numberline {33}{\ignorespaces Listing 33: Site-to-site IPsec}}{62}{tcb@cnt@sexylisting.33}
+\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: 802.1X configuration}}{30}{tcb@cnt@sexylisting.21}
+\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: Classic Firewall configuration}}{33}{tcb@cnt@sexylisting.22}
+\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: ZPF configuration: Identify traffic using ACLs and Class-Maps}}{35}{tcb@cnt@sexylisting.23}
+\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: ZPF configuration: Specify Firewall Policies}}{35}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: ZPF configuration: Apply Firewall Policies}}{36}{tcb@cnt@sexylisting.25}
+\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: ZPF Verification}}{36}{tcb@cnt@sexylisting.26}
+\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: Enable IPS}}{45}{tcb@cnt@sexylisting.27}
+\contentsline {tcolorbox}{\numberline {28}{\ignorespaces Listing 28: Retire a specific signature}}{45}{tcb@cnt@sexylisting.28}
+\contentsline {tcolorbox}{\numberline {29}{\ignorespaces Listing 29: Change actions of a signature}}{46}{tcb@cnt@sexylisting.29}
+\contentsline {tcolorbox}{\numberline {30}{\ignorespaces Listing 30: Change actions of a signature category}}{46}{tcb@cnt@sexylisting.30}
+\contentsline {tcolorbox}{\numberline {31}{\ignorespaces Listing 31: IPS verification}}{46}{tcb@cnt@sexylisting.31}
+\contentsline {tcolorbox}{\numberline {32}{\ignorespaces Listing 32: PVLAN}}{49}{tcb@cnt@sexylisting.32}
+\contentsline {tcolorbox}{\numberline {33}{\ignorespaces Listing 33: DHCP snooping}}{51}{tcb@cnt@sexylisting.33}
+\contentsline {tcolorbox}{\numberline {34}{\ignorespaces Listing 34: Dynamic ARP Inspection (DAI) configuration}}{51}{tcb@cnt@sexylisting.34}
+\contentsline {tcolorbox}{\numberline {35}{\ignorespaces Listing 35: Site-to-site IPsec}}{61}{tcb@cnt@sexylisting.35}

@@ -45,6 +45,18 @@ Standard and extended ACLs can be created using either a number or a name to ide
 \item Can contain alphanumeric characters
 \item It is suggested that the name be written in CAPITAL LETTER
 \end{itemize}
+
+\subsection{ACL configuration guidelines}
+
+\begin{itemize}
+\item Create an ACL in global configuration mode and then apply it to interfaces
+\item Ensure that the last statement is \code{deny any} or \code{deny ip any any}
+\item The statement order is important because ACLs are processed drop-down. As soon as a statement is matched, ACL stops.
+\item The most specific ACEs are at the top of the list.
+\item New statements are added to an existing ACL.
+\item Place \textbf{Standard} ACLs as close to the \textbf{destination} as possible.
+\item Place \textbf{Extended} ACLs as close to the \textbf{source} as possible.
+\end{itemize}
 	
 \section{Standard ACL}
 
@@ -54,7 +66,7 @@ A standard IPv4 ACL can filter traffic based on source IP addresses only. Unlike
  
 Because standard ACLs do not specify destination addresses, place them as close to the destination as possible. If a standard ACL was placed at the source of the traffic, the \textit{permit} or \textit{deny} will occur based on the given source address no matter where the traffic is destined. 
 
-\subsection{Standard ACL placement}
+\subsection{Placement}
 
 In the figure \ref{standardACLex}, the administrator wants to prevent traffic originating in the 192.168.10.0/24 network from reaching the 192.168.30.0/24 network.\\
 
@@ -67,10 +79,23 @@ In the figure \ref{standardACLex}, the administrator wants to prevent traffic or
 Following the basic placement guidelines of placing the standard ACL close to the destination, the figure shows two possible interfaces on R3 to apply the standard ACL:
 
 \begin{itemize}
-\item R3 S0/0/1 interface - Applying a standard ACL to prevent traffic from 192.168.10.0/24 from entering the S0/0/1 interface will prevent this traffic from reaching 192.168.30.0/24 and all other networks that are reachable by R3. This includes the 192.168.31.0/24 network. Because the intent of the ACL is to filter traffic destined only for 192.168.30.0/24, a standard ACL should not be applied to this interface.
+\item R3 S0/0/1 interface - Applying a standard ACL to prevent traffic from 192.168.10.0/24 from entering the S0/0/1 interface will prevent this traffic from reaching 192.168.30.0/24 as well as 192.168.31.0/24 network. Because the intent of the ACL is to filter traffic destined only for 192.168.30.0/24, a standard ACL should not be applied to this interface.
 
 \item R3 G0/0 interface - Applying the standard ACL to traffic exiting the G0/0 interface will filter packets from 192.168.10.0/24 to 192.168.30.0/24. This will not affect other networks that are reachable by R3. Packets from 192.168.10.0/24 will still be able to reach 192.168.31.0/24.
 \end{itemize}
+
+\subsection{Examples}
+
+\begin{example}
+The following ACL permits a single network. Only traffic from the 192.168.10.0/24 network will be permitted out the Serial 0/0/0 interface.
+\begin{verbatim}
+access-list 1 permit 192.168.10.0 0.0.0.255
+interface s0/0/0
+ip access-group 1 out
+\end{verbatim}
+\end{example}
+
+
 
 \section{Extended ACLs}
 
@@ -84,9 +109,11 @@ Extended ACLs filter packets based on:
 \item Source and destination TCP and UDP ports (HTTP port 80, SSH port 22, etc.)
 \end{itemize}
 
-Extended ACLs are used more often than standard ACLs because they provide a greater degree of control. We usually locate extended ACLs as close as possible to the source of the traffic. This way, undesirable traffic is denied close to the source network without crossing the network infrastructure.
 
-\subsection{Extended ACL Placement}
+
+\subsection{Placement}
+
+Extended ACLs are used more often than standard ACLs because they provide a greater degree of control. We usually locate extended ACLs as close as possible to the source of the traffic. This way, undesirable traffic is denied close to the source network without crossing the network infrastructure.\\
 
 In figure \ref{extendedACLex}, the administrator wants to deny Telnet and FTP traffic from the .11 network to Company B's 192.168.30.0/24 (.30, in this example) network. At the same time, all other traffic from the .11 network must be permitted to leave Company A without restriction.\\
 
@@ -104,43 +131,10 @@ A better solution is to place an extended ACL on R1. There are two possible inte
 \item R1 G0/1 interface (inbound) - Applying an extended ACL to traffic entering the G0/1 interface means that only packets from the 192.168.11.0/24 network are subject to ACL processing on R1. Because the filter is to be limited to only those packets leaving the 192.168.11.0/24 network, applying the extended ACL to G0/1 is the best solution.
 \end{itemize}
 
-\section{IPv6 ACLs}
-
-In IPv4 there are two types of ACLs, standard and extended and both types of ACLs can be either numbered or named ACLs. With IPv6, there is only one type of ACL, which is equivalent to an IPv4 extended named ACL and there are no numbered ACLs in IPv6. An IPv4 ACL and an IPv6 ACL cannot share the same name. There are three significant differences between IPv4 and IPv6 ACLs:
-
-\begin{itemize}
-\item The command used to apply an IPv6 ACL to an interface is \texttt{ipv6 traffic-filter} command.
-\item IPv6 ACLs do not use wildcard masks but instead specifies the prefix-length
-\item Besides \texttt{deny ipv6 any any}, An IPv6 ACL adds two implicit permit statements at the end of each IPv6 access list: \texttt{permit icmp any any nd-na} and \texttt{permit icmp any any nd-ns}
-\end{itemize}
-	
-Because IPv6 ACLs must be configured with both a source and a destination, they should be applied closest to the source of the traffic.
-
-\section{Configurations}
+\subsection{Examples}
 
 \begin{example}
-The figure shows an example of an ACL designed to permit a single network. Only traffic from the 192.168.10.0/24 network will be permitted out the Serial 0/0/0 interface.
-\begin{verbatim}
-access-list 1 permit 192.168.10.0 0.0.0.255
-interface s0/0/0
-ip access-group 1 out
-\end{verbatim}
-\end{example}
-
-\begin{example}
-Figure below shows the commands used to configure a standard named ACL on router R1, interface G0/0, which denies host 192.168.11.10 access to the 192.168.10.0 network.
-\begin{verbatim}
-ip access-list standard NO_ACCESS
-  deny host 192.168.11.10
-  permit any
-  exit
-interface g0/0
-  ip access-group NO_ACCESS out
-\end{verbatim}
-\end{example}
-
-\begin{example}
-Design an IPv4 named access list HQServer to prevent any computers attached to the g0/0 interface of the Branch router from accessing HQServer.pka (172.16.0.1). All other traffic is permitted. Configure the access list on the appropriate router, apply it to the appropriate interface and in the appropriate direction.
+The following named access list HQServer prevents any computers attached to the g0/0 interface of the Branch router from accessing HQServer (172.16.0.1). All other traffic is permitted.
 \begin{verbatim}
 ip access-list extended HQServer
   deny ip any host 172.16.0.1
@@ -152,9 +146,9 @@ int g0/0
 \end{example}
 
 \begin{example}
-Design an IPv4 named access list BranchServer to prevent any computers attached to the Gigabit Ethernet 0/0 interface of the HQ router from accessing the HTTP and HTTPS service of the Branch server (172.16.128.1/20). All other traffic is permitted. Configure the access list on the appropriate router, apply it to the appropriate interface and in the appropriate direction.
+The following access list BranchServer prevents any computers attached to the g0/0 interface of the HQ router from accessing the HTTP and HTTPS service of the Branch server (172.16.128.1/20). All other traffic is permitted.
 \begin{verbatim}
-access-list extended BranchServer
+ip access-list extended BranchServer
   deny tcp any host 172.16.128.1 eq 80
   deny tcp any host 172.16.128.1 eq 443
   permit ip any any
@@ -165,26 +159,15 @@ int g0/0
 \end{example}
 
 \begin{example}
- Design an IPv6 access-list named NO-B1 to prevent any IPv6 traffic originating on B1 (2001:DB8:ACAD:B1::2/64) to reach the BranchServer.pka (2001:DB8:ACAD:B2::3/64). No traffic should be permitted from B1 to BranchServer.pka. Apply the IPv6 access to the most appropriated location (interface and direction).
+The access list 103 allows users from the  internal network (192.168.10.0/24) to send both HTTP and HTTPS. The access list 104 allows any TCP traffic from the Internet that was initiated from the hosts in the internal networks to pass (with the \code{established} keyword). These access lists will restrict 192.168.10.0 to allow only website browsing.
 \begin{verbatim}
-ipv6 access-list NO-B1
-  deny ipv6 host 2001:DB8:ACAD:B1::2 host 2001:DB8:ACAD:B2::3
-  permit ipv6 any any
-  exit
-int g0/1
-  ipv6 traffic-filter NO-B1 out
+access-list 103 permit tcp 192.168.10.0 0.0.0.255 any eq 80
+access-list 103 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+access-list 104 permit tcp any 192.168.10.0 0.0.0.255 established
+int s0/0/0
+	ip access-group 103 out
+	ip access-group 104 in
 \end{verbatim}
-\end{example}
-
-\begin{example}
-The network administrator configured an ACL to allow users from the 192.168.10.0/24 network to browse both insecure and secure websites. In this topology (figure \ref{example4}) the interface closest to the source of the target traffic is the G0/0 interface of R1.
-\begin{figure}[hbtp]
-\caption{Extended ACL example}\label{example4}
-\centering
-\subfigure[]{ \includegraphics[ width=0.7\textwidth ]{pictures/example4-1.PNG} }
-\subfigure[]{ \includegraphics[ scale=1 ]{pictures/example4-2.PNG} }
-\end{figure}
-Web request traffic from users on the 192.168.10.0/24 LAN is inbound to the G0/0 interface. Return traffic from established connections to users on the LAN is outbound from the G0/0 interface. The example applies the ACL to the G0/0 interface in both directions. The inbound ACL, 103, checks for the type of traffic. The outbound ACL, 104, checks for return traffic from established connections. This will restrict 192.168.10.0 Internet access to allow only website browsing.
 \end{example}
 
 \begin{example}
@@ -227,6 +210,69 @@ ip access-list extended SNMPACCESS
 \end{verbatim}
 \end{example}
 
+\subsection{Mitigate attacks}
+
+ACLs can be used to mitigate IP address spoofing and denial of service (DoS) attacks (figure \ref{AntispoofingACL}). Use ACL to block inbound packets from the following addresses:
+
+\begin{itemize}
+\item All zeros addresses
+\item Broadcast addresses
+\item Local host addresses (127.0.0.0/8)
+\item Reserved private addresses (prevent the spoofing of internal networks)
+\item IP multicast address range (224.0.0.0/4)
+\end{itemize}
+
+\begin{figure}[hbtp]
+  \caption{Antispoofing with ACLs}\label{AntispoofingACL}
+  \centering
+  \includegraphics[width=10\xm]{pictures/AntispoofingACL.PNG}
+  \end{figure}
+
+Hackers can use ICMP echo packets (pings) to discover network, generate DoS flood attacks, or alter host routing tables. Both ICMP echo and redirect messages should be blocked \emph{inbound} by the router. Several ICMP messages are recommended for proper network operation and should be allowed into the internal network:
+
+\begin{itemize}
+\item Echo reply -- Allows users to ping external hosts.
+\item Source quench -- Requests that the sender decrease the traffic rate of messages.
+\item Unreachable -- Generated for packets that are administratively denied by an ACL.
+\end{itemize}
+
+Several ICMP messages are required for proper network operation and should be allowed to exit the network (outbound ACL):
+
+\begin{itemize}
+\item Echo -- Allows users to ping external hosts.
+\item Parameter problem -- Informs the host of packet header problems.
+\item Packet too big -- Enables packet maximum transmission unit (MTU) discovery.
+\item Source quench -- Throttles down traffic when necessary.
+\end{itemize}
+
+\note Traffic that originates within a router such as pings from a command prompt, remote access from a router to another device, or routing updates are not affected by outbound access lists. The traffic must flow through the router in order for the router to apply the ACEs.
+
+\section{IPv6 ACLs}
+
+In IPv4 there are two types of ACLs, standard and extended and both types of ACLs can be either numbered or named ACLs. With IPv6, there is only one type of ACL, which is equivalent to an IPv4 extended named ACL. An IPv4 ACL and an IPv6 ACL cannot share the same name. There are three significant differences between IPv4 and IPv6 ACLs:
+
+\begin{itemize}
+\item The command used to apply an IPv6 ACL to an interface is \texttt{ipv6 traffic-filter} command.
+\item IPv6 ACLs do not use wildcard masks but instead specifies the prefix-length
+\item Besides \texttt{deny ipv6 any any}, An IPv6 ACL adds two implicit permit statements at the end of each IPv6 access list: \texttt{permit icmp any any nd-na} and \texttt{permit icmp any any nd-ns}
+\end{itemize}
+	
+Because IPv6 ACLs must be configured with both a source and a destination, they should be applied closest to the source of the traffic.
+
+\begin{example}
+The access list NO-B1 prevents any IPv6 traffic originating on B1 (2001:DB8:ACAD:B1::2/64) to reach the BranchServer (2001:DB8:ACAD:B2::3/64).
+\begin{verbatim}
+ipv6 access-list NO-B1
+  deny ipv6 host 2001:DB8:ACAD:B1::2 host 2001:DB8:ACAD:B2::3
+  permit ipv6 any any
+  exit
+int g0/1
+  ipv6 traffic-filter NO-B1 out
+\end{verbatim}
+\end{example}
+
+
+
 \section{Troubleshoot}
 
 Using the \texttt{show access-lists} command to reveal most of the common ACL errors. The most common errors are entering ACEs in the wrong order and not applying adequate criteria to the ACL rules. Following these steps to troubleshoot ACL:
@@ -247,12 +293,12 @@ Extended IP access list 120
     20 deny tcp 192.168.10.0 0.0.0.255 host 192.168.31.12 eq smtp
     30 permit tcp any any
 \end{verbatim}
-The 192.168.10.0/24 network cannot use TFTP to connect to the 192.168.30.0/24 network because TFTP uses the transport protocol UDP. Statement 30 in access list 120 allows all other TCP traffic. However, because TFTP uses UDP instead of TCP, it is implicitly denied. Recall that the implied deny any statement does not appear in show access-lists output and therefore matches are not shown. Statement 30 should be \texttt{permit ip any any}.
+Statement 30 in access list 120 allows all other TCP traffic. However, because TFTP uses UDP instead of TCP, it is implicitly denied. Recall that the implied \code{deny any} statement does not appear in show access-lists output and therefore matches are not shown. Statement 30 should be \code{permit ip any any}.
 \end{example}
 
 
 \begin{example}
-The 192.168.11.0/24 network can use Telnet to connect to 192.168.30.0/24, but according to company policy, this connection should not be allowed. The results of the show access-lists 130 command indicate that the permit statement has been matched.
+The 192.168.11.0/24 network can use Telnet to connect to 192.168.30.0/24, but this connection should not be allowed. The results of the \code{show access-lists 130} command indicate that the permit statement has been matched.
 \begin{verbatim}
 R1# show access-lists 130
 Extended IP access list 130
@@ -260,5 +306,5 @@ Extended IP access list 130
     20 deny tcp 192.168.11.0 0.0.0.255 host 192.168.31.12 eq smtp
     30 permit tcp any any (12 match(es))
 \end{verbatim}
-The 192.168.11.0/24 network can use Telnet to connect to the 192.168.30.0/24 network because the Telnet port number in statement 10 of access list 130 is listed in the wrong position in the ACL statement. Statement 10 currently denies any source packet with a port number that is equal to Telnet. To deny Telnet traffic inbound on G0/1, deny the destination port number that is equal to Telnet, for example, 10 deny tcp 192.168.11.0 0.0.0.255 192.168.30.0 0.0.0.255 eq telnet.
+The 192.168.11.0/24 network can use Telnet to connect to the 192.168.30.0/24 network because statement 10 currently denies any source packet with a port number that is equal to Telnet. To deny Telnet traffic inbound on G0/1, deny the destination port number that is equal to Telnet. The statement 10 should be \code{deny tcp 192.168.11.0 0.0.0.255 192.168.30.0 0.0.0.255 eq telnet}.
 \end{example}

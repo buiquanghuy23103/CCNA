@@ -1,0 +1,23 @@
+===CUSTOMER==ROUTER===
+interface dialer 2
+ encapsulation ppp
+ ip address negotiated
+ ppp chap hostname Fred
+ ppp chap password Barney
+ ip mtu 1492
+ dialer pool 1
+ no shutdown
+ 
+interface g0/1
+ no ip address
+ pppoe enable
+ pppoe-client dial-pool-number 1
+ no shutdown
+
+===VERIFICATION====
+show ip int brief
+show int dialer 1
+show ip route
+show pppoe session
+===TROUBLESHOOT====
+debug ppp negotiation

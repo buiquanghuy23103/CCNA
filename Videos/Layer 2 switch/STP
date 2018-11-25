@@ -1,0 +1,10 @@
+spanning-tree mode rapid-pvst 
+#spanning-tree mode pvst
+spanning-tree vlan 10,15,20 root primary 
+#spanning-tree vlan 10,15,20 priority 24576
+#spanning-tree vlan 10,15,20 root secondary 
+
+interface range f0/7-24,f0/3-4
+ spanning-tree portfast 
+ spanning-tree bpduguard enable 
+

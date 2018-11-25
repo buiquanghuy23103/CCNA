@@ -1,0 +1,57 @@
+==BASIC--PPP======
+interface s0/1/0
+ ip address 10.0.1.1 255.255.255.252
+ encapsulation ppp
+ #compress predictor
+ #compress stac
+ #ppp quality 80
+ #ppp authentication pap
+ #ppp authentication chap
+ #ppp authentication chap pap
+ 
+==PAP=AUTHENTICATION===
+#The sent-username on one router (interface configuraiton mode) must match the username (global configuration mode) on the other router.
+a.     Enter the following commands into R1:
+R1(config)# username R3 secret class
+R1(config)# interface s0/0/0
+R1(config-if)# ppp authentication pap
+R1(config-if)# ppp pap sent-username R1 password cisco
+b.     Enter the following commands into R3:
+R3(config)# username R1 secret cisco
+R3(config)# interface s0/0/0
+R3(config-if)# ppp authentication pap
+R3(config-if)# ppp pap sent-username R3 password class
+
+==CHAP=AUTHENTICATION====
+#The hostname on one router (global configuraiton mode) must match the username (global configuration mode) on the other router.
+a.     Enter the following commands into ISP. The hostname is sent as the username:
+Router(config)# hostname ISP
+ISP(config)# username R3 secret cisco
+ISP(config)# interface s0/0/0
+ISP(config-if)# ppp authentication chap
+b.     Enter the following commands into R3. The passwords must match for CHAP authentication:
+R3(config)# username ISP secret cisco
+R3(config)# interface serial0/1/0
+R3(config-if)# ppp authentication chap
+
+==MULTILINK=======
+interface Multilink 1
+ ip address 10.0.1.1 255.255.255.252
+ ppp multilink
+ ppp multilink group 1
+!
+interface s0/1/0
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 1
+!
+interface s0/1/0
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 1
+exit
+==TROUBLESHOOT====
+show interfaces serial
+show ppp multilink

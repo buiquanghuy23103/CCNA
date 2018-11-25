@@ -2,35 +2,35 @@
 
 \section{VPN introduction}
 
-A VPN is a private network that is created over a public network, usually the Internet. A VPN is virtual in that it carries information within a private network, but that information is actually transported over a public network. A VPN is private in that the traffic is encrypted to keep the data confidential while it is transported across the public network.\\
+A VPN is a private network that is created over a public network, usually the Internet. A VPN is virtual because it carries information within a private network, but that information is actually transported over a public network. A VPN is private in that the traffic is encrypted to keep the data confidential while it is transported across the public network.\\
 
 In the simplest sense, a VPN connects two endpoints, such as two remote offices, over a public network to form a logical connection. The logical connections can be made at either Layer 2 or Layer 3. This chapter focuses on Layer 3 VPN technology. Common examples of Layer 3 VPNs are GRE, Multiprotocol Label Switching (MPLS), and IPsec (This course focuses on IPsec VPNs).\\
 
 \begin{figure}[hbtp]
 \caption{Remote-access VPN}\label{RemoteVPN}
 \centering
-\includegraphics[scale=1]{pictures/RemoteVPN.PNG}
+\includegraphics[scale=0.5]{pictures/RemoteVPN.PNG}
 \end{figure}
 
 \begin{figure}[hbtp]
 \caption{Site-to-site VPN}\label{Site2site}
 \centering
-\includegraphics[scale=1]{pictures/Site2site.PNG}
+\includegraphics[scale=0.5]{pictures/Site2site.PNG}
 \end{figure}
 
 
-There are two basic types of VPNs: remote-access and site-to-site. A \textbf{remote-access VPN} is created when VPN information is not statically set up, but instead allows for dynamically changing connection information, which can be enabled and disabled when needed (Figure \ref{RemoteVPN}). A \textbf{site-to-site VPN} is created when devices on both sides of the VPN connection are aware of the VPN configuration in advance. The VPN remains static, and internal hosts have no knowledge that a VPN exists (Figure \ref{Site2site}).\\
+There are two basic types of VPNs: remote-access and site-to-site. A \textbf{remote-access VPN} is created when VPN connection is dynamically created and can be enabled and disabled when needed (Figure \ref{RemoteVPN}). A \textbf{site-to-site VPN} is static and devices on both sides of the VPN connection are aware of the VPN configuration in advance. However, internal hosts have no knowledge that a VPN exists (Figure \ref{Site2site}).\\
 
 \begin{figure}[hbtp]
 \caption{Hairspinning}\label{Hairspinning}
 \centering
-\includegraphics[scale=1]{pictures/Hairspinning.PNG}
+\includegraphics[scale=0.5]{pictures/Hairspinning.PNG}
 \end{figure}
 
 \begin{figure}[hbtp]
 \caption{Split Tunneling}
 \centering
-\includegraphics[scale=1]{pictures/SplitTunneling.PNG}
+\includegraphics[scale=0.5]{pictures/SplitTunneling.PNG}
 \end{figure}
 
 
@@ -44,7 +44,7 @@ IPsec is an IETF standard that defines how a VPN can be secured across IP networ
 \begin{figure}[hbtp]
 \caption{IPsec framework}\label{IPsecFramework}
 \centering
-\includegraphics[scale=1]{pictures/IPsecFramework.PNG}
+\includegraphics[scale=0.5]{pictures/IPsecFramework.PNG}
 \end{figure}
 
 \begin{figure}[hbtp]
@@ -92,7 +92,7 @@ ESP provides \textbf{confidentiality} by encrypting the entire original IP datag
 \end{figure}
 
 
-Optionally, ESP can also enforce anti-replay protection. \textbf{Anti-replay protection} verifies that each packet is unique and is not duplicated. This protection ensures that a hacker cannot intercept packets and insert changed packets into the data stream. Anti-replay works by keeping track of packet sequence numbers and using a sliding window on the destination end.
+Optionally, ESP can also enforce anti-replay protection. \textbf{Anti-replay protection} verifies that each packet is unique and is not duplicated. This protection ensures that a hacker cannot intercept packets and insert changed packets into the data stream. Anti-replay works by keeping track of packet sequence numbers and using a sliding window on the destination end.\\
 
 Looking at figure \ref{ESP}, ESP process starts with encrypting the payload (IP datagram and ESP trailer). Then, the newly encrypted data and the ESP header are included in the hashing process. Next, a new IP header is attached to the authenticated payload. The new IP address is used to route the packet through the Internet.\\
 
@@ -118,47 +118,47 @@ Instead of transmitting keys directly across a network, IKE calculates shared ke
 
 IKE uses \textbf{UDP port 500} to exchange IKE information between the security gateways. UDP port 500 packets must be permitted on any IP interface that is connecting a security gateway peer.
 
-\subsection{IKE phase 1}
+%\subsection{IKE phase 1: Negotiate \emph{ISAKMP} SA policy}
 
-\begin{figure}[hbtp]
-\caption{IKE phase 1 -- Negotiate ISAKMP policy to create a tunnel}\label{IKEphase1}
-\centering
-\includegraphics[scale=1]{pictures/IKEphase1.PNG}
-\end{figure}
+%\begin{figure}[hbtp]
+%\caption{IKE phase 1 -- Negotiate ISAKMP policy}\label{IKEphase1}
+%\centering
+%\includegraphics[scale=1]{pictures/IKEphase1.PNG}
+%\end{figure}
+%
+%In Phase 1 (figure \ref{IKEphase1}), the following tasks are performed in order:
+%
+%\begin{enumerate}
+%\item IPsec peers authenticate each other. 
+%\item Negotiate a ISAKMP SA policy
+%\item Set up a secure tunnel between the peers. This tunnel will then be used in Phase 2.
+%\end{enumerate}
 
-IKE uses ISAKMP for phase 1 and phase 2 of key negotiation. In Phase 1 (figure \ref{IKEphase1}), the following tasks are performed in order:
+%two IPsec peers perform the initial negotiation to ensure that SAs (ISAKMP policy) on both sides are matched. This phase also authenticates the peers, and sets up a secure tunnel between the peers. \\
 
-\begin{enumerate}
-\item IPsec peers authenticate each other. 
-\item Negotiate a matching IKE SA policy to protect the exchange
-\item 
-\end{enumerate}
+%Phase 1 can be implemented in main mode or aggressive mode. When \textbf{main mode} is used, the identities of the two IKE peers are hidden. \textbf{Aggressive mode} takes less time than main mode to negotiate keys between peers. However, since the authentication hash is sent unencrypted before the tunnel is established, aggressive mode is vulnerable to brute-force attacks.
 
-two IPsec peers perform the initial negotiation to ensure that SAs (ISAKMP policy) on both sides are matched. This phase also authenticates the peers, and sets up a secure tunnel between the peers. This tunnel will then be used in Phase 2 to negotiate the IPsec policy.\\
+%\subsection{IKE phase 2: Negotiate the \emph{IPsec} SA policy}
 
-Phase 1 can be implemented in main mode or aggressive mode. When \textbf{main mode} is used, the identities of the two IKE peers are hidden. \textbf{Aggressive mode} takes less time than main mode to negotiate keys between peers. However, since the authentication hash is sent unencrypted before the tunnel is established, aggressive mode is vulnerable to brute-force attacks.
+%The purpose of IKE Phase 2 is to negotiate the IPsec SA policy (figure \ref{IKEphase2}). IKE Phase 2 can only occur after IKE has established a secure tunnel in Phase 1.  
 
-\subsection{IKE phase 2}
+%\begin{figure}[hbtp]
+%\caption{IKE phase 2 -- Negotiate IPsec policy for sending secure traffic accross the tunnel}\label{IKEphase2}
+%\centering
+%\includegraphics[scale=1]{pictures/IKEphase2.PNG}
+%\end{figure}
 
-The purpose of IKE Phase 2 is to negotiate the IPsec security parameters (figure \ref{IKEphase2}). IKE Phase 2 is called quick mode and can only occur after IKE has established a secure tunnel in Phase 1.  In this phase, the SAs that IPsec uses are unidirectional; therefore, a separate key exchange is required for each data flow.
-
-\begin{figure}[hbtp]
-\caption{IKE phase 2 -- Negotiate IPsec policy for sending secure traffic accross the tunnel}\label{IKEphase2}
-\centering
-\includegraphics[scale=1]{pictures/IKEphase2.PNG}
-\end{figure}
-
-Quick mode also renegotiates a new IPsec SA when the IPsec SA lifetime expires. Basically, quick mode refreshes the keying material that creates the shared secret key. This is based on the keying material that is derived from the DH exchange in Phase 1.
+%Quick mode also renegotiates a new IPsec SA when the IPsec SA lifetime expires. Basically, quick mode refreshes the keying material that creates the shared secret key. This is based on the keying material that is derived from the DH exchange in Phase 1.
 
 \subsection{IPsec negotiation}
 IPsec negotiation to establish a VPN involves five steps, which include IKE Phase 1 and Phase 2:
 
 \begin{enumerate}
-\item An ISAKMP tunnel is initiated when host A sends ''interesting`` traffic to host B. Traffic is considered interesting when it travels between the peers and meets the criteria that are defined in an ACL.
+\item \textbf{ISAKMP tunnel:}  When host A sends ``interesting'' traffic to host B, an ISAKMP tunnel is initiated. Traffic is considered interesting when it travels between the peers and meets the criteria that are defined in an ACL.
 
-\item IKE Phase 1 begins. The peers negotiate the ISAKMP SA policy. When the peers agree on the policy and are authenticated, a secure tunnel is created.
+\item \textbf{IKE Phase 1:} The peers negotiate the ISAKMP SA policy. When the peers agree on the policy and are authenticated, a secure tunnel is created.
 
-\item IKE Phase 2 begins. The IPsec peers use the authenticated secure tunnel to negotiate the IPsec SA policy. The negotiation of the shared policy determines how the IPsec tunnel is established.
+\item \textbf{IKE Phase 2:} The IPsec peers use the tunnel created in IKE phase 1 to negotiate the IPsec SA policy. The negotiation of the shared policy determines how the IPsec tunnel is established. In this phase, a separate key exchange is required for each data flow.
 
 \item The IPsec tunnel is created, and data is transferred between the IPsec peers based on the IPsec SAs.
 
@@ -170,7 +170,7 @@ IPsec negotiation to establish a VPN involves five steps, which include IKE Phas
 \begin{figure}[hbtp]
 \caption{Site-to-site VPN topology}\label{VPNtopolgy}
 \centering
-\includegraphics[scale=1]{pictures/VPNtopolgy.PNG}
+\includegraphics[scale=0.5]{pictures/VPNtopolgy.PNG}
 \end{figure}
 
 The configuration tasks for the topology in figure \ref{VPNtopolgy} are shown in order as below:
@@ -180,8 +180,8 @@ The configuration tasks for the topology in figure \ref{VPNtopolgy} are shown in
 \item Enable the Security Technology package
 \item Identify interesting traffic: Configure ACL to identify the traffic from the LAN on R1 to the LAN on R3 as interesting. This interesting
 traffic will trigger the IPsec VPN to be implemented when there is traffic between the R1 to R3 LANs.
-\item Configure the IKE Phase 1 ISAKMP policy on R1 (encryption method, key exchange method, and DH method)
-\item Configure the IKE Phase 2 IPsec policy on R1. First, we create the transform-set VPN-SET to use esp-aes and esp-sha-hmac. Next, a crypto map VPN-MAP is created to bind all of the Phase 2 parameters together. Use sequence number 10 and identify it as an ipsec-isakmp map. In the following commands,	the perfect forwarding secrecy type is set using the \code{set pfs} command.
+\item Configure the IKE Phase 1 policy on R1. Use the mnemonic \textbf{HAGLE} to remember the five SAs to configure: Hash, Authentication, Group, Lifetime, and Encryption. Note that the address of the peer router R3 is the address of serial interface connected to the Internet (s0/0/0).
+\item Configure the IKE Phase 2 IPsec policy on R1. First, we create the transform-set VPN-SET to use esp-aes and esp-sha-hmac. Next, a crypto map VPN-MAP is created to bind all of the Phase 2 parameters together. Use sequence number 10 and identify it as an ipsec-isakmp map. In the following commands,the perfect forwarding secrecy type is set using the \code{set pfs} command.
 \item Configure the crypto map on the outgoing interface.
 \item Repeat the above steps on R3.
 \end{enumerate}
@@ -196,9 +196,10 @@ access-list 110 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
 #STEP 4
 crypto isakmp policy 10
 	hash sha 
-	encryption aes 256
 	authentication pre-share
 	group 14
+	lifetime 3600
+	encryption aes 256
 	exit
 crypto isakmp key vpnpa55 address 10.2.2.2	
 

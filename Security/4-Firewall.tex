@@ -1,54 +1,14 @@
 \chapter{Firewall}
 
-\section{ACL}
+For ACL, take a look at chapter ACL in Notebook folder.\\
 
-ACLs can be used to mitigate IP address spoofing and denial of service (DoS) attacks (figure \ref{AntispoofingACL}). Use ACL to block inbound packets from the following addresses:
+All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. 
 
-\begin{itemize}
-\item All zeros addresses
-\item Broadcast addresses
-\item Local host addresses (127.0.0.0/8)
-\item Reserved private addresses (prevent the spoofing of internal networks)
-\item IP multicast address range (224.0.0.0/4)
-\end{itemize}
-
-\begin{figure}[hbtp]
-  \caption{Antispoofing with ACLs}\label{AntispoofingACL}
-  \centering
-  \includegraphics[width=10\xm]{pictures/AntispoofingACL.PNG}
-  \end{figure}
-
-Hackers can use ICMP echo packets (pings) to discover network, generate DoS flood attacks, or alter host routing tables. Both ICMP echo and redirect messages should be blocked \emph{inbound} by the router. Several ICMP messages are recommended for proper network operation and should be allowed into the internal network:
-
-\begin{itemize}
-\item Echo reply -- Allows users to ping external hosts.
-\item Source quench -- Requests that the sender decrease the traffic rate of messages.
-\item Unreachable -- Generated for packets that are administratively denied by an ACL.
-\end{itemize}
-
-Several ICMP messages are required for proper network operation and should be allowed to exit the network (outbound ACL):
-
-\begin{itemize}
-\item Echo -- Allows users to ping external hosts.
-\item Parameter problem -- Informs the host of packet header problems.
-\item Packet too big -- Enables packet maximum transmission unit (MTU) discovery.
-\item Source quench -- Throttles down traffic when necessary.
-\end{itemize}
-
-Traffic that originates within a router such as pings from a command prompt, remote access from a router to another device, or routing updates are not affected by outbound access lists. The traffic must flow through the router in order for the router to apply the ACEs.\\
-
-
-If SNMP is necessary, exploitation of SNMP vulnerabilities can be mitigated by applying interface ACLs to filter SNMP packets from non-authorized systems.  The most effective means of exploitation prevention is to disable the SNMP server on IOS devices for which it is not required. 
-
-\note See also \emph{CCNA notebook} for ACL configuration and IPv6 ACL.
-
-\section{Firewall}
-
-All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. There are two configuration models for Cisco IOS Firewall: \hyperref[sec:ClassicFirewall]{Classic Firewall} and \hyperref[sec:ZPF]{Zone-based Policy Firewall (ZPF)}.\\
+\section{Firewall types}
 
 \subsection{Packet filtering}
 
-Basic packet filtering firewalls can only filter based on Layer 3 and sometimes basic Layer 4 information. 
+Basic packet filtering firewalls can only filter based on Layer 3 and sometimes basic Layer 4 information. \\
 
 \textbf{Benefits:} Simple implementation, Low impact on network performance, Initial degree of security at the network layer, Almost all the tasks of a high-end firewall at a much lower cost.\\
 
@@ -58,16 +18,9 @@ Basic packet filtering firewalls can only filter based on Layer 3 and sometimes 
 
 Stateful firewall monitors network traffic as it flows into and out of the organization and determines whether packets belong to an existing connection or are from an unauthorized source. Stateful filtering tracks each connection and confirms that they are valid. Stateful firewalls use a state table to keep track of the actual communication process.\\ 
 
-\textbf{Benefits:} prevent spoofing and DoS attacks, provide more stringent control over security.\\ 
+\textbf{Benefits:} Prevent spoofing and DoS attacks; Provide more control over security.\\ 
 
-Limitations of stateful firewalls include the following:
-
-\begin{itemize}
-\item Stateful firewalls cannot prevent application layer attacks.
-\item Protocols such as UDP and ICMP are not stateful and do not generate information needed for a state table.
-\item An entire range of ports must sometimes be opened in order to support specific applications that open multiple ports.
-\item Stateful firewalls lack user authentication.
-\end{itemize}
+\textbf{Limitations:} Cannot prevent UDP, ICMP, and layer 7 attacks; No authentication; Cannot detect dynamic port negotiation.
 
 \subsection{Next-Generation Firewall}
 
@@ -101,9 +54,13 @@ A layered defense uses different types of firewalls that are combined in layers.
 \item Interior screening router
 \end{enumerate}
 
+\section{Cisco firewall}
+
+There are two configuration models for Cisco IOS Firewall: \hyperref[sec:ClassicFirewall]{Classic Firewall} and \hyperref[sec:ZPF]{Zone-based Policy Firewall (ZPF)}.
+
 \subsection{Classic firewall}\label{sec:ClassicFirewall}
 
-Classic Firewall (CBAC) is a \emph{stateful} firewall that provides four main functions: Filtering, Inspection, Intrusion detection, and Generation of audits and alerts. It can only detects and protects against external attacks.\\ 
+Classic Firewall (CBAC) is a \emph{stateful} firewall that provides four main functions: Filtering, Inspection, Intrusion detection, and Generation of audits and alerts. It can only detects and protects against external attacks. \emph{The Classic Firewall applies firewall policy to interfaces.}\\ 
 
 Classic Firewall creates \emph{temporary} openings in the ACL to allow returning traffic. These entries are created as inspected traffic leaves the network and are removed when the connection terminates or the idle timeout period for the connection is reached. 
 In addition to extended ACLs, Application layer protocol session information is used by a classic firewall to filter traffic. Figure \ref{ClassicFirewall} shows how Classic Firewall inspects SSH traffic.
@@ -148,66 +105,43 @@ There are four steps to configure this policy using a Classic Firewall:
 \item \textbf{Verification}: Use \code{show ip inspect sessions} command to verify inspect sessions.
 \end{enumerate}
 
-\subsection{Zone-based Policy Firewall (ZPF)}\label{sec:ZPF}
+\section{Zone-based Policy Firewall (ZPF)}\label{sec:ZPF}
 
-The Classic Firewall applies firewall policy to interfaces. Zone-Based Policy Firewall uses zones to apply firewall policy. ZPFs use the concept of zones to provide additional flexibility. A zone is a group of one or more interfaces that have similar functions or features. By default, the traffic between interfaces in the same zone is not subject to any policy and passes freely. However, all zone-to-zone traffic is blocked. In order to permit traffic between zones, a policy allowing or inspecting traffic must be configured.\\
+\subsection{Introduction}
 
-There are several \textbf{benefits} of a ZPF:
+\emph{Zone-Based Policy Firewall applies firewall policy to zones.} A zone is a group of one or more interfaces. \\
 
-\begin{itemize}
-\item Not dependent on ACLs.
-\item The router security posture is to block unless explicitly allowed.
-\item Policies are easy to read and troubleshoot with the Cisco Common Classification Policy Language (C3PL). C3PL can create traffic policies based on events and affect any given traffic with only one policy, instead of needing multiple ACLs and inspection actions.
-\end{itemize}
+By default, the traffic between interfaces in the same zone passes freely. However, all zone-to-zone traffic is blocked. In order to permit traffic between zones, a ZPF policy must be applied on each zone.\\
 
-There are three possible \textbf{actions} with Cisco IOS Zone-Based Policy Firewall:
+The only exception to this default deny any policy is the router \textbf{self zone}. The self zone is the router itself and includes all the router interfaces. Policy configurations that include the self zone would apply to traffic destined to and sourced from the router. By default, there is no policy for this type of traffic. Traffic that should be considered when designing a policy for the self zone includes management plane and control plane traffic, such as SSH, SNMP, and routing protocols.\\
 
-\begin{itemize}
-\item The \textbf{inspect} action configures Cisco IOS stateful packet inspection
-\item The \textbf{drop} action is similar to a deny ACE
-\item The \textbf{pass} action is similar to a permit ACE but does not track the state of connections or sessions.
-\end{itemize}
+\textbf{Benefits} of a ZPF: Not dependent on ACLs, The default policy is to block unless explicitly allowed, Policies are easy to read and troubleshoot with the C3PL\footnote{Cisco Common Classification Policy Language}, which can create traffic policies based on events and it affects any given traffic with only one policy, instead of needing multiple ACLs and inspection actions.
 
-ZPF Rules for \textbf{Transit Traffic} between two interfaces depends on the zone that those interfaces belongs to:
+\tableStart[\caption{Compare Classic Firewall and ZPF operation}]{| p{6\xm} | p{2\xm} | p{2\xm} |}
+Only prevent attacks that travel through the firewall & $\bullet$ & \w
+Require multiple ACLs and inspection actions &$\bullet$& \w
+Not dependent on ACLs & & $\bullet$ \w
+One policy affects any given traffic & & $\bullet$ \w
+Firewall policy is applied on interfaces & $\bullet$ & \w
+Firewall policy is applied on zones & & $\bullet$ \w
+Examine connections for embedded NAT and PAT and perform address translation & $\bullet$ & \w
+The default policy is to block unless explicitly allowed & & $\bullet$ \w
+\tableEnd
 
-\begin{itemize}
-\item Neither intefaces is a zone member: Pass
-\item Both interfaces are members of the same zone: Pass
-\item Interfaces belong to different zones: Action defined by policy
-\item Only one interface is a zone member: Drop
-\end{itemize}
+\subsection{Configuration}
 
-The \textbf{self zone} is a special zone which is the router itself and includes all the router interface IP addresses. By default, if the router (self zone) is the source or the destination, then all traffic is permitted. The only exception is if the source and destination are a zone-pair with a specific service-policy. In that case, the policy is applied to all traffic.
+  If the Security Technology package has not been enabled, use the following command to enable the package: \code{license boot module c1900 technology-package securityk9}.   Accept the end-user license agreement.  Save the running-config and reload the router to enable the security license.  Verify that the Security Technology package has been enabled by using the show version command.
 
-There are four steps to configure a ZPF zone (Take the topology in figure \ref{Zone} as an example):
+\subsubsection{Identify traffic using Class-Maps}
 
 \begin{enumerate}
-\item \textbf{Create the zones and Assign zones to appropriate interfaces:} Associating a zone to an interface will immediately apply the service-policy that has been associated with the zone. If no service-policy is yet configured for the zone, all transit traffic will be dropped. Use the \code{zone-member security} command to assign a zone to an interface. In the example, g0/1 is assigned the PRIVATE zone, and s0/0/0 is assigned the INTERNET zone, and g0/0 is assigned to DMZ zone.
-
-\item \textbf{Identify traffic with class-map:} A class is a way of identifying a set of packets based on its contents using \code{match} conditions. Packets must meet one of the match criteria \code{match-any} or all of the match criteria \code{match-all} to be considered a member of the class. Table \ref{tab:classMap} shows the syntax for the \code{class-map} and its sub-commands.
-
-\item \textbf{Define an action with policy-map:} Assign class-maps (PRIVATE-ACL-CLASS and PRIVATE-INTERNET-CLASS) to a policy-map and define what action (Inspect, Drop, or Pass) should be taken for traffic that is a member of a class. 
-\item \textbf{Identify a zone-pair and match it to a policy-map:} The example commands below create a zone pair PRIVATE-2-INTERNET between PRIVATE and INTERNET, and associate that zone pair to a policy-map PRIV-TO-PUB-POLICY.
+\item (Optional) Create an ACL that defines internal traffic. The access list shown below defines internal traffic which is  all IP protocols from the 192.168.3.0/24 source network to any destination.
+\item Create class-maps using the pre-defined ACL or port numbers of protocols. In the following commands, all traffics that match access list 100 are assigned to the class-map PRIVATE-ACL-CLASS. Any HTTP, or HTTPS, or DNS traffics are assigned to the class-map PRIVATE-INTERNET-CLASS.
 \end{enumerate}
 
-\begin{figure}[hbtp]
-\caption{ZPF configuration topology}\label{Zone}
-\centering
-\includegraphics[scale=0.5]{pictures/Zone.PNG}
-\end{figure}
-
-\begin{sexylisting}{ZPF configuration}
+\begin{sexylisting}{ZPF configuration: Identify traffic using ACLs and Class-Maps}
 #STEP 1
-zone security PRIVATE
-zone security INTERNET
-zone security DMZ
-int g0/1
-  zone-member security PRIVATE
-int s0/0/0
-  zone-member security INTERNET    
-int g0/0
-  zone-member security DMZ
-exit
+access-list 100 permit ip 192.168.3.0 0.0.0.255 any
 
 #STEP 2
 class-map type inspect match-all PRIVATE-ACL-CLASS
@@ -217,21 +151,136 @@ class-map type inspect match-any PRIVATE-INTERNET-CLASS
   match protocol https
   match protocol dns
 exit    
+\end{sexylisting}
 
-#STEP 3
+\subsubsection{Specify Firewall Policies}
+
+\begin{enumerate}
+\item Create a policy map to determine what to do with matched traffic.
+\item Specify a class type of inspect and reference class map.
+\item Specify the action of inspect for this policy map.
+\end{enumerate}
+
+\begin{sexylisting}{ZPF configuration: Specify Firewall Policies}
 policy-map type inspect PRIV-TO-PUB-POLICY
   class type inspect PRIVATE-ACL-CLASS   
   inspect    
   class type inspect PRIVATE-INTERNET-CLASS
   inspect
   class class-default
-exit   
+exit  
+\end{sexylisting}
 
-#STEP 4
+\subsubsection{Apply Firewall Policies}
+
+\begin{enumerate}
+\item Create zones.
+\item Create a pair of zones. The example commands below create a zone pair PRIVATE-2-INTERNET between PRIVATE and INTERNET.
+\item Specify the policy map for handling the traffic between the two zones. The following commands associate that zone pair to a policy-map PRIV-TO-PUB-POLICY.
+\item Assign interfaces to the appropriate security zones.
+\end{enumerate}
+
+
+\begin{sexylisting}{ZPF configuration: Apply Firewall Policies}
+#STEP 1
+zone security PRIVATE
+zone security INTERNET
+zone security DMZ
+
+#STEP 2 and 3
 zone-pair security PRIVATE-2-INTERNET source PRIVATE destination INTERNET
   service-policy type inspect  PRIV-TO-PUB-POLICY
 end
+
+#STEP 4
+int g0/1
+  zone-member security PRIVATE
+int s0/0/0
+  zone-member security INTERNET    
+int g0/0
+  zone-member security DMZ
+exit
 \end{sexylisting}
+
+\subsection{Verification}
+
+The service-policy is now active. HTTP, HTTPS, and DNS traffic sourced from the PRIVATE zone and destined for the PUBLIC zone will be inspected. Traffic sourced from the PUBLIC zone and destined for the PRIVATE zone will only be allowed if it is part of sessions originally initiated by PRIVATE zone hosts.
+
+\begin{sexylisting}{ZPF Verification}
+show run | begin class-map
+show class-map type inspect
+show zone security
+show zone-pair security
+show policy-map type inspect
+show policy-map type inspect zone-pair sessions
+\end{sexylisting}
+
+
+%
+%There are four steps to configure a ZPF zone (Take the topology in figure \ref{Zone} as an example):
+%
+%\begin{enumerate}
+%\item \textbf{Create the zones and Assign zones to appropriate interfaces:} Associating a zone to an interface will immediately apply the service-policy that has been associated with the zone. If no service-policy is yet configured for the zone, all transit traffic will be dropped.
+%
+%\item \textbf{Identify traffic with class-map:} A class is a way of identifying a set of packets based on its contents using \code{match} conditions. Packets must meet one of the match criteria \code{match-any} or all of the match criteria \code{match-all} to be considered a member of the class. Table \ref{tab:classMap} shows the syntax for the \code{class-map} and its sub-commands.
+%
+%\item \textbf{Define an action with policy-map:} Assign class-maps defined in step 2 to a policy-map and define what action (Inspect, Drop, or Pass) should be taken for traffic that is a member of a class. 
+%\item \textbf{Identify a zone-pair and match it to a policy-map:} 
+%\end{enumerate}
+%
+%\begin{figure}[hbtp]
+%\caption{ZPF configuration topology}\label{Zone}
+%\centering
+%\includegraphics[scale=0.5]{pictures/Zone.PNG}
+%\end{figure}
+%
+%\begin{sexylisting}{ZPF configuration}
+%#STEP 1
+%zone security PRIVATE
+%zone security INTERNET
+%zone security DMZ
+%int g0/1
+%  zone-member security PRIVATE
+%int s0/0/0
+%  zone-member security INTERNET    
+%int g0/0
+%  zone-member security DMZ
+%exit
+%
+%#STEP 2
+%class-map type inspect match-all PRIVATE-ACL-CLASS
+%  match access-group 100    
+%class-map type inspect match-any PRIVATE-INTERNET-CLASS
+%  match protocol http
+%  match protocol https
+%  match protocol dns
+%exit    
+%
+%#STEP 3
+%policy-map type inspect PRIV-TO-PUB-POLICY
+%  class type inspect PRIVATE-ACL-CLASS   
+%  inspect    
+%  class type inspect PRIVATE-INTERNET-CLASS
+%  inspect
+%  class class-default
+%exit   
+%
+%#STEP 4
+%zone-pair security PRIVATE-2-INTERNET source PRIVATE destination INTERNET
+%  service-policy type inspect  PRIV-TO-PUB-POLICY
+%end
+%\end{sexylisting}
+
+\subsection{Command syntax and some considerations}
+
+\begin{itemize}
+\item The router never filters the traffic between interfaces in the same zone.
+\item An interface cannot belong to multiple zones.
+ZPF can coexist with Classic Firewall although they cannot be used on the same interface. Remove the \code{ip inspect} interface configuration command before applying the \code{zone-member security} command.
+\item Traffic can never flow between an interface assigned to a zone and an interface without a zone assignment. Applying the zone-member configuration command always results in a temporary interruption of service until the other zone-member is configured.
+\item Communication between zones are, by default, dropped. Unless there exits a service-policy configured for the zone-pair.
+\item The \code{zone-member} command does not protect the router itself (traffic to and from the router is not affected) unless the zone-pairs are configured using the predefined self zone.
+\end{itemize}
 
 \tableStart[\caption{The syntax of class-map command}\label{tab:classMap}] { |p{5\xm}|p{8\xm}| }
 \multicolumn{2}{|c|}{ \code{class-map type inspect [match-any | match-all] <class-name>} } \w
@@ -247,28 +296,4 @@ end
 \item \code{inspect} -- This action offers state-based traffic control. It tracks UDP or TCP connections and permit the return traffic.
 \item \code{drop} -- This is the default action for all traffic. Similar to the implicit deny any at the end of every ACL, , there is an explicit \code{drop} applied to the end of every policy-map.
 \item \code{pass} -- This action allows \emph{one-direction} traffic between two zones, and does not track the state of connections. A corresponding policy must be applied to allow return traffic to pass in the opposite direction. This action is ideal for secure protocols, such as IPsec. 
-\end{itemize}
-
-The fourth step is to identify a zone pair (\\
-
-\begin{sexylisting}{ZPF Verification}
-show run | begin class-map
-show class-map type inspect
-show zone security
-show zone-pair security
-show policy-map type inspect
-show policy-map type inspect zone-pair sessions
-\end{sexylisting}
-
-The service-policy is now active. HTTP, HTTPS, and DNS traffic sourced from the PRIVATE zone and destined for the PUBLIC zone will be inspected. Traffic sourced from the PUBLIC zone and destined for the PRIVATE zone will only be allowed if it is part of sessions originally initiated by PRIVATE zone hosts.
-
-\textbf{ZPF Configuration Considerations}
-
-\begin{itemize}
-\item The router never filters the traffic between interfaces in the same zone.
-\item An interface cannot belong to multiple zones.
-ZPF can coexist with Classic Firewall although they cannot be used on the same interface. Remove the \code{ip inspect} interface configuration command before applying the \code{zone-member security} command.
-\item Traffic can never flow between an interface assigned to a zone and an interface without a zone assignment. Applying the zone-member configuration command always results in a temporary interruption of service until the other zone-member is configured.
-\item Communication between zones are, by default, dropped. Unless there exits a service-policy configured for the zone-pair.
-\item The \code{zone-member} command does not protect the router itself (traffic to and from the router is not affected) unless the zone-pairs are configured using the predefined self zone.
 \end{itemize}

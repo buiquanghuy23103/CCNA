@@ -1,0 +1,14 @@
+ip domain-name cisco.com
+username admin password class
+#username admin privilege 15 secret class
+crypto key generate rsa 
+yes
+1024
+ip ssh version 2
+
+line vty 0 15
+ transport input ssh
+ login local 
+ exit 
+
+

@@ -1,0 +1,19 @@
+"DEFAULT ROUTE"
+ip route 0.0.0.0 0.0.0.0 s0/0/0
+ipv6 route ::/0 s0/0/0
+#ipv6 route ::/0 2001:DB8:ACAD:D::1
+#ip route 0.0.0.0 0.0.0.0 198.51.100.1
+
+"FLOATING ROUTE"
+ip route 0.0.0.0 0.0.0.0 s0/0/1 5
+ipv6 route ::/0 s0/0/1 5
+#ip route 0.0.0.0 0.0.0.0 203.0.113.1 5
+#ipv6 route ::/0 2001:DB8:ACAD:E::1 5
+
+"NETWORK ROUTE"
+ip route 192.168.1.0 255.255.255.0 192.168.2.2
+ipv6 route 2001:DB8:ACAD:A::/64 2001:DB8:ACAD:B::2
+
+"HOST ROUTE"
+ip route 172.16.1.10 255.255.255.255 192.168.2.2
+ipv6 route 2001:DB8:ACAD:C::10/128 2001:DB8:ACAD:B::2

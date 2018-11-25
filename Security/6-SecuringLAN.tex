@@ -32,7 +32,9 @@ A \textbf{VLAN hopping attack} enables traffic from one VLAN to be seen by anoth
 \item Introducing a rogue switch and enabling trunking. The attacker can then access all the VLANs on the victim switch from the rogue switch.
 \end{itemize}
 
-\textbf{Double-tagging} takes advantage of 802.1Q de-encapsulation, in which the attacker adds a hidden 802.1Q tag inside the frame. This tag allows the frame to go to another VLAN. For example, an attacker on VLAN 10 tags a frame for VLAN 10 and inserts an additional tag for VLAN 20.  An important characteristic of the double-encapsulated VLAN hopping attack is that it works even if trunk ports are disabled, as a host typically sends a frame on a segment that is not a trunk link. The best way to prevent basic VLAN hopping attacks:
+\textbf{Double-tagging} takes advantage of 802.1Q de-encapsulation, in which the attacker adds a hidden 802.1Q tag inside the frame. This tag allows the frame to go to another VLAN. For example, an attacker on VLAN 10 tags a frame for VLAN 10 and inserts an additional tag for VLAN 20.  An important characteristic of the double-encapsulated VLAN hopping attack is that it works even if trunk ports are disabled, as a host typically sends a frame on a segment that is not a trunk link. \\
+
+The best way to prevent basic VLAN hopping attacks:
 
 \begin{itemize}
 \item Manually enable trunking and access ports

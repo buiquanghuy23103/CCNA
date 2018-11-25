@@ -34,11 +34,11 @@ Outbound traffic is allowed and inspected by default. Returning traffic is allow
 
 \subsection{ASA Interactive Setup Initialization Wizard}
 
-You can erase ASA configuration using \code{write erase} and \code{reload} privileged EXEC commands. When the device is rebooted, the ASA wizard displays the prompt ''Pre-configure Firewall now through interactive prompts [yes]`` To cancel and display the ASA default user EXEC mode prompt, enter \code{no}. Otherwise, enter \code{yes} or simply press \code{Enter}. This initiates the wizard and the ASA interactively guides an administrator to configure the default settings.
+You can erase ASA configuration using \code{write erase} and \code{reload} privileged EXEC commands. When the device is rebooted, the ASA wizard displays the prompt \textit{Pre-configure Firewall now through interactive prompts [yes]} To cancel and display the ASA default user EXEC mode prompt, enter \code{no}. Otherwise, enter \code{yes} or simply press \code{Enter}. This initiates the wizard and the ASA interactively guides an administrator to configure the default settings.
 
-\section{Configuration}
+\section{Basic configurations}
 
-\subsection{Basic configurations}
+\subsection{Setup Initialization wizard}
 
 The default ASA user prompt of \code{ciscoasa>} is displayed when an ASA configuration is erased, the device is rebooted, and the user does not use the interactive setup wizard. To enter privileged EXEC mode, use the \code{enable} user EXEC mode command. Initially, an ASA does not have a password configured; therefore when prompted, leave the enable password prompt blank and press Enter.\\
 
@@ -66,11 +66,11 @@ When configuring an ASA 5505, there are two kinds of interfaces that need to be 
 \end{figure}
 
 
-An ASA 5505 with a Base license does not allow three fully functioning VLAN interfaces to be created. However, a third ''limited`` VLAN interface can be created if it is first configured with the \code{no forward interface vlan <num>} command (figure \ref{ASAlogicalVLAN}). This command limits the interface from initiating contact with another VLAN. Therefore, when the inside and outside VLAN interfaces are configured, the no forward interface vlan number command must be entered before the \code{nameif} command is entered on the third interface. The \code{<num>} argument specifies the VLAN ID to which this VLAN interface cannot initiate traffic. The Security Plus license is required to achieve full functionality.\\
+An ASA 5505 with a Base license does not allow three fully functioning VLAN interfaces to be created. However, a third  \emph{limited} VLAN interface can be created if it is first configured with the \code{no forward interface vlan <num>} command (figure \ref{ASAlogicalVLAN}). This command limits the interface from initiating contact with another VLAN. Therefore, when the inside and outside VLAN interfaces are configured, the no forward interface vlan number command must be entered before the \code{nameif} command is entered on the third interface. The \code{<num>} argument specifies the VLAN ID to which this VLAN interface cannot initiate traffic. The Security Plus license is required to achieve full functionality.\\
 
 \subsection{Static routes and IP addresses}
 
-Switch ports on the same VLAN can communicate with each other using hardware switching. But when a switch port on VLAN 1 wants to communicate with a switch port on VLAN 2, then the ASA applies the security policy to the traffic and routes between the two VLANs. If an ASA is configured as a DHCP client, then it can receive and install a default route from the upstream device. Otherwise, a default static route must be configured using the \code{route <ifname> 0.0.0.0 0.0.0.0 next-hop-ip-address} command. To verify the route entry, use the show route command.\\
+Switch ports on the same VLAN can communicate with each other using hardware switching. But when a switch port on VLAN 1 wants to communicate with a switch port on VLAN 2, then the ASA applies the security policy to the traffic and routes between the two VLANs. If an ASA is configured as a DHCP client, then it can receive and install a default route from the upstream device. Otherwise, a default static route must be configured using the \code{route <ifname> 0.0.0.0 0.0.0.0 next-hop-ip-address} command. To verify the route entry, use the \code{show route} command.\\
 
 The IP address of an interface can be configured using one of the following options: DHCP, PPPoE, or manually. The table in Figure \ref{SVIaddr} lists the commands to configure an IP address on an interface. 
 
@@ -106,7 +106,7 @@ The IP address of an interface can be configured using one of the following opti
 \begin{figure}[hbtp]
 \caption{NTP authentication commands}
 \centering
-\includegraphics[scale=1]{pictures/NTPauthentication.PNG}
+\includegraphics[scale=0.5]{pictures/NTPauthentication.PNG}
 \end{figure}
 
 \subsection{DHCP configuration}
@@ -126,7 +126,7 @@ The example in Figure \ref{DHCPcommand} enables the DHCP service for inside clie
 \includegraphics[scale=0.5]{pictures/DHCPcommand.PNG}
 \end{figure}
 
-\subsection{Objects and Object Groups}
+\section{Objects and Object Groups}
 
 The ASA supports objects and object groups. An object can be a particular IP address, an entire subnet, a range of addresses, a protocol, or a specific port or range of ports. The object can then be re-used in several configurations. The advantage is that when an object is modified, the change is automatically applied to all rules that use the specified object. There are two types of objects that can be configured:
 
@@ -170,7 +170,7 @@ To configure a network object group, use the \code{object-group network <name>} 
 
 To configure an ICMP object group, use the object-group icmp-type grp-name global configuration mode command (figure \ref{ICMPobjgrp}). After entering the command, add ICMP objects to the ICMP object group using the icmp-object and group-object commands.\\
 
-\subsection{Restricting traffic with ACL}
+\section{Restricting traffic with ACL}
 
 To allow connectivity between interfaces with the same security levels, the \code{same-security-traffic permit inter-interface} global configuration mode command is required. To enable traffic to enter and exit the same interface, such as when encrypted traffic enters an interface and is then routed out the same interface unencrypted, use the \code{same-security-traffic permit intra-interface} global configuration mode command.\\
 
@@ -188,13 +188,15 @@ Object grouping is a way to group similar items together to reduce the number of
 \includegraphics[scale=0.7]{pictures/withObj.PNG}
 \end{figure}
 
-\subsection{NAT configuration in ASA}
+\section{NAT configuration in ASA}
 
-\subsubsection{Static NAT}
+Use the \code{show xlate} and \code{show nat} detail commands to verify translations, as shown in Figure 4. It may be necessary to use the \code{clear nat counters} command when testing NAT.
+
+\subsection{Static NAT}
 
 Static NAT is configured when a single inside address is mapped to only one outside address. For instance, static NAT can be used when a server must be accessible from the outside.
 
-\subsubsection{Dynamic NAT}
+\subsection{Dynamic NAT}
 
 In figure \ref{DynamicNAT}, the inside hosts on the 192.168.1.0/27 network will be dynamically assigned a range of public IP address from 209.165.200.240 to 209.165.200.248. The PUBLIC network object identifies the public IP addresses to be translated to while the DYNAMIC-NAT identifies the internal addresses to be translated. The name \code{inside} is the interface connected to the private network, while \code{outside} interface connected to the Internet.\\
 
@@ -214,12 +216,59 @@ Figure \ref{DynamicNATreturn} displays the configuration to allow return ICMP tr
 
 After the inside host pings the outside host, verify the network address translation using the \code{show xlate} command. Additional information can be gathered using the \code{show nat} and \code{show nat detail} commands.
 
-\subsubsection{PAT}
+\subsection{PAT}
 
-Only one network object is required when overloading the outside interface. To enable inside hosts to overload the outside address, use the commands in figure 
+Only one network object is required when overloading the outside interface (figure \ref{PAT}). To enable inside hosts to overload the outside address, use the commands in figure 
 
 \begin{figure}[hbtp]
-\caption{PAT configuration in ASA}
+\caption{PAT configuration in ASA}\label{PAT}
 \centering
 \includegraphics[scale=0.7]{pictures/PAT.PNG}
 \end{figure}
+
+\section{AAA in ASA}
+
+To configure a TACACS+ or RADIUS server, use the commands listed in Figure \ref{sampleTACASasa}. To erase all AAA server configurations, use the \code{clear config aaa-server} command. To view all user accounts, use the \code{show running-config aaa-server} command.\\
+
+\begin{figure}[hbtp]
+\caption{Sample TACAS+ configuraiton in ASA}\label{sampleTACASasa}
+\centering
+\includegraphics[scale=0.7]{pictures/sampleTACASasa.PNG}
+\end{figure}
+
+
+To authenticate users who access the ASA CLI over a console, SSH, HTTPS (ASDM), or Telnet connection, or to authenticate users who access privileged EXEC mode using the \code{enable} command, use \emph{ONE} of the\code{aaa authentication console} command in figure \ref{AAAconfigASA}.
+
+\begin{figure}[hbtp]
+\caption{Sample AAA configuration in ASA}\label{AAAconfigASA}
+\centering
+\includegraphics[scale=1]{pictures/AAAconfigASA.PNG}
+\end{figure}
+
+
+\section{Modular Policy Framework (MPF)}
+
+A Modular Policy Framework (MPF) configuration defines a set of rules for applying firewall features, such as traffic inspection and QoS. MPF can be used for advanced Application Layer inspection of traffic by classifying at Layers 5 through 7. Cisco MPF uses these three configuration objects to define: Class map, Policy map, and Service policy. There are four steps to configure MPF on an ASA:
+
+\begin{itemize}
+\item Configure extended ACLs to identify granular traffic that can be specifically referenced in the class map. For example, ACLs can be used to match TCP traffic, UDP traffic, HTTP traffic, or all traffic to a specific server.
+
+\item Configure the class map to identify traffic (figure \ref{classmap}.
+
+\item Configure a policy map to apply actions to those class maps.
+
+\item Configure a service policy to attach the policy map to an interface.
+\end{itemize}
+
+\begin{figure}[hbtp]
+\caption{Configure the class map to identify traffic}\label{classmap}
+\centering
+\includegraphics[scale=0.7]{pictures/classmap.PNG}
+\end{figure}
+
+\begin{figure}[hbtp]
+\caption{Configure a policy map to apply actions to those class maps, and then create a service policy to attach the policy map to an interface}\label{MPFimplementation}
+\centering
+\includegraphics[scale=0.7]{pictures/MPFimplementation.PNG}
+\end{figure}
+

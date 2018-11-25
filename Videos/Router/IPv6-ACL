@@ -1,0 +1,32 @@
+#Note
+  The holder <network> can be one of the following:
+    any
+    host 2001:db8:cafe:30::1
+    2001:db8:cafe:30::/64
+    
+#Create IPv6 ACL
+ipv6 access-list CCNA
+  remark Permit PINK LAN
+  deny ipv6 <network> <network> 
+    deny ipv6 2001:db8:cafe:30::/64 any eq ftp
+  permit ipv6 any any
+
+#Apply ACL to interface
+interface s0/0/0
+  ipv6 traffic-filter CCNA in
+  
+#Verify
+show ipv6 interface s0/0/0
+show ipv6 access-list
+
+#Apply an ACL to VTY ports
+line vty 0 15
+  access-class CCNA in
+
+#Troubleshoot
+1. Check the criteria of ACE rules
+2. Check the order of ACE rules
+3. Check the direction of ACL (inbound, outbound)
+4. Check the location of ACL (which router, which interface)
+  a. Extended - Source
+  b. Standard - Destination

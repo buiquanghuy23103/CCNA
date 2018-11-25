@@ -1,0 +1,9 @@
+interface range FastEthernet0/3-4
+ shutdown
+ switchport mode trunk
+ channel-group 1 mode active
+ no shutdown
+
+interface po1
+ no shutdown
+ switchport mode trunk

@@ -33,51 +33,15 @@ The above commands allow the ADMIN and JR-ADMIN users to log into the router via
 \begin{sexylisting}{Local named authentication}
   username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
   username JR-ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
+  
   aaa new-model
   aaa authentication login SSH-LOGIN local-case
+  
   line vty 0 4
   login auth SSH-LOGIN
   \end{sexylisting}
 
 The final portion of the \code{aaa authentication login} command identifies the type of methods that will be queried to authenticate the users, which is \code{local-case}. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.\\
-
-% \subsection{Server-based}
-
-% \begin{sexylisting}{Default server-based AAA authentication}
-% username HUY algorithm-type scrypt secret cisco12345
-
-% aaa new-model
-% aaa authentication login default group radius none
-
-% aaa local authentication attempts max-fail 3
-% \end{sexylisting}
-
-% \begin{sexylisting}{Custom server-based AAA authentication}
-% username HUY algorithm-type scrypt secret cisco12345
-
-% aaa new-model
-% aaa authentication login SSH-LOGIN group radius none
-
-% line vty 0 4
-% login authentication SSH-LOGIN
-
-% aaa local authentication attempts max-fail 3
-% \end{sexylisting}
-
-
-% Below is the syntax of \code{aaa authentication login} command. This command lists authentication methods (four methods at the maximum) in the order of execution. In other words, the next listed authentication method is executed only when there is no response or an error from the previous method occurs. The name of this list is specified by the user as \code{<list-name>}. Table \ref{login} shows the command syntax and all available method type keywords.
-
-% \tableStart[\caption{AAA login authentication methods}\label{login}] {|l|l|} 
-% \multicolumn{2}{|c|}{\code{aaa authentication login {default | list-name} method1 ... method4}}\w
-% \head{Keywords} & \head{Description} \w
-% \code{enable} & Use the enable password\w
-% \code{local} & Use local username database\w
-% \code{local-case} & Use case-sensitive local username database\w
-% \code{none} & Ensure that the authentication succeeds even if all methods return an error \w
-% \code{group radius} & Use the lists of all RADIUS servers \w
-% \code{group tacacs+} & Use the lists of all TACACS+ servers \w
-% \code{group <group-name>} & Use a subset of RADIUS or TACACS+ servers \w
-% \tableEnd
 
 The \code{aaa local authentication attempts max-fail} command locks the user account if the authentication fails. The locked out user account remains locked until it is manually cleared by an administrator using the \code{clear aaa local user lockout} privileged EXEC mode command. This command is different from \code{login delay} command, which introduces a delay between failed login attempts without locking the account.\\
 
@@ -95,22 +59,30 @@ Multiprotocol support & Supports remote-access technologies, VoIP, 802.1X, and S
 
 \note A next-generation AAA protocol alternative to RADIUS is the DIAMETER AAA protocol.\\
 
-\textbf{Integration of Windows AD and ACS:} Many enterprise-level authentication servers are on the market today, but they lack the ability to combine both the TACACS+ and RADIUS protocols into a single solution. Fortunately, Cisco Secure ACS for Windows Server is a single solution that offers AAA for both TACACS+ and RADIUS. Cisco Secure ACS can be integrated to use the AD service. The configuration for Cisco IOS is the same as communicating with any RADIUS server. The only difference is that the Microsoft server’s AD controller is used to perform the authentication and authorization services.
-
-\subsection{Configuration}
+\textbf{Integration of Windows AD and ACS:} Many enterprise-level authentication servers are on the market today, but they lack the ability to combine both the TACACS+ and RADIUS protocols into a single solution. Fortunately, Cisco Secure ACS for Windows Server is a single solution that offers AAA for both TACACS+ and RADIUS. Cisco Secure ACS can be integrated to use the AD service. The configuration for Cisco IOS is the same as communicating with any RADIUS server. The only difference is that the Microsoft server’s AD controller is used to perform the authentication and authorization services.\\
 
 There are three basic steps to configure server-based authentication:
 
 \begin{enumerate}
-\item Globally enable AAA
-\item Specify the Cisco Secure ACS (TACACS+ or RADIUS server) and Configure the encryption key between the server and router.
-\item Configure the AAA authentication method list to refer to the TACACS+ or RADIUS server. For redundancy, it is possible to configure more than one server.
+\item \textbf{Username:} Create a username with encrypted password
+\item \textbf{Enable:} Globally enable AAA
+\item \textbf{Server:} Specify either TACACS+ or RADIUS server
+\item \textbf{Key:} On TACACS+ or  Radius  server, you have to set up an entry as shown in figure \ref{RADIUSserver}. On router CLI, configure a corresponding entry with the server's address and the exact same encryption key with the server.
+\item \textbf{Method list:} Configure the AAA authentication method list to refer to the TACACS+ or RADIUS server. For redundancy, it is possible to configure more than one server.
+\item \textbf{Applying:} Configure AAA authentication for console, or vty login to use the the newly configured AAA authentication method.
 \end{enumerate}
 
-The following commands show how to accomplish step 1 and 2:
+\begin{figure}[hbtp]
+\caption{Add an entry for a router in a RADIUS server}\label{RADIUSserver}
+\centering
+\includegraphics[scale=0.5]{pictures/RADIUSserver.PNG}
+\end{figure}
 
-\begin{sexylisting}{Create a TACACS+ server}
+
+\begin{sexylisting}{Server-based authentication}
 aaa new-models
+
+username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
 
 #STEP 2: TACACS+ server
 tacacs server Server-T
@@ -124,7 +96,10 @@ radius server Server-R
   single-connection
   key RADIUS-Pa55w0rd
 
-aaa authentication login default group tacacs+ group radius local-base  
+aaa authentication login default group tacacs+ group radius local-case
+
+line con 0
+login authentication default 
 \end{sexylisting}
 
 The \code{address ipv4} command allows the option to modify IPv4 address of the server, authentication port, and accounting port. The \code{key} command is used to configure the shared secret key, which must be exactly the same way on both the router and the server.\\
@@ -191,22 +166,6 @@ The IEEE 802.1X standard defines a port-based access control and authentication 
 \includegraphics[scale=0.7]{pictures/8021X.PNG}
 \end{figure}
 
-% If the Supplicant is successfully authenticated, the switch port state changes to authorized. If the authentication fails, the port remains in the unauthorized state, but authentication can be retried. If the authentication server cannot be reached, authentication fails, and network access is not granted.
-
-% \begin{figure}[hbtp]
-% \caption{802.1X message exchange}\label{MessageExchange}
-% \centering
-% \includegraphics[scale=0.7]{pictures/MessageExchange.PNG}
-% \end{figure}
-
-% \paragraph{Message exchange} Until the workstation is authenticated, 802.1X access control enables only EAPOL (EAP over LAN) traffic through the port to which the workstation is connected. After authentication succeeds, normal traffic can pass through the port. Figure \ref{MessageExchange} shows the complete message exchange between the supplicant, authenticator, and the authentication server. The encapsulation occurs as follows:
-
-% \begin{itemize}
-% \item Between the supplicant and the authenticator - EAP data is encapsulated in EAPOL frames.
-% \item Between the authenticator and the authentication server - EAP data is encapsulated using RADIUS.
-% \end{itemize}
-
-% \subsection{Port Authorization State}
 
 When configured for 802.1X port-based authentication, the port starts in the \emph{unauthorized state}. While in this state, the port disallows all ingress and egress traffic except for 802.1X protocol packets. When a client is successfully authenticated, the port transitions to the \emph{authorized state}, allowing all traffic for the client to flow normally. \\
 
@@ -219,6 +178,8 @@ The following commands show a scenario where a PC is attached to F0/1 on the swi
 
 \begin{sexylisting}{802.1X configuration}
 aaa new-models
+
+
 
 radius server Server-R
   address ipv4 192.168.1.101 auth-port 1812 acct-port 1813
