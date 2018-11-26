@@ -2,25 +2,29 @@
 
 \section{Introduction}
 
-\subsection{IDS and IPS}
+\subsection{IDS}
 
-Firewalls can only do so much and cannot protect against malware and zero-day attacks. A zero-day attack is a computer attack that tries to exploit software vulnerabilities that are unknown or undisclosed by the software vendor. \\
+Firewalls cannot protect against malware and zero-day attacks. A zero-day attack is a computer attack that tries to exploit software vulnerabilities that are unknown or undisclosed by the software vendor. \\
 
-\textbf{Intrusion Detection Systems (IDSs)} were implemented to passively monitor the traffic on a network. IDS-enabled device copies the traffic stream and analyzes the copied traffic rather than the actual forwarded packets. \textbf{Working offline}, it compares the captured traffic stream with known malicious signatures. Working offline means several things:
+\textbf{Intrusion Detection Systems (IDSs)} copies the actual traffic stream and analyzes the copied traffic. IDS works offline, which means several things:
 
 \begin{itemize}
-\item IDS works passively
+\item IDS passively monitor network traffic without preventing attacks.
 \item IDS device is physically positioned in the network so that traffic must be mirrored in order to reach it
 \item Network traffic does not pass through the IDS unless it is mirrored
 \end{itemize}
 
-\textbf{IDS advantage:} No impact on the network (delay, jitter) even if there is a sensor failure or overload. \textbf{IDS disadvantage:} cannot stop trigger packets, cannot correct tuning required for response action.\\
+\textbf{Advantage:} No impact on the network (delay, jitter). \textbf{Disadvantage:} cannot stop malicious packets, cannot correct tuning required for response action.
 
-\textbf{Intrusion Prevention System (IPS)} was upon IDS technology. However, an IPS device is implemented in \textbf{inline mode}. This means that all ingress and egress traffic must flow through it for processing. An IPS does not allow packets to enter the trusted side of the network without first being analyzed. It can detect and immediately address a network problem. \\
+\subsection{IPS}
 
-\textbf{IPS advantage:} stop trigger packets, utilize stream normalization\footnote{a technique used to reconstruct the data stream when the attack occurs over multiple data segments.}. \textbf{IPS disadvantage:} some impact on network (delay, jitter), IPS overloading or improper configuration negatively affect the network .\\
+Unlike IDS, \textbf{Intrusion Prevention System (IPS)} is implemented in \textbf{inline mode}. This means that all ingress and egress traffic must flow through it for processing. IPS can detect and immediately solve a network problem. \\
 
-The biggest difference between IDS and IPS is that an IPS responds immediately and does not allow any malicious traffic to pass, whereas no action is taken on malicious packets by the IDS.\\
+\textbf{Advantages:} stop malicious packets, utilize stream normalization\footnote{a technique used to reconstruct the data stream when the attack occurs over multiple data segments.}. \textbf{Disadvantage:} some impact on network (delay, jitter), IPS overloading or improper configuration negatively affect the network.\\
+
+The biggest difference between IDS and IPS is that an IPS responds immediately and does not allow any malicious traffic to pass, whereas no action is taken on malicious packets by the IDS.
+
+\subsection{Compare IDS and IPS}
 
 IDS and IPS technologies share several characteristics:
 
@@ -34,43 +38,51 @@ IDS and IPS technologies share several characteristics:
 
 There are two primary kinds of IPSs available: host-based and network-based. \\
 
-\textbf{Network-based IPS }devices are implemented as inline mode to actively monitor the traffic on networks. They can take immediate actions when security criteria match. One limitation of them is that they cannot monitor/inspect encrypted packets.\\
+\textbf{Network-based IPS} devices are implemented at designated network points that enable security managers to monitor network activity while it is occurring, regardless of the location of the attack target. One limitation of them is that they cannot monitor/inspect encrypted packets.\\
 
-\textbf{Host-based IPS (HIPS}) is software installed on a single host to monitor and analyze suspicious activity. Two disadvantages of deploying HIPS are (1) that it cannot create a complete view of the network and (2) every host operating system within the organization must be supported. However, an advantage of using HIPS is that it can monitor and protect the operating system as well as critical system processes on each network host.
+\textbf{Host-based IPS (HIPS}) is software installed on a single host. Two disadvantages of deploying HIPS are (1) that it cannot create a complete view of the network and (2) every host operating system within the organization must be supported. However, an advantage of using HIPS is that it can monitor and protect the operating system as well as critical system processes on each network host.
 
 \section{IPS Signatures}
 
 \subsection{Characteristics}
 
-Signatures have three distinctive attributes: Type, Trigger (alarm), Action. Signature types are generally categorized as atomic or composite.\\
+Signatures have three distinctive attributes: Type, Trigger (alarm), Action.
 
-An \textbf{atomic signature} consists of a \emph{single} packet, activity, or event that is examined to determine if it matches a configured signature. Because these signatures can be matched on a single event, they do not require an intrusion system to maintain state\footnote{State refers to situations in which multiple packets of information are required, but the packets of information are not necessarily received at the same time.} information. Detecting atomic signatures consumes minimal resources. For example, a LAND attack has an atomic signature because it sends a spoofed TCP SYN packet, therefore, one packet is enough to identify this type of attack.\\
+\subsection{Type}
 
-A \textbf{composite signature} is a \emph{stateful} signature which identifies a sequence of operations distributed across multiple hosts over an arbitrary period of time. Because this type of attack involves multiple packets, an IPS sensor must maintain the state information. However, an IPS sensor cannot maintain the state information indefinitely. The length of time that the signatures must maintain state is known as the \textbf{event horizon}.\\
+Signature types are generally categorized as atomic or composite.\\
 
-The two main alert generation mechanisms for IDS/IPS devices are atomic and summary alerts. \textbf{Atomic alerts} are generated every time a signature triggers. With a \textbf{summary alert}, a single atomic alert is generated for the first detection of an attack. Then the duplicate alarms are counted, but not sent, for a specific time period. When the specified time period is reached, an alert is sent that indicates the number of alarms that occurred during the time interval.\\
+An \textbf{atomic signature} consists of a \emph{single} packet, activity, or event that is examined. Because these signatures can be matched on a single event, they do not require an intrusion system to maintain state\footnote{State refers to situations in which multiple packets of information are required, but the packets of information are not necessarily received at the same time.} information. Detecting atomic signatures consumes minimal resources. For example, a LAND attack has an atomic signature because it sends a spoofed TCP SYN packet, therefore, one packet is enough to identify this type of attack.\\
+
+A \textbf{composite signature} is a \emph{stateful} signature which identifies a sequence of packets. Because some attacks involve multiple packets, an IPS sensor must maintain the state information. However, an IPS sensor cannot maintain the state information indefinitely. The ''life time`` of state information is known as the \textbf{event horizon}.
 
 All signatures are contained in a signature file and uploaded to an IPS on a regular basis.\\
 
-Cisco IOS software relies on \textbf{signature micro-engines (SMEs)} to categorize common signatures in groups. Cisco IOS software can then scan for multiple signatures based on group characteristics, instead of one at a time. When IDS or IPS is enabled, an SME is loaded or built on the router. When an SME is built, the router might need to compile the regular expression\footnote{A regular expression is a systematic way to specify a search for a pattern in a series of bytes.} found in a signature. \\
+\textbf{SME} (signature micro-engine) categorizes signatures in group and scans for multiple signatures based on group characteristics, instead of one at a time. When IDS or IPS is enabled, an SME is loaded or built on the router. When an SME is built, the router might need to compile the regular expression\footnote{A regular expression is a systematic way to specify a search for a pattern in a series of bytes.} found in a signature. \\
 
-\textbf{IPS process: }Atomic and composite packets are scanned by the SMEs to recognize the protocols contained in the packets. Then, each SME extracts values from the packet and passes portions of the packet to the regular expression engine. The regular expression engine can search for multiple patterns at the same time. 
+Atomic and composite packets are scanned by the SMEs to recognize the protocols contained in the packets. Then, each SME extracts values from the packet and passes portions of the packet to the regular expression engine. The regular expression engine can search for multiple patterns at the same time. 
 
-\subsection{Alarms}
+\subsection{Triggers}
 
-The heart of any IPS signature is the signature alarm (signature trigger). There are four types of signature triggers:
+\subsubsection{Trigger mechanism}
+
+The heart of any IPS signature is the Trigger mechanism, which detects malicious activities. There are four types of trigger mechanisms:
 
 \begin{itemize}
-\item \textbf{Pattern-based detection} (signature-based detection) is the simplest triggering mechanism. It compares the network traffic to a database of known attacks, and triggers an alarm or prevents communication if a match is found. The mechanism is only suitable for the suspect packets that are associated with \emph{services} or \emph{ports}. However, it cannot deal with unknown protocols and attacks.
+\item \textbf{Pattern-based detection} (signature-based detection) compares the network traffic to a database of known attacks. The mechanism is only suitable for the suspect packets that are associated with \emph{services} or \emph{ports}. However, it cannot deal with unknown protocols and attacks.
 
 \item \textbf{Anomaly-based detection} (profile-based detection) defines a profile of what is considered normal for the network. This normal profile can be learned by monitoring activity on the network, or be based on a defined specification, such as an RFC. After defining normal activity, the signature triggers an action if excessive activity occurs beyond a specified threshold that is not included in the normal profile. \textbf{Advantage:} new and previously unpublished attacks can be detected. \textbf{Disadvantage:} Attack activity may be defined as normal traffic; Difficult to correlate alert back to a specific attack.
 
-\item \textbf{Policy-based detection} (behavior-based detection) is similar to pattern-based detection. However, instead of trying to define specific patterns, the administrator defines behaviors that are suspicious based on \emph{historical} analysis. The use of behaviors enables a single signature to cover an entire class of activities without having to specify each individual situation.
+\item \textbf{Policy-based detection} (behavior-based detection) defines suspicious behaviors based on \emph{historical} analysis. The use of behaviors enables a single signature to cover an entire class of activities without having to specify each individual situation.
 
-\item \textbf{Honey pot-based detection} uses a dummy server to attract attacks. By staging different types of vulnerabilities in the honey pot server, administrators can analyze incoming types of attacks and malicious traffic patterns. Antivirus and other security vendors tend to use them for research.
+\item \textbf{Honey pot-based detection} uses a dummy server to attract attacks. . Antivirus and other security vendors tend to use them for research.
 
-\item \textbf{Protocol decodes:} This mechanism breaks down a packet into the fields of a protocol, and then search for specific patterns in a specific protocol field. Advantage: enable a more granular inspection of traffic and reduces the number of false positives.
+\item \textbf{Protocol decodes:} This mechanism breaks down a packet into the fields of a protocol, and then search for specific patterns in a specific protocol field. \textbf{Advantage}: enable a more granular inspection of traffic and reduces the number of false positives.
 \end{itemize}
+
+\subsubsection{Alarm type}
+
+Triggering mechanisms mentioned above can generate alarms that are false positives or false negatives. These alarms must be addressed when implementing an IPS sensor. The table \ref{AlarmType} summarizes the following four types of alarms:
 
 \tableStart[\caption{Alarm types}\label{AlarmType}] { |l|l|l|l| }
 \head{Alarm type} & \head{Traffic} & \head{Alarm} & \head{Outcome}\w
@@ -80,47 +92,25 @@ True Positive & attack & $\bullet$ & ideal setting\w
 True Negative & normal & & ideal setting\w
 \tableEnd
 
-%\begin{itemize}
-%\item A false positive alarm occurs when an intrusion system generates an alarm after processing normal traffic. If this occurs, the administrator must be sure to tune the IPS to change these alarm types to true negatives.
-%
-%\item A false negative is when an intrusion system fails to generate an alarm after processing attack traffic. The goal of the administrator is for these alarm types to generate true positive alarms.
-%
-%\item A true positive alarm is when an intrusion system generates an alarm in response to known attack traffic.
-%
-%\item A true negative describes a situation in which normal network traffic does not generate an alarm.
-%\end{itemize}
+A false positive occurs when an IPS mistakes normal traffic for malicious ones and generates an alarm. A false negative is when an IPS detects malicious activities but fails to generate an alarm. A true positive alarm means that IPS generates an alarm in response to attack traffic. A true negative describes a situation in which normal network traffic does not generate an alarm.
 
 \subsection{Actions}
 
-\paragraph{Alerts:} there are two types of alert, which are atomic and summary alerts. \textbf{Atomic alerts} are generated every time a signature triggers. A \textbf{summary alert} is a single alert that indicates multiple occurrences of the same signature from the same source address or port. 
+\paragraph{Alerts:} After an alarm is generated, IPS generates report those to the administrator using an \textbf{alert}. There are two ways to generate an alert:
+
+\begin{itemize}
+\item  \textbf{Atomic alerts} are generated every time a signature triggers.
+\item \textbf{Summary alert:} a single atomic alert is generated for the first detection of an attack. Then the duplicate alarms are counted, but not sent, for a specific time period. When the specified time period is reached, an alert is sent that indicates the number of alarms that occurred during the time interval.
+\end{itemize}
 
 \paragraph{Logging:} this activity may start on packets that contain attacker's address (logging attacker packets), or attacker-victim address pair (logging pair packet), or victim's address (logging victim packet).
 
-%an IPS can be enabled to log the attacker packets, pair packets, or just the victim packets. \textbf{Logging attacker packets} is the action that starts IP logging on the packets that contain attacker's address and sends an alert.\textbf{Logging pair packets} is the action that starts IP logging on the packets that contain attacker-victim address pair and sends an alert. \textbf{Logging victim packets} is the action that starts IP logging on the packets that contain victim address and sends an alert. Note that the alerts are stored in Event Store.
 
 \paragraph{Deny:} IPS terminates the current and future packets from a particular attacker address for a period of time. If attacker A is currently denied, but issues another attack, then the timer for attacker A is reset and this attacker remain denied until the timer expires. IPS also denies TCP connection.
 
-%can be enabled to deny the specific packets, or the attacker packets, or connection. \textbf{Denying the attacker packets} is the action that terminates the current and future packets from a particular attacker address for a period of time. There is a sliding timer for each attacker. If attacker A is currently denied, but issues another attack, then the timer for attacker A is reset and this attacker remain denied until the timer expires. \textbf{Denying the connection} is the action that terminates packets come from the current TCP flow.
 
 \paragraph{Blocking} is the action that updates ACL on \emph{one} of the infrastructure devices. After a configured period of time, the IPS device removes the ACL. This action allows a single IPS device can stop traffic at multiple locations throughout the network, regardless of the location of the IPS device. 
 
-%\paragraph{Reset:} This action terminates TCP connections by generating a packet for the connection with the TCP RST flag set. Deny packet and deny flow actions do not automatically cause TCP reset actions to occur. 
-%
-%\paragraph{Allow:} 
-%
-%\paragraph{Reset, Block, and Allow Traffic:} The \textbf{Allow Signature} action define exceptions to configured signatures. Configuring exceptions enables administrators to take a more restrictive approach to security because they can first deny everything and then allow only the activities that are needed.
-
-%\subsection{Manage and monitor}
-%
-%There are four factors to consider when planning a monitor strategy: Management method, Event correlation, Security staff, and Incident response  plan. 
-%
-%%\paragraph{Management method:} IPS sensors can be managed individually (small network) or centrally (large network).  In a larger network, a centralized management system that allows the administrator to configure and manage all IPS devices from a single central system should be deployed. 
-%
-%\paragraph{Event correlation:} Event correlation refers to the process of correlating attacks and other events that are happening simultaneously at different points across a network. A correlation tool correlates the alerts based on their time-stamps. Therefore, the administrator should enable NTP on all network devices with a common system time. Another factor that facilitates event correlation is deploying a centralized monitoring facility on a network. By monitoring all IPS events at a single location, an administrator greatly improves the accuracy of event correlation.
-%
-%%\paragraph{Security staff:} IPS devices tend to generate numerous alerts and other events during network traffic processing. Large enterprises require appropriate security staff to analyze this activity and determine how well the IPS is protecting the network. 
-%
-%\paragraph{Incident response plan:} If a system is compromised on a network, a response plan must be in place. The compromised system should be restored to the state it was in before the attack.
 
 \subsection{Logging and management task} 
 
@@ -138,8 +128,7 @@ When sending IPS notification with SDEE format, the buffer on the router stores 
 There are three GUI-based IPS device managers available: Cisco Configuration Professional, Cisco IPS Manager Express (IME), and Cisco Security Manager.
 
 \subsection{Global correlation}
-
-%In addition to maintaining signature packs, Cisco IPS includes a security feature called Cisco Global Correlation. 
+ 
 When participating in Global correlation, IPS receives regular threat updates from a database called the Cisco SensorBase Network. This database provides information to the IPS sensor about IP addresses with a \emph{reputation}, as shown in the figure \ref{GlobalCorrelation}. The sensor uses this information to determine which actions to perform when harmful traffic is received from a host with a known reputation. Since the global correlation database changes rapidly, the sensor must periodically download global correlation updates from the global correlation servers. It is possible to view reputation scores in events and see the reputation score of attackers.\\
 
 \begin{figure}[hbtp]

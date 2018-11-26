@@ -2,23 +2,21 @@
 
 For ACL, take a look at chapter ACL in Notebook folder.\\
 
-All firewalls share some common properties: resistant to attacks, the only transit point between networks because all traffic flows through the firewall, enforce the access control policy. 
-
 \section{Firewall types}
 
 \subsection{Packet filtering}
 
 Basic packet filtering firewalls can only filter based on Layer 3 and sometimes basic Layer 4 information. \\
 
-\textbf{Benefits:} Simple implementation, Low impact on network performance, Initial degree of security at the network layer, Almost all the tasks of a high-end firewall at a much lower cost.\\
+\textbf{Benefits:} Cheap, Simple implementation, Low impact on network performance, Initial degree of security at the network layer.\\
 
-\textbf{Limitations:} Susceptible to IP spoofing, Not reliably filter fragmented packets, Complex ACLs (difficult to implement and maintain), \emph{Stateless:} examine each packet individually rather than in the context of the state of a connection.
+\textbf{Limitations:} Cannot prevent IP spoofing, Complex ACLs, \emph{Stateless} (examine each packet individually rather than in the context of the state of a connection).
 
 \subsection{Statefull firewall}
 
-Stateful firewall monitors network traffic as it flows into and out of the organization and determines whether packets belong to an existing connection or are from an unauthorized source. Stateful filtering tracks each connection and confirms that they are valid. Stateful firewalls use a state table to keep track of the actual communication process.\\ 
+Stateful firewall examine each packet in the context of the state of a connection. Stateful firewalls use a state table to keep track of the communication process.\\ 
 
-\textbf{Benefits:} Prevent spoofing and DoS attacks; Provide more control over security.\\ 
+\textbf{Benefits:} Prevent spoofing and DoS attacks.\\ 
 
 \textbf{Limitations:} Cannot prevent UDP, ICMP, and layer 7 attacks; No authentication; Cannot detect dynamic port negotiation.
 
@@ -60,10 +58,9 @@ There are two configuration models for Cisco IOS Firewall: \hyperref[sec:Classic
 
 \subsection{Classic firewall}\label{sec:ClassicFirewall}
 
-Classic Firewall (CBAC) is a \emph{stateful} firewall that provides four main functions: Filtering, Inspection, Intrusion detection, and Generation of audits and alerts. It can only detects and protects against external attacks. \emph{The Classic Firewall applies firewall policy to interfaces.}\\ 
+Classic Firewall (CBAC) is a \emph{stateful} firewall that provides four main functions: Filtering, Inspection, Intrusion detection, and Generation of audits and alerts. It can only detects and protects against external attacks. The Classic Firewall applies firewall policy to interfaces.\\ 
 
-Classic Firewall creates \emph{temporary} openings in the ACL to allow returning traffic. These entries are created as inspected traffic leaves the network and are removed when the connection terminates or the idle timeout period for the connection is reached. 
-In addition to extended ACLs, Application layer protocol session information is used by a classic firewall to filter traffic. Figure \ref{ClassicFirewall} shows how Classic Firewall inspects SSH traffic.
+Classic Firewall creates temporary openings in the ACL to allow returning traffic. These entries are created as inspected traffic leaves the network and are removed when the connection terminates or the idle timeout period for the connection is reached. In addition to extended ACLs, Application layer protocol session information is used by a classic firewall to filter traffic. Figure \ref{ClassicFirewall} shows how Classic Firewall inspects SSH traffic.\\
 
 \begin{figure}[hbtp]
 \caption{Classic Firewall inspects SSH traffic}\label{ClassicFirewall}
@@ -71,7 +68,7 @@ In addition to extended ACLs, Application layer protocol session information is 
 \includegraphics[ width=10\xm ]{pictures/ClassicFirewall.PNG}
 \end{figure}
 
-Take the topology in figure \ref{ClassicConfig} as an example for configuration. Suppose that the administrator wants to allow SSH sessions between the 10.0.0.0 and 172.30.0.0 networks. However, only hosts from the 10.0.0.0 network are allowed to initiate SSH sessions. All other access is denied. 
+Take the topology in figure \ref{ClassicConfig} as an example for configuration. Suppose that the administrator wants to allow SSH sessions between the 10.0.0.0/24 and 172.30.0.0/24 networks. However, only hosts from the 10.0.0.0/24 network are allowed to initiate SSH sessions. All other access is denied. There are four steps to configure this policy for this situation using a Classic Firewall:
 
 \begin{figure}[hbtp]
 \caption{Network topology}\label{ClassicConfig}
@@ -81,27 +78,23 @@ Take the topology in figure \ref{ClassicConfig} as an example for configuration.
 
 
 \begin{sexylisting}{Classic Firewall configuration}
-ip access-list extended INSIDE
-  permit tcp 10.0.0.0 0.0.0.255 any eq 22
-ip access-list extended OUTSIDE
-  deny ip any any
-
 ip inspect name FWRULE ssh
-
-interface g0/0
-  ip access-group INSIDE in
-  ip inspect FWRULE in
-interface g0/1
-  ip access-group OUTSIDE in
+ip access-list extended INSIDE
+	permit tcp 10.0.0.0 0.0.0.255 any eq 22
+	deny ip any any
+	exit
+int g0/0
+	ip access-group INSIDE in
+	ip inspect FWRULE in	
 \end{sexylisting}
 
-There are four steps to configure this policy using a Classic Firewall:
+
 
 \begin{enumerate}
 \item \textbf{Define the internal and external interfaces}: G0/0 is the inside interface and G0/1 is the outside interface.
-\item \textbf{Configure ACLs for each interface}: The INSIDE ACL allows only SSH traffic from the 10.0.0.0 network; the OUTSIDE ACL will deny inbound traffic from the 172.30.0.0 network.
-\item \textbf{Define inspection rules}: The inspection rule FWRULE specifies that traffic will be inspected for SSH connections. This inspection rule has no effect until it is applied to an interface.
-\item \textbf{Apply an inspection rule to an interface}: When the FWRULE is applied to inbound traffic on the G0/0 interface, the Classic Firewall configuration will dynamically add an entry to allow inbound SSH traffic from the 172.30.0.0 network. From now on, the FWRULE inspects SSH traffic between 10.0.0.0 and 172.30.0.0 network.
+\item \textbf{Configure ACLs for each interface}: The INSIDE ACL allows only SSH traffic from the 10.0.0.0 network; Until the inspection rule is configured, the OUTSIDE ACL will deny inbound traffic from the 172.30.0.0 network.
+\item \textbf{Define inspection rules}: The inspection rule FWRULE specifies that traffic will be inspected for SSH connections. This inspection rule has no effect until it is applied to an interface. Although an SSH connection would be allowed in the G0/0 interface and out to host on the 172.30.0.0 network, returning SSH traffic inbound to G0/1 would still be denied.
+\item \textbf{Apply an inspection rule to an interface}: When the FWRULE is applied to inbound traffic on the G0/0 interface, the Classic Firewall configuration will dynamically add an ACE to the access-list OUTSIDE. This ACE allows inbound SSH traffic from the 172.30.0.0 network. This explains the operation of Classic Firewall: ''Classic Firewall creates temporary openings in the ACL to allow returning traffic``.
 \item \textbf{Verification}: Use \code{show ip inspect sessions} command to verify inspect sessions.
 \end{enumerate}
 
@@ -109,7 +102,7 @@ There are four steps to configure this policy using a Classic Firewall:
 
 \subsection{Introduction}
 
-\emph{Zone-Based Policy Firewall applies firewall policy to zones.} A zone is a group of one or more interfaces. \\
+Zone-Based Policy Firewall applies firewall policy to zones. A zone is a group of one or more interfaces. \\
 
 By default, the traffic between interfaces in the same zone passes freely. However, all zone-to-zone traffic is blocked. In order to permit traffic between zones, a ZPF policy must be applied on each zone.\\
 
@@ -118,6 +111,7 @@ The only exception to this default deny any policy is the router \textbf{self zo
 \textbf{Benefits} of a ZPF: Not dependent on ACLs, The default policy is to block unless explicitly allowed, Policies are easy to read and troubleshoot with the C3PL\footnote{Cisco Common Classification Policy Language}, which can create traffic policies based on events and it affects any given traffic with only one policy, instead of needing multiple ACLs and inspection actions.
 
 \tableStart[\caption{Compare Classic Firewall and ZPF operation}]{| p{6\xm} | p{2\xm} | p{2\xm} |}
+\head{Content} & \head{Classic firewall} & \head{ZPF} \w
 Only prevent attacks that travel through the firewall & $\bullet$ & \w
 Require multiple ACLs and inspection actions &$\bullet$& \w
 Not dependent on ACLs & & $\bullet$ \w
@@ -132,7 +126,7 @@ The default policy is to block unless explicitly allowed & & $\bullet$ \w
 
   If the Security Technology package has not been enabled, use the following command to enable the package: \code{license boot module c1900 technology-package securityk9}.   Accept the end-user license agreement.  Save the running-config and reload the router to enable the security license.  Verify that the Security Technology package has been enabled by using the show version command.
 
-\subsubsection{Identify traffic using Class-Maps}
+\subsubsection{Step 1. Identify traffic using Class-Maps}
 
 \begin{enumerate}
 \item (Optional) Create an ACL that defines internal traffic. The access list shown below defines internal traffic which is  all IP protocols from the 192.168.3.0/24 source network to any destination.
@@ -153,7 +147,7 @@ class-map type inspect match-any PRIVATE-INTERNET-CLASS
 exit    
 \end{sexylisting}
 
-\subsubsection{Specify Firewall Policies}
+\subsubsection{Step 2. Specify Firewall Policies}
 
 \begin{enumerate}
 \item Create a policy map to determine what to do with matched traffic.
@@ -171,7 +165,7 @@ policy-map type inspect PRIV-TO-PUB-POLICY
 exit  
 \end{sexylisting}
 
-\subsubsection{Apply Firewall Policies}
+\subsubsection{Step 3. Apply Firewall Policies}
 
 \begin{enumerate}
 \item Create zones.
