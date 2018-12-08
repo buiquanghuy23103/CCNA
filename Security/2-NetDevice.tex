@@ -116,9 +116,10 @@ crypto key zeroize rsa
 crypto key generate rsa general-keys modulus 1024
 
 ip ssh version 2
-username Huy algorithm-type scrypt secret cisco12345
+username Huy privilege 15 algorithm-type scrypt secret cisco12345
 
 line vty 0 4
+	privilege 15
   login local
   transport input ssh
 
@@ -183,9 +184,10 @@ end
 enable view SUPPORT
 \end{sexylisting}
 
-In the above example, the \code{commands exec include} command assigns all \code{show} commands to the EXEC mode of the view. To access existing views, enter the \code{enable view view-name} command in user mode and enter the password that was assigned to the custom view. Use the question mark (?) command to verify that the commands available in the view are correct.
+In the above example, the \code{commands exec include} command assigns all \code{show} commands to the EXEC (\code{exec}) mode of the view. To access existing views, enter the \code{enable view view-name} command in user mode and enter the password that was assigned to the custom view. Use the question mark (?) command to verify that the commands available in the view are correct.
 
 \note AAA must be enabled before configuring any views.
+\note There is a variety of specification in the \code{commands} command. In the \code{config-view} mode, type \code{commands ?} to explore.
 
 \begin{sexylisting}{Superview configuration}
 parser view JR-ADMIN superview

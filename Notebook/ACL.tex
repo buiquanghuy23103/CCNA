@@ -101,21 +101,9 @@ ip access-group 1 out
 
 \subsection{Overview}
 
-Extended ACLs filter packets based on:
+Extended ACLs filter packets based on both Source and destination IP addresses, as well as Source and destination TCP and UDP ports. We usually locate extended ACLs as close as possible to the source of the traffic. This way, undesirable traffic is denied close to the source network without crossing the network infrastructure.\\
 
-\begin{itemize}
-\item Protocol type (e.g. IP, ICMP, UDP, TCP)
-\item Source and destination IP addresses
-\item Source and destination TCP and UDP ports (HTTP port 80, SSH port 22, etc.)
-\end{itemize}
-
-
-
-\subsection{Placement}
-
-Extended ACLs are used more often than standard ACLs because they provide a greater degree of control. We usually locate extended ACLs as close as possible to the source of the traffic. This way, undesirable traffic is denied close to the source network without crossing the network infrastructure.\\
-
-In figure \ref{extendedACLex}, the administrator wants to deny Telnet and FTP traffic from the .11 network to Company B's 192.168.30.0/24 (.30, in this example) network. At the same time, all other traffic from the .11 network must be permitted to leave Company A without restriction.\\
+For example, in figure \ref{extendedACLex}, the administrator wants to deny Telnet and FTP traffic from the .11 network to Company B's 192.168.30.0/24 (.30, in this example) network. At the same time, all other traffic from the .11 network must be permitted to leave Company A without restriction.\\
 
 \begin{figure}[hbtp]
 \caption{Extended ACL Placement}\label{extendedACLex}
@@ -130,6 +118,87 @@ A better solution is to place an extended ACL on R1. There are two possible inte
 
 \item R1 G0/1 interface (inbound) - Applying an extended ACL to traffic entering the G0/1 interface means that only packets from the 192.168.11.0/24 network are subject to ACL processing on R1. Because the filter is to be limited to only those packets leaving the 192.168.11.0/24 network, applying the extended ACL to G0/1 is the best solution.
 \end{itemize}
+
+\subsection{Established ACL}
+
+With basic standard and static extended access lists, you can approximate session filtering by using the established keyword with the permit command. The established keyword filters TCP packets based on whether the ACK or RST bits are set. (Set ACK or RST bits indicate that the packet is not the first in the session, and therefore, that the packet belongs to an established session.) This filter criterion would be part of an access list applied permanently to an interface.
+
+\subsection{Reflexive ACL}
+
+Unlike Established ACL, which is only used for TCP connection, Reflexive ACLs performs IP session filtering for any type of traffic (TCP, UDP, ICMP, etc.). Reflexive ACLs work by using temporary ACEs inserted into an extended ACL, which is applied on the external interface of the perimeter router. When the session ends or the temporary entry times out, these ACEs are removed from the extended ACL configuration of the external interface. This reduces network exposure to DoS attacks.
+
+\subsubsection{Choosing an Interface: Internal or External} 
+Reflexive access lists are most commonly used with one of two basic network topologies. \\
+
+In the first topology (figure \ref{ReflexiveACLex}), reflexive access lists are configured for the external interface Serial 1. This prevents IP traffic from entering the router and the internal network, unless the traffic is part of a session already established from within the internal network.\\
+
+\begin{figure}[hbtp]
+\caption{Reflexive Access Lists Configured at the External Interface}\label{ReflexiveACLex}
+\centering
+\includegraphics[scale=0.5]{pictures/ReflexiveACLex.PNG}
+\end{figure}
+
+In the second topology (figure \ref{ReflexiveACLin}), reflexive access lists are configured for the internal interface Ethernet 0. This allows external traffic to access the services in the Demilitarized Zone (DMZ), such as DNS services, but prevents IP traffic from entering your internal network, unless the traffic is part of a session already established from within the internal network.
+
+\begin{figure}[hbtp]
+\caption{Reflexive Access Lists Configured at the Internal Interface}\label{ReflexiveACLin}
+\centering
+\includegraphics[scale=0.5]{pictures/ReflexiveACLin.PNG}
+\end{figure}
+
+\subsubsection{Configuration}
+
+In the previous section, you decided whether to configure reflexive access lists for an internal or external interface. If you choose to configure reflexive access lists for an external interface, perform the following tasks:
+
+\begin{sexylisting}{Reflexive ACL Configured at the External Interface}
+ip access-list extended internal-ACL
+	permit tcp any any eq 23 reflect telnet-only-reflexive-ACL
+	permit udp any any eq 53 reflect dns-only-reflexive-ACL timeout 10
+	exit
+ip access-list extended external-ACL
+	evaluate telnet-only-reflexive-ACL
+	evaluate dns-only-reflexive-ACL
+	deny ip any any
+	exit
+interface s0/0/0
+	ip access-group internal-ACL out
+	ip access-group external-ACL in
+	exit
+\end{sexylisting}
+
+The internal-ACL only allows Telnet and DNS traffic to exit the network. The external-ACL basically denies all traffic (\code{deny ip any any}). However, whenever a Telnet or DNS traffic is initiated in the internal network, internal-ACL will inform external-ACL about that traffic (\code{reflect}). Receiving information from internal-ACL, external-ACL will add an ACE to allow the return Telnet or DNS traffic (\code{evaluate}).
+
+\subsection{Dynamic ACL (Lock-and-Key Security)}
+
+The benefits and operation of Dynamic ACL are thoroughly explained in the following \href{https://www.youtube.com/watch?v=1EwutKdb6P8&index=2&list=PLyykP25PsLMKk1cKoCtEzRTsjuJ0rbbhl }{links}. The following process summarizes Dynamic ACL operation:
+
+\begin{enumerate}
+\item A remote user want to user resources located in the internal network. He/She must open a Telnet or SSH connection to the router to authenticate.
+\item The router receives the Telnet/SSH packet, opens a Telnet/SSH session, prompts for a password, and performs a user authentication process. 
+\item If the authentication is successful, the Telnet or SSH connection is terminated, and the router creates a
+temporary ACE in the dynamic ACL, which provides the user with limited access to the internal resources.
+\item The user can now access the internal resources that would otherwise be denied without the dynamic ACL entry.
+\item The router deletes the temporary ACE when a configured timeout is reached, or when the system administrator manually clears it. The configured timeout can either be an idle timeout or an absolute timeout. 
+\end{enumerate}
+
+\begin{sexylisting}{Dynamic ACL (local database)}
+username student secret cisco
+
+access-list 101 permit tcp any host 10.2.2.2 eq telnet
+access-list 101 dynamic MyACL timeout 15 permit ip 192.168.10.0 0.0.0.255 192.168.30.0 0.0.0.255
+int s0/0/0
+	ip access-group 101 in
+	exit
+	
+line vty 0 4
+	login local
+	autocommand access-enable host timeout 5
+	exit
+\end{sexylisting}
+
+The \code{autocommand} command configures the system to automatically execute a specified privileged EXEC command when a user connects to a particular line. \\
+
+To test this out, let's try to ping 192.168.30.0/24 network from any host in 192.168.10.0. The output of the ping would be \texttt{Destination host unreachable}. If you want to get access to 192.168.30.0/24 network, you have to authenticate yourself by opening the command prompt and type \texttt{telnet 10.2.2.2}. After typing correct username and password, you can now ping the 192.168.30.0/24 network as normal. However, after 15 minutes (\code{timeout 15}) no access is allowed anymore.\\
 
 \subsection{Examples}
 
