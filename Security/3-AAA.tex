@@ -1,18 +1,12 @@
 \chapter{AAA model}
 
-AAA network security services provide the primary framework to set up access control on a network device. AAA is a way to control who is permitted to access a network (authenticate), what they can do while they are there (authorize), and to audit what actions they performed while accessing the network (accounting).
-
-% \textbf{Authentication:} Cisco provides two common methods of implementing AAA authentication: Local AAA Authentication and Server-Based AAA Authentication. \textbf{Local AAA Authentication} uses a local database for authentication. This method stores usernames and passwords locally in the Cisco router. With \textbf{Server-Based AAA Authentication}, the central AAA server contains the usernames and password for all users.\\
-
-% \textbf{Authorization} is typically implemented using a AAA server-based solution. Authorization uses a created set of attributes that describes the user’s access to the network. These attributes are compared to the information contained within the AAA database, and a determination of restrictions. Authorization is implemented immediately and automatically after the user is authenticated.\\
-
-% \textbf{Accounting} is implemented using a AAA server-based solution. This service reports usage statistics back to the ACS server. 
+AAA controls who is permitted to access a network (Authenticate), what they can do while they are there (Authorize), and to audit what actions they performed while accessing the network (Accounting).
 
 \section{Authentication}
 
 \subsection{Local}
 
-Local AAA Authentication uses the local usernames and passwords stored on a router. A drawback of the this method is that user accounts must be configured locally on each device, which is an unscalable authentication solution. Therefore, local authentication should be configured for smaller networks with one or two routers. The local authentication can also serve as a backup method for if authentication servers are available. Configuring local AAA services to authenticate administrator access requires a few basic steps:
+Local AAA Authentication uses the local usernames and passwords stored on a router. A drawback of the this method is that user accounts must be configured locally on each device, which does not scale well for large enterprise. The local authentication only serves as a backup method for if authentication servers are not available. 
 
 \begin{itemize}
   \item Add usernames and passwords to the local router database for users that need administrative access to the router.
@@ -28,24 +22,19 @@ aaa new-model
 aaa authentication login default local-case
 \end{sexylisting}
 
-The above commands allow the ADMIN and JR-ADMIN users to log into the router via the console or vty terminal lines. The \code{default} keyword means that the authentication method applies to all lines. Alternatively, a custom authentication method (or named method) can be configured using \code{list-name}. Unlike \code{default} method, a named method has to be assigned to a particular line (console, aux, or virtual line) using \code{login auth <list-name>} command.\\ 
+The above commands create two users ADMIN and JR-ADMIN, then uses local database to authenticate these users when they login the router (the last command). The \code{default} keyword means that the authentication method applies to all lines (console, vty, aux). Alternatively, you can name an authentication method  and assign it to a particular line.\\ 
 
 \begin{sexylisting}{Local named authentication}
-  username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
-  username JR-ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
-  
-  aaa new-model
-  aaa authentication login SSH-LOGIN local-case
-  
-  line vty 0 4
-  login auth SSH-LOGIN
-  \end{sexylisting}
+aaa authentication login SSH-LOGIN local-case
+line vty 0 4
+login authentication SSH-LOGIN
+\end{sexylisting}
 
-The final portion of the \code{aaa authentication login} command identifies the type of methods that will be queried to authenticate the users, which is \code{local-case}. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.\\
+%The final portion of the \code{aaa authentication login} command identifies the type of methods that will be queried to authenticate the users, which is \code{local-case}. When a user attempts to log in, the first method listed is used. Cisco IOS software attempts the second authentication method only when there is no response or an error from the first method occurs. This process continues until no other authentication methods are available.\\
+%
+%The \code{aaa local authentication attempts max-fail} command locks the user account if the authentication fails. The locked out user account remains locked until it is manually cleared by an administrator using the \code{clear aaa local user lockout} privileged EXEC mode command. This command is different from \code{login delay} command, which introduces a delay between failed login attempts without locking the account.\\
 
-The \code{aaa local authentication attempts max-fail} command locks the user account if the authentication fails. The locked out user account remains locked until it is manually cleared by an administrator using the \code{clear aaa local user lockout} privileged EXEC mode command. This command is different from \code{login delay} command, which introduces a delay between failed login attempts without locking the account.\\
-
-To display a list of all locked-out users, use the \code{sh aaa local user lockout} command. To display the history of activities (attributes), use the \code{sh aaa user} command. This command does not provide information for all users who are logged into a device, but only for those who have been authenticated or authorized using AAA, or whose sessions are being accounted for by the AAA module. The \code{sh aaa sessions} command can be used to show the unique ID of a session. The \code{debug aaa authentication} command is instrumental when troubleshooting AAA problems. The \code{debug tacacs events} command displays the opening and closing of a TCP connection to a TACACS+ server, the bytes that are read and written over the connection, and the TCP status of the connection.
+To display a list of all locked-out users, use the \code{sh aaa local user lockout} command. To display the history of activities (attributes), use the \code{sh aaa user} command. The \code{sh aaa sessions} command can be used to show the unique ID of a session.
 
 \subsection{Server-based}
 
@@ -57,31 +46,24 @@ TCP port 49 & UDP port 1645 or 1812 for authentication, UDP port 1646 or 1813 fo
 Multiprotocol support & Supports remote-access technologies, VoIP, 802.1X, and Session Initiation Protocol (SIP) \w
 \tableEnd
 
-\note A next-generation AAA protocol alternative to RADIUS is the DIAMETER AAA protocol.\\
+Cisco Secure ACS for Windows Server is a single solution that offers AAA for both TACACS+ and RADIUS and is integrated to into Active Directory service. In this technology, Active Directory controller performs the authentication and authorization.
 
-\textbf{Integration of Windows AD and ACS:} Many enterprise-level authentication servers are on the market today, but they lack the ability to combine both the TACACS+ and RADIUS protocols into a single solution. Fortunately, Cisco Secure ACS for Windows Server is a single solution that offers AAA for both TACACS+ and RADIUS. Cisco Secure ACS can be integrated to use the AD service. The configuration for Cisco IOS is the same as communicating with any RADIUS server. The only difference is that the Microsoft server’s AD controller is used to perform the authentication and authorization services.\\
+%There are three basic steps to configure server-based authentication:
+%
+%\begin{enumerate}
+%\item \textbf{Username:} Create a username with encrypted password
+%\item \textbf{Enable:} Globally enable AAA
+%\item \textbf{Server:} Specify either TACACS+ or RADIUS server
+%\item \textbf{Key:} 
+%\item \textbf{Method list:} Configure the AAA authentication method list to refer to the TACACS+ or RADIUS server. For redundancy, it is possible to configure more than one server.
+%\item \textbf{Applying:} Configure AAA authentication for console, or vty login to use the the newly configured AAA authentication method.
+%\end{enumerate}
 
-There are three basic steps to configure server-based authentication:
 
-\begin{enumerate}
-\item \textbf{Username:} Create a username with encrypted password
-\item \textbf{Enable:} Globally enable AAA
-\item \textbf{Server:} Specify either TACACS+ or RADIUS server
-\item \textbf{Key:} On TACACS+ or  Radius  server, you have to set up an entry as shown in figure \ref{RADIUSserver}. On router CLI, configure a corresponding entry with the server's address and the exact same encryption key with the server.
-\item \textbf{Method list:} Configure the AAA authentication method list to refer to the TACACS+ or RADIUS server. For redundancy, it is possible to configure more than one server.
-\item \textbf{Applying:} Configure AAA authentication for console, or vty login to use the the newly configured AAA authentication method.
-\end{enumerate}
-
-\begin{figure}[hbtp]
-\caption{Add an entry for a router in a RADIUS server}\label{RADIUSserver}
-\centering
-\includegraphics[scale=0.5]{pictures/RADIUSserver.PNG}
-\end{figure}
 
 
 \begin{sexylisting}{Server-based authentication}
 aaa new-models
-
 username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
 
 #STEP 2: TACACS+ server
@@ -98,35 +80,38 @@ radius server Server-R
 aaa authentication login default group tacacs+ group radius local-case
 
 line con 0
-login authentication default 
+	login authentication default 
 \end{sexylisting}
 
-The \code{address ipv4} command allows the option to modify IPv4 address of the server, authentication port, and accounting port. The \code{key} command is used to configure the shared secret key, which must be exactly the same way on both the router and the server.\\
+On TACACS+ or  Radius  server, you have to set up an entry as shown in figure \ref{RADIUSserver}. On router CLI, configure a corresponding entry with the server's address and the exact same encryption key with the server.\\
 
-The \code{single-connection} command (TACACS+ only) maintains a single TCP connection for the life of the session. Otherwise, by default, a TCP connection is opened and closed for each session. Because RADIUS uses UDP, there is no \code{single-connection} keyword.\\
+\begin{figure}[hbtp]
+\caption{Add an entry for a router in a RADIUS server}\label{RADIUSserver}
+\centering
+\includegraphics[scale=1]{pictures/RADIUSserver.PNG}
+\end{figure}
 
-When the AAA servers have been identified, the servers must be included in the method list of the \code{aaa authentication login} command. AAA servers are identified using the \code{group tacacs+} or \code{group radius} keywords. This command configures a method list for the default login to authenticate first using a TACACS+ server, second with a RADIUS server, and finally with a local username database. It is important to realize that R1 will only attempt to authenticate using RADIUS if the TACACS+ server is not reachable. Likewise, R1 would only attempt to authenticate using the local database if the TACACS+ and RADIUS servers are unavailable.
+%The \code{address ipv4} command allows the option to modify IPv4 address of the server, authentication port, and accounting port. The \code{key} command is used to configure the shared secret key, which must be exactly the same way on both the router and the server.\\
+
+By default, TACACS+ establishes a new TCP session for every authorization request, which can lead to delays when users enter commands. To improve performance, Cisco Secure ACS supports persistent TCP sessions configured with the \code{single-connection} tacacs server configuration mode command. \\
+
+We add AAA servers to the method list using the \code{group tacacs+} or \code{group radius} keywords. The above command configures a method list that first uses TACACS+ server for authentication. If TACACS+ server is unreachable, the RADIUS server takes over, and the last resort is local authentication (case-sensitive).
 
 \section{Authorization and Accounting (server-based only)}
 
-When AAA authorization is not enabled, all users are allowed full access. After authentication is started, the default changes to allow no access. This means that the administrator must create a user with full access rights before authorization is enabled. \\
+When AAA authorization is not enabled, all users are allowed full access. After authentication is started, the default changes to allow no access. This means that the administrator must create an administrative user before authorization is enabled. Failure to do so immediately locks the administrator out of the system.
 
-To configure command authorization, use the \code{aaa authorization} command. The service type can specify the types of commands or services:
-\code{network} -- For network services such as PPP, \code{exec} -- For starting an exec (shell), \code{commands <level>} -- For exec (shell) commands. 
-
-\begin{sexylisting}{Authorization Configuration}
-aaa authorization {network | commands <level> | exec} {default | <list-name>} 
-  method1 ... method4
-  
+\begin{sexylisting}{Authorization}
+aaa new-models
+username ADMIN algorithm-type scrypt secret Str0ng5rPa55w0rd
 aaa authorization exec default group tacacs+
-\end{sexylisting}
+line vty 0 4
+	authorization exec default
+\end{sexylisting}%
 
-To configure AAA accounting, use the \code{aaa accounting} command. 
+Instead of \code{exec} (For starting an exec mode), you can specify another  types of commands or services such as \code{network} (network services such as PPP), or \code{commands <level>} (exec commands).
 
 \begin{sexylisting}{Accounting Configuration}
-aaa accounting {network | connection | exec} {default | <list-name>} 
-         {statrt-stop | stop-only | none} [broadcast] method1 ... method4
-
 aaa account exec default start-stop group tacacs+
 \end{sexylisting}
 
@@ -154,9 +139,9 @@ Next, the record type, or trigger, is configured. The trigger specifies what act
 The IEEE 802.1X standard defines a port-based access control and authentication protocol that restricts unauthorized devices from connecting to a LAN through publicly accessible switch ports. Figure \ref{802.1X} shows that with 802.1X port-based authentication roles:
 
 \begin{itemize}
-\item \textbf{Supplicant (Client)} -- The device that requests access to LAN. The workstation must be running 802.1X-compliant client software. 
-\item \textbf{Authenticator (Switch)} -- Controls physical access to the network based on the authentication status of the client. The switch acts as an intermediary (proxy) between the supplicants and the authentication server. It verifies information from the client and relays a response to the client. The switch uses a RADIUS software agent, which is responsible for encapsulating and de-encapsulating the EAP frames and interacting with the authentication server.
-\item \textbf{Authentication server} -- Performs the actual authentication of the client. The authentication server validates the identity of the client and notifies the switch. Because the switch acts as the proxy, the authentication service is transparent to the client. The RADIUS security system with EAP extensions is the only supported authentication server.
+\item \textbf{Supplicants} are users' devices, which must have 802.1X-compliant client software. 
+\item \textbf{Authenticators} are usually switches, which act as intermediary (proxy) between the supplicants and the authentication server. It uses a RADIUS software agent, which encapsulates and de-encapsulates the EAP frames to interact with the authentication server.
+\item \textbf{The authentication server} authenticates the client and notifies the switch to enable or disable access. Because the switch acts as the proxy, the authentication service is transparent to the client.
 \end{itemize}
 
 \begin{figure}[hbtp]
@@ -166,26 +151,19 @@ The IEEE 802.1X standard defines a port-based access control and authentication 
 \end{figure}
 
 
-When configured for 802.1X port-based authentication, the port starts in the \emph{unauthorized state}. While in this state, the port disallows all ingress and egress traffic except for 802.1X protocol packets. When a client is successfully authenticated, the port transitions to the \emph{authorized state}, allowing all traffic for the client to flow normally. \\
-
-When a client logs out, or the supplicant does not support 802.1X, or the link state of the switch port changes from up to down, the switch port transitions to the unauthorized state. If a switch that is not running the 802.1X protocol, the client begins sending frames as if the port is in the authorized state.\\
+While in \emph{unauthorized state}, the port disallows all ingress and egress traffic except for 802.1X protocol packets. When a client is successfully authenticated, the port transitions to the \emph{authorized state}, allowing all traffic for the client to flow normally. When a client logs out, or the link state of the switch port changes from up to down, the switch port transitions to the unauthorized state.\\
 
 
 \subsection{Configuration}
 
-The following commands show a scenario where a PC is attached to F0/1 on the switch and the device is getting authenticated via 802.1X with a RADIUS server. Configuring 802.1X requires a few basic steps:
+The following commands show a scenario where a PC is attached to F0/1 on the switch and the device is getting authenticated via 802.1X with a RADIUS server.
 
 \begin{sexylisting}{802.1X configuration}
 aaa new-models
-
-
-
 radius server Server-R
   address ipv4 192.168.1.101 auth-port 1812 acct-port 1813
-  single-connection
   key RADIUS-Pa55w0rd
   exit
- 
 aaa authentication dot1x default group radius
 dot1x system-auth-control
 
@@ -196,19 +174,4 @@ interface f0/1
   exit
 \end{sexylisting}
 
-\begin{enumerate}
-\item Enable AAA 
-\item Configure a RADIUS server
-\item Create an 802.1X port-based authentication method list using the \code{aaa authentication dot1x} command.
-\item Globally enable 802.1X port-based authentication using the \code{dot1x system-auth-control} command.
-\item Enable port-based authentication on the interface using the \code{authentication port-control auto} command.
-\item Enable 802.1X authentication on the interface using the \code{dot1x pae} command. The \code{authenticator} options sets the Port Access Entity (PAE) type so the interface acts only as an authenticator and will not respond to any messages meant for a supplicant.
-\end{enumerate}
-
-The \code{authentication port-control} command has three options for port state:
-
-\begin{itemize}
-\item \code{auto} -- Enable 802.1X authentication
-\item \code{force-authorized} -- Disable 802.1X authentication. This option causes the port to remain authorized and transmit normal traffic. By default, a port is in the force-authorized state.
-\item \code{force-unauthorized} -- This option causes the port to remain unauthorized and lock all authentication services.
-\end{itemize}
+We create an 802.1X port-based authentication method list using the \code{dot1x} key word. In interface configuration mode, the \code{authentication port-control auto} command enables 802.1X authentication. This command has two more options, \code{force-authorized} and \code{force-unauthorize}, which disable 802.1X authentication. The first option causes the port to remain authorized and allow normal traffic, while the second puts the port in unauthorized state and lock all authentication.

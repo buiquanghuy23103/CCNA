@@ -1,35 +1,53 @@
-\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Secret password type 9}}{12}{tcb@cnt@sexylisting.1}
-\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Login security commands}}{12}{tcb@cnt@sexylisting.2}
-\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: Configuring SSH}}{13}{tcb@cnt@sexylisting.3}
-\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: Privilege level configuration}}{14}{tcb@cnt@sexylisting.4}
-\contentsline {tcolorbox}{\numberline {5}{\ignorespaces Listing 5: CLI View configuration}}{15}{tcb@cnt@sexylisting.5}
-\contentsline {tcolorbox}{\numberline {6}{\ignorespaces Listing 6: Superview configuration}}{15}{tcb@cnt@sexylisting.6}
-\contentsline {tcolorbox}{\numberline {7}{\ignorespaces Listing 7: Restore a primary bootset}}{16}{tcb@cnt@sexylisting.7}
-\contentsline {tcolorbox}{\numberline {8}{\ignorespaces Listing 8: Configure SCP with local AAA}}{16}{tcb@cnt@sexylisting.8}
-\contentsline {tcolorbox}{\numberline {9}{\ignorespaces Listing 9: Logging service}}{18}{tcb@cnt@sexylisting.9}
-\contentsline {tcolorbox}{\numberline {10}{\ignorespaces Listing 10: SNMPv2 configuration}}{20}{tcb@cnt@sexylisting.10}
-\contentsline {tcolorbox}{\numberline {11}{\ignorespaces Listing 11: SNMPv3 configuration}}{20}{tcb@cnt@sexylisting.11}
-\contentsline {tcolorbox}{\numberline {12}{\ignorespaces Listing 12: NTP authentication}}{21}{tcb@cnt@sexylisting.12}
-\contentsline {tcolorbox}{\numberline {13}{\ignorespaces Listing 13: OSPF MD5 interface authentication}}{22}{tcb@cnt@sexylisting.13}
-\contentsline {tcolorbox}{\numberline {14}{\ignorespaces Listing 14: OSPF MD5 area authentication}}{22}{tcb@cnt@sexylisting.14}
-\contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: OSPF SHA authentication}}{23}{tcb@cnt@sexylisting.15}
-\contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: Local default authentication}}{25}{tcb@cnt@sexylisting.16}
-\contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: Local named authentication}}{26}{tcb@cnt@sexylisting.17}
-\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Server-based authentication}}{27}{tcb@cnt@sexylisting.18}
-\contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Authorization Configuration}}{28}{tcb@cnt@sexylisting.19}
-\contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: Accounting Configuration}}{28}{tcb@cnt@sexylisting.20}
-\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: 802.1X configuration}}{30}{tcb@cnt@sexylisting.21}
-\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: Classic Firewall configuration}}{33}{tcb@cnt@sexylisting.22}
-\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: ZPF configuration: Identify traffic using ACLs and Class-Maps}}{35}{tcb@cnt@sexylisting.23}
-\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: ZPF configuration: Specify Firewall Policies}}{35}{tcb@cnt@sexylisting.24}
-\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: ZPF configuration: Apply Firewall Policies}}{36}{tcb@cnt@sexylisting.25}
-\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: ZPF Verification}}{36}{tcb@cnt@sexylisting.26}
-\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: Enable IPS}}{45}{tcb@cnt@sexylisting.27}
-\contentsline {tcolorbox}{\numberline {28}{\ignorespaces Listing 28: Retire a specific signature}}{45}{tcb@cnt@sexylisting.28}
-\contentsline {tcolorbox}{\numberline {29}{\ignorespaces Listing 29: Change actions of a signature}}{46}{tcb@cnt@sexylisting.29}
-\contentsline {tcolorbox}{\numberline {30}{\ignorespaces Listing 30: Change actions of a signature category}}{46}{tcb@cnt@sexylisting.30}
-\contentsline {tcolorbox}{\numberline {31}{\ignorespaces Listing 31: IPS verification}}{46}{tcb@cnt@sexylisting.31}
-\contentsline {tcolorbox}{\numberline {32}{\ignorespaces Listing 32: PVLAN}}{49}{tcb@cnt@sexylisting.32}
-\contentsline {tcolorbox}{\numberline {33}{\ignorespaces Listing 33: DHCP snooping}}{50}{tcb@cnt@sexylisting.33}
-\contentsline {tcolorbox}{\numberline {34}{\ignorespaces Listing 34: Dynamic ARP Inspection (DAI) configuration}}{51}{tcb@cnt@sexylisting.34}
-\contentsline {tcolorbox}{\numberline {35}{\ignorespaces Listing 35: Site-to-site IPsec}}{60}{tcb@cnt@sexylisting.35}
+\contentsline {tcolorbox}{\numberline {1}{\ignorespaces Listing 1: Secret password type 9}}{11}{tcb@cnt@sexylisting.1}
+\contentsline {tcolorbox}{\numberline {2}{\ignorespaces Listing 2: Login security commands}}{11}{tcb@cnt@sexylisting.2}
+\contentsline {tcolorbox}{\numberline {3}{\ignorespaces Listing 3: Configuring SSH}}{12}{tcb@cnt@sexylisting.3}
+\contentsline {tcolorbox}{\numberline {4}{\ignorespaces Listing 4: Privilege level configuration}}{12}{tcb@cnt@sexylisting.4}
+\contentsline {tcolorbox}{\numberline {5}{\ignorespaces Listing 5: CLI View configuration}}{13}{tcb@cnt@sexylisting.5}
+\contentsline {tcolorbox}{\numberline {6}{\ignorespaces Listing 6: Superview configuration}}{13}{tcb@cnt@sexylisting.6}
+\contentsline {tcolorbox}{\numberline {7}{\ignorespaces Listing 7: Restore a primary bootset}}{14}{tcb@cnt@sexylisting.7}
+\contentsline {tcolorbox}{\numberline {8}{\ignorespaces Listing 8: Configure SCP with local AAA}}{14}{tcb@cnt@sexylisting.8}
+\contentsline {tcolorbox}{\numberline {9}{\ignorespaces Listing 9: Logging service}}{16}{tcb@cnt@sexylisting.9}
+\contentsline {tcolorbox}{\numberline {10}{\ignorespaces Listing 10: SNMPv2 configuration}}{18}{tcb@cnt@sexylisting.10}
+\contentsline {tcolorbox}{\numberline {11}{\ignorespaces Listing 11: SNMPv3 configuration}}{18}{tcb@cnt@sexylisting.11}
+\contentsline {tcolorbox}{\numberline {12}{\ignorespaces Listing 12: NTP authentication}}{19}{tcb@cnt@sexylisting.12}
+\contentsline {tcolorbox}{\numberline {13}{\ignorespaces Listing 13: OSPF MD5 interface authentication}}{20}{tcb@cnt@sexylisting.13}
+\contentsline {tcolorbox}{\numberline {14}{\ignorespaces Listing 14: OSPF MD5 area authentication}}{20}{tcb@cnt@sexylisting.14}
+\contentsline {tcolorbox}{\numberline {15}{\ignorespaces Listing 15: OSPF SHA authentication}}{20}{tcb@cnt@sexylisting.15}
+\contentsline {tcolorbox}{\numberline {16}{\ignorespaces Listing 16: Local default authentication}}{23}{tcb@cnt@sexylisting.16}
+\contentsline {tcolorbox}{\numberline {17}{\ignorespaces Listing 17: Local named authentication}}{23}{tcb@cnt@sexylisting.17}
+\contentsline {tcolorbox}{\numberline {18}{\ignorespaces Listing 18: Server-based authentication}}{24}{tcb@cnt@sexylisting.18}
+\contentsline {tcolorbox}{\numberline {19}{\ignorespaces Listing 19: Authorization}}{25}{tcb@cnt@sexylisting.19}
+\contentsline {tcolorbox}{\numberline {20}{\ignorespaces Listing 20: Accounting Configuration}}{25}{tcb@cnt@sexylisting.20}
+\contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: 802.1X configuration}}{27}{tcb@cnt@sexylisting.21}
+\contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: Classic Firewall configuration}}{31}{tcb@cnt@sexylisting.22}
+\contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: Create a ZPF policy}}{32}{tcb@cnt@sexylisting.23}
+\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: Create zones}}{33}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Match zone pair and policy}}{33}{tcb@cnt@sexylisting.25}
+\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: ZPF Verification}}{33}{tcb@cnt@sexylisting.26}
+\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: IPS preparation}}{39}{tcb@cnt@sexylisting.27}
+\contentsline {tcolorbox}{\numberline {28}{\ignorespaces Listing 28: IPS category}}{39}{tcb@cnt@sexylisting.28}
+\contentsline {tcolorbox}{\numberline {29}{\ignorespaces Listing 29: Retire a specific signature}}{40}{tcb@cnt@sexylisting.29}
+\contentsline {tcolorbox}{\numberline {30}{\ignorespaces Listing 30: Change actions of a signature}}{40}{tcb@cnt@sexylisting.30}
+\contentsline {tcolorbox}{\numberline {31}{\ignorespaces Listing 31: Change actions of a signature category}}{40}{tcb@cnt@sexylisting.31}
+\contentsline {tcolorbox}{\numberline {32}{\ignorespaces Listing 32: Enable port security}}{42}{tcb@cnt@sexylisting.32}
+\contentsline {tcolorbox}{\numberline {33}{\ignorespaces Listing 33: Additional port security}}{43}{tcb@cnt@sexylisting.33}
+\contentsline {tcolorbox}{\numberline {34}{\ignorespaces Listing 34: PVLAN}}{44}{tcb@cnt@sexylisting.34}
+\contentsline {tcolorbox}{\numberline {35}{\ignorespaces Listing 35: DHCP snooping}}{45}{tcb@cnt@sexylisting.35}
+\contentsline {tcolorbox}{\numberline {36}{\ignorespaces Listing 36: Dynamic ARP Inspection (DAI) configuration}}{46}{tcb@cnt@sexylisting.36}
+\contentsline {tcolorbox}{\numberline {37}{\ignorespaces Listing 37: Site-to-site IPsec}}{56}{tcb@cnt@sexylisting.37}
+\contentsline {tcolorbox}{\numberline {38}{\ignorespaces Listing 38: VLAN interfaces}}{58}{tcb@cnt@sexylisting.38}
+\contentsline {tcolorbox}{\numberline {39}{\ignorespaces Listing 39: DHCP configuration in ASA}}{58}{tcb@cnt@sexylisting.39}
+\contentsline {tcolorbox}{\numberline {40}{\ignorespaces Listing 40: SSH configuration in ASA}}{59}{tcb@cnt@sexylisting.40}
+\contentsline {tcolorbox}{\numberline {41}{\ignorespaces Listing 41: NTP in ASA}}{59}{tcb@cnt@sexylisting.41}
+\contentsline {tcolorbox}{\numberline {42}{\ignorespaces Listing 42: Network object}}{60}{tcb@cnt@sexylisting.42}
+\contentsline {tcolorbox}{\numberline {43}{\ignorespaces Listing 43: Service object}}{60}{tcb@cnt@sexylisting.43}
+\contentsline {tcolorbox}{\numberline {44}{\ignorespaces Listing 44: Network object group}}{60}{tcb@cnt@sexylisting.44}
+\contentsline {tcolorbox}{\numberline {45}{\ignorespaces Listing 45: ICMP object group}}{61}{tcb@cnt@sexylisting.45}
+\contentsline {tcolorbox}{\numberline {46}{\ignorespaces Listing 46: Service object group}}{61}{tcb@cnt@sexylisting.46}
+\contentsline {tcolorbox}{\numberline {47}{\ignorespaces Listing 47: Simple ACL in ASA}}{61}{tcb@cnt@sexylisting.47}
+\contentsline {tcolorbox}{\numberline {48}{\ignorespaces Listing 48: ACL with object groups}}{62}{tcb@cnt@sexylisting.48}
+\contentsline {tcolorbox}{\numberline {49}{\ignorespaces Listing 49: Dynamic NAT in ASA}}{62}{tcb@cnt@sexylisting.49}
+\contentsline {tcolorbox}{\numberline {50}{\ignorespaces Listing 50: PAT in ASA}}{63}{tcb@cnt@sexylisting.50}
+\contentsline {tcolorbox}{\numberline {51}{\ignorespaces Listing 51: Static NAT in ASA}}{63}{tcb@cnt@sexylisting.51}
+\contentsline {tcolorbox}{\numberline {52}{\ignorespaces Listing 52: Create authentication server in ASA}}{63}{tcb@cnt@sexylisting.52}
+\contentsline {tcolorbox}{\numberline {53}{\ignorespaces Listing 53: Authenticate users}}{63}{tcb@cnt@sexylisting.53}

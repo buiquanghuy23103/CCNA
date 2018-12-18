@@ -1,45 +1,47 @@
-\chapter{Introduction}
+\chapter{Introduction to Network security}
 
-\section{Securing network}
+%\section{Securing network}
 
-\subsection{Terminologies}
+%\subsection{Terminologies}
 
-An attack vector is a path or other means by which an attacker can gain access to a server, host, or network. Attack vectors can originate from outside (external threat) or inside (internal threat) the corporate network. Internal threats have the potential to cause greater damage than external threats because employees have direct access to infrastructure devices as well as the knowledge of the corporate network.\\
-
-\textbf{White hat hackers} perform \emph{ethical} network penetration test to discover network vulnerabilities. \textbf{Grey hat hackers} do unethical things, but not for personal gain or to cause damage (e.g. disclose vulnerability publicly). \textbf{Black hat hackers} violate computer and network security for personal gain and malicious purposes. The following list displays modern hacking terms and a brief description of each.\\
-
-\textbf{Security Artichoke} is the analogy used to describe what a hacker must do to launch an attack in a Borderless network. They  remove certain \emph{artichoke leafs}, and each \emph{leaf} of the network may reveal some sensitive data. And leaf after leaf, it all leads the hacker to more data.\\
-
-\textbf{Cryptography} is the study and practice of hiding information. It ensures three components of information security: Confidentiality, Integrity, and Availability.\\
-
-A \textbf{Security Policy} is a formal statement of the rules by which people that are given access to the technology and information assets of an organization, must abide.
+%An attack vector is a path or other means by which an attacker can gain access to a server, host, or network. Attack vectors can originate from outside (external threat) or inside (internal threat) the corporate network. Internal threats have the potential to cause greater damage than external threats because employees have direct access to infrastructure devices as well as the knowledge of the corporate network.\\
 
 
-\subsection{Network topology}
 
-\paragraph{SOHO network:} Attackers may want to use someone's Internet connection for free or illegal activity, or view financial transactions. Home networks and SOHOs are typically protected using a consumer \emph{grade router}, such as a \emph{Linksys home wireless router}. 
+%\textbf{Security Artichoke} is the analogy used to describe what a hacker must do to launch an attack in a Borderless network. They  remove certain \emph{artichoke leafs}, and each \emph{leaf} of the network may reveal some sensitive data. And leaf after leaf, it all leads the hacker to more data.\\
 
-\paragraph{WAN network:} Main site and Regional site are protected by an ASA (stateful firewall and VPN). Branch site is secured using hardened ISR and VPN connection to the main site. The SOHO and Mobile users connect to the main site using Cisco Anyconnect VPN client. 
+%\textbf{Cryptography} is the study and practice of hiding information. It ensures three components of information security: Confidentiality, Integrity, and Availability.\\
 
-\paragraph{Data center network:} Data center networks are interconnected to corporate sites using VPN and ASA devices along with \emph{integrated data center switches}, such as a high-speed Nexus switches. Data center physical security can be divided into two areas: Outside perimeter security and Inside perimeter security. 
+%A \textbf{Security Policy} is a formal statement of the rules by which people that are given access to the technology and information assets of an organization, must abide.
 
-\paragraph{Cloud and virtual network:} This kind of network uses virtual machines (VM) to provide services to their clients.  VMs are also prone to specific targeted attacks as shown in the following list. The \textbf{Cisco Secure Data Center} is a solution to secure Cloud and virtual network. The core components of this solution provide: Secure Segmentation, Threat Defense, and Visibility.
 
-\begin{itemize}
-\item \textbf{Hyperjacking:} An attacker could hijack a VM hypervisor and use it as a starting point to attack other devices.
-\item \textbf{Instant on activation:} A VM that has not been used for a long period of time can introduce security vulnerabilities when activated.
-\item \textbf{Antivirus storm:} Multiple VMs attempt to download antivirus file at the same time
-\end{itemize}
-
-\paragraph{Borderless Network:} To accommodate the BYOD trend, Cisco developed the Borderless Network. To support this network, Cisco devices support Mobile Device Management (MDM) features. MDM features secure, monitor, and manage mobile devices, including corporate-owned devices and employee-owned devices. 
+%\subsection{Network topology}
+%
+%\textbf{White hat hackers} perform \emph{ethical} network penetration test to discover network vulnerabilities. \textbf{Grey hat hackers} do unethical things, but not for personal gain or to cause damage (e.g. disclose vulnerability publicly). \textbf{Black hat hackers} violate computer and network security for personal gain and malicious purposes.\\
+%
+%\paragraph{SOHO network:} Attackers may want to use someone's Internet connection for free or illegal activity, or view financial transactions. Home networks and SOHOs are typically protected using a consumer \emph{grade router}, such as a \emph{Linksys home wireless router}. 
+%
+%\paragraph{WAN network:} Main site and Regional site are protected by an ASA (stateful firewall and VPN). Branch site is secured using hardened ISR and VPN connection to the main site. The SOHO and Mobile users connect to the main site using Cisco Anyconnect VPN client. 
+%
+%\paragraph{Data center network:} Data center networks are interconnected to corporate sites using VPN and ASA devices along with \emph{integrated data center switches}, such as a high-speed Nexus switches. Data center physical security can be divided into two areas: Outside perimeter security and Inside perimeter security. 
+%
+%\paragraph{Cloud and virtual network:} This kind of network uses virtual machines (VM) to provide services to their clients.  VMs are also prone to specific targeted attacks as shown in the following list. The \textbf{Cisco Secure Data Center} is a solution to secure Cloud and virtual network. The core components of this solution provide: Secure Segmentation, Threat Defense, and Visibility.
+%
+%\begin{itemize}
+%\item \textbf{Hyperjacking:} An attacker could hijack a VM hypervisor and use it as a starting point to attack other devices.
+%\item \textbf{Instant on activation:} A VM that has not been used for a long period of time can introduce security vulnerabilities when activated.
+%\item \textbf{Antivirus storm:} Multiple VMs attempt to download antivirus file at the same time
+%\end{itemize}
+%
+%\paragraph{Borderless Network:} To accommodate the BYOD trend, Cisco developed the Borderless Network. To support this network, Cisco devices support Mobile Device Management (MDM) features. MDM features secure, monitor, and manage mobile devices, including corporate-owned devices and employee-owned devices. 
 
 \section{Network threats}
 
 \subsection{Malware}
 
-A \textbf{virus} is malicious code that is attached to executable files which are often legitimate programs. A virus is triggered by an event. When activated, the virus can infect all the files it has not yet infected, but does not automatically propagate itself to other systems. Viruses are \emph{spread} by USB memory drives, CDs, DVDs, network shares, and email. Email viruses are now the most common type of virus.\\
+A \textbf{virus} is malicious code that is attached to executable files which are often legitimate programs. A virus is triggered by an event and cannot automatically propagate itself to other systems. Viruses are spread by USB memory drives, CDs, DVDs, network shares, and email.\\
 
-A \textbf{Trojan horse} is malware that carries out malicious operations under the guise of a desired function. A Trojan horse comes with malicious code hidden inside of it. This malicious code exploits the \emph{privileges} of the user that \emph{runs} it. Trojans are often found attached to online games. \\
+A \textbf{Trojan horse} carries out malicious operations under the guise of a desired function. This malicious operation exploits the privileges of the user. Trojans are often found attached to online games. \\
 
 \textbf{Worms} run by themselves, replicate and then spread very quickly (self-propagation) to slow down networks. They does not require user participation. After a host is infected, the worm is able to  over the network. Most worm attacks consist of three components:
 
@@ -51,24 +53,24 @@ A \textbf{Trojan horse} is malware that carries out malicious operations under t
 
 \note Worms never really stop on the Internet. After they are released, they continue to propagate until all possible sources of infection are properly patched.\\
 
-Some other examples of modern malware:
+%Some other examples of modern malware:
+%
+%\begin{itemize}
+%\item Ransomware -- deny access to the infected computer system, then demand a paid ransom for the restriction to be removed.
+%\item Spyware -- gather information about a user and send the information to another entity
+%\item Adware -- display annoying pop-up advertising pertinent to websites visited
+%\item Scareware -- include scam software which uses social engineering to shock or induce anxiety by creating the perception of a threat
+%\item Phishing -- attempt to convince people to divulge sensitive information, e.g. receiving an email from their bank asking users to divulge their account and PIN numbers.
+%\item Rootkits -- installed on a compromised system, then hide its intrusion and maintain privileged access to the hacker.
+%\end{itemize}
 
-\begin{itemize}
-\item Ransomware -- deny access to the infected computer system, then demand a paid ransom for the restriction to be removed.
-\item Spyware -- gather information about a user and send the information to another entity
-\item Adware -- display annoying pop-up advertising pertinent to websites visited
-\item Scareware -- include scam software which uses social engineering to shock or induce anxiety by creating the perception of a threat
-\item Phishing -- attempt to convince people to divulge sensitive information, e.g. receiving an email from their bank asking users to divulge their account and PIN numbers.
-\item Rootkits -- installed on a compromised system, then hide its intrusion and maintain privileged access to the hacker.
-\end{itemize}
+\subsection{Network attacks}
 
-\subsection{Common network attacks}
+%The method used in this course classifies attacks in three major categories: Reconnaissance, Access, and DoS Attacks.\\
 
-The method used in this course classifies attacks in three major categories: Reconnaissance, Access, and DoS Attacks.\\
+\textbf{Reconnaissance attacks} gather information about a network and scan for access. Example: information query, ping sweep\footnote{a network scanning technique that indicates the live hosts in a range of IP addresses},  port scan,  Vulnerability Scanners,  Exploitation tools.\\
 
-\textbf{Reconnaissance attacks} gather information about a network and scan for access. Some examples of reconnaissance attacks:  information query, ping sweep\footnote{a network scanning technique that indicates the live hosts in a range of IP addresses},  port scan,  Vulnerability Scanners,  Exploitation tools.\\
-
-\textbf{Access attacks} exploit network vulnerabilities to gain access or control to sensitive information. There are five common types of access attacks: Password attack, Trust exploitation, Port redirection, Man-in-the-middle, Buffer overflow, IP spoofing, MAC spoofing, DHCP Spoofing.\\
+\textbf{Access attacks} gain access or control to sensitive information. Some examples of access attacks are listed as follow:\\
 
 \begin{itemize}
 \item Password attack -- a dictionary is used for repeated login attempts
@@ -97,9 +99,9 @@ The method used in this course classifies attacks in three major categories: Rec
 
 \subsection{Mitigating common network attacks}
 
-\paragraph{Malware:} The primary means of mitigating virus and Trojan horse attacks is antivirus software. Antivirus software are host-based product that prevents hosts from getting infected and spreading malicious code. However, they do not prevent viruses from entering the network.
+\paragraph{Virus and Trojan horse:} The primary means of mitigating virus and Trojan horse attacks is antivirus software. However, antivirus software cannot prevent viruses from entering the network.
 
-\paragraph{Worms:} They are more network-based than viruses. The response to a worm attack can be broken down into four phases:
+\paragraph{Worms:} The response to a worm attack can be broken down into four phases:
 
 \begin{enumerate}
 \item \textbf{\textbf{Containment}:} limit the spread of worm infection
@@ -108,30 +110,30 @@ The method used in this course classifies attacks in three major categories: Rec
 \item \textbf{Treatment:} disinfect the infected systems
 \end{enumerate}
 
-\paragraph{Reconnaissance:} \emph{Encryption} is an effective solution for sniffer attacks. Using \emph{IPS} and \emph{firewall} can limit the impact of \emph{port scanning}. \emph{Ping sweeps} can be stopped if \emph{ICMP} echo and echo-reply are turned off on edge routers. 
+\paragraph{Reconnaissance:} \emph{Encryption} is an effective solution for \textit{sniffer attacks}. Using \emph{IPS} and \emph{firewall} can limit the impact of \emph{port scanning}. \emph{Ping sweeps} can be stopped if \emph{ICMP} echo and echo-reply are turned off on edge routers. 
 
-\paragraph{Access attacks:} The network should be designed using the principle of minimum trust. This means that systems should not use one another unnecessarily. Other options are valid network security access protections (encrypted or hashed authentication protocols) but do not relate to the principle of minimum trust.
+\paragraph{Access attacks:} strong password policy, principle of minimum trust\footnote{a system or device should not trust another unconditionally}, cryptography, OS and app patches. 
 
-\paragraph{DoS attacks:} One of the first signs of a DoS attack is a large number of user complaints about unavailable resources. To minimize the number of attacks, a network utilization software and anti-spoofing technologies (port security, DHCP snooping, IP source guard, ARP inspection, and ACL) should be running at all times. 
+\paragraph{DoS attacks:} a network utilization software and anti-spoofing technologies (port security, DHCP snooping, IP source guard, ARP inspection, and ACL). 
 
-\subsection{Cisco SecureX architecture}
-
-The Cisco SecureX architecture is designed to provide effective security for any user, using any device, from any location, and at any time. This architecture includes the five major components: Scanning Engines, Delivery Mechanisms, Security Intelligence Operations (SIO), Policy Management Consoles, and Next-Generation Endpoints. The most important component of SecureX is SIO, which detects and blocks malicious traffic.\\
-
-The SecureX is a huge and complex computing model. Therefore, a \textbf{context-aware scanning element} is used to scale SecureX. It is a device that examines packets as well as external information to understand the full context of the situation. To be accurate, this context-aware device defines security policies based on five parameters: person ID, application, device type, location, and access time.\\
-
-\textbf{Security Intelligence Operations (SIO)} is a Cloud-based service that connects global threat information, reputation-based services, and sophisticated analysis, to SecureX network security devices.
+%\subsection{Cisco SecureX architecture}
+%
+%The Cisco SecureX architecture is designed to provide effective security for any user, using any device, from any location, and at any time. This architecture includes the five major components: Scanning Engines, Delivery Mechanisms, Security Intelligence Operations (SIO), Policy Management Consoles, and Next-Generation Endpoints. The most important component of SecureX is SIO, which detects and blocks malicious traffic.\\
+%
+%The SecureX is a huge and complex computing model. Therefore, a \textbf{context-aware scanning element} is used to scale SecureX. It is a device that examines packets as well as external information to understand the full context of the situation. To be accurate, this context-aware device defines security policies based on five parameters: person ID, application, device type, location, and access time.\\
+%
+%\textbf{Security Intelligence Operations (SIO)} is a Cloud-based service that connects global threat information, reputation-based services, and sophisticated analysis, to SecureX network security devices.
 
 \subsection{Cisco Network Foundation Protection Framework}
 
-The Cisco Network Foundation Protection (NFP) framework provides comprehensive guidelines for protecting the network infrastructure.  NFP logically divides routers and switches into three functional areas: Control plane, Management plane, and Data plane.\\
+The Cisco Network Foundation Protection (NFP) framework provides comprehensive guidelines for protecting the network infrastructure.  NFP logically divides routers and switches into three functional areas:
 
 \begin{itemize}
 
-\item\textbf{Control plane} is responsible for routing functions. Its security is implemented by Routing protocol authentication, CoPP, and AutoSecure. CoPP (Control Plane Policing) prevents unnecessary traffic from overwhelming the route processor. \textbf{AutoSecure} can lock down the management plane functions and the forwarding plane services and functions of a router.\\
+\item\textbf{Control plane} is responsible for routing functions. We protect this plane using Routing protocol authentication, CoPP\footnote{prevents unnecessary traffic from overwhelming the route processor}, and AutoSecure.
 
-\item\textbf{Management plane} is responsible for network security and management. Its security is implemented by password policy, RBAC\footnote{Role-based access control  restricts user access based on the role of the user. In Cisco IOS, the role-based CLI access feature implements RBAC for router management access.}, authorization, access reporting.
+\item\textbf{Management plane} is responsible for network security and management. Its security is implemented by password policy, RBAC\footnote{Role-based access control, restricts user access based on the role of the user.}, authorization, access reporting.
 
-\item\textbf{Data plane} (Forwarding plane) is responsible for forwarding data. Its security can be implemented using \emph{ACLs}, \emph{antispoofing mechanisms}, and \emph{Layer 2 security} features. 
+\item\textbf{Data plane} is responsible for forwarding data. Its security can be implemented using \emph{ACLs}, antispoofing mechanisms, and port security. 
 
 \end{itemize}

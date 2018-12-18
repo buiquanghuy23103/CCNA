@@ -1,56 +1,98 @@
-\chapter{Securing LAN}
+\chapter{Endpoint security}
 
-\section{Port security}
+\section{Endpoint security solutions}
 
-\textbf{CAM table overflow} attacks (also called MAC address overflow attacks) take place by bombarding the switch with fake source MAC addresses until the switch MAC address table is full. If enough entries are entered into the CAM table, the table fills up to the point that no new entries can be accepted. When this occurs, the switch treats the frame as an unknown unicast and begins to flood all incoming traffic to all ports. As a result, the attacker can capture all of the frames sent from one host to another.\\
+Protecting endpoints in a borderless network can be accomplished using the following modern security solutions: Advanced Malware Protection (AMP), Email Security Appliance (ESA), Web Security Appliances (WSA), and Network Admission Control (NAC).
 
-The simplest and most effective method to prevent CAM table overflow attacks is to enable \textbf{port security}. When a port configured with port security receives a frame, the source MAC address of the frame is compared to the list of secure source addresses that were manually configured or autoconfigured (learned) on the port.\\
+AMP defeats malware across the extended network before, during, and after an attack. AMP for Endpoints integrates with AMP for Networks to deliver comprehensive protection across extended networks and endpoints. \\
 
-To enable port security, use the \code{sw port-security} interface configuration command on an access port. Notice that, the port must be configured as an access port before port security can be enabled. This is because port security can only be configured on access ports and, by default, Layer 2 switch ports are set to dynamic auto (trunking on). Therefore, the port must be initially configured with the \code{sw mode access} interface configuration command.\\
+ESA fights spam, viruses, and blended threats. The Cisco ESA is constantly updated by real-time feeds from the Cisco Talos. Some of the main features and benefits of ESA: Global threat intelligence, Spam blocking, integrated with AMP, and Outbound message control.\\
+
+WSA controls over how users access the Internet. It performs blacklisting, URL-filtering, malware scanning, Web application filtering, and TLS/SSL encryption and decryption. These are some of the main features and benefits of WSA: AMP, Data Loss Prevention (DLP), Talos security intelligence, and Web usage control.\\
+
+Cloud Web Security (CWS) is a cloud-based security service that uses web proxies in Cisco’s cloud environment to scan traffic. Cisco devices can connect to CWS using a proxy autoconfiguration (PAC) file or through connectors integrated into four Cisco products: ISR G2 routers, ASA, WSA, and AnyConnect Secure Mobility Client.\\
+
+NAC allows only authorized and compliant systems to access the network by providing authentication, authorization, and posture assessment. NACs are evolving to become more sophisticated endpoint visibility, access, and security (EVAS) controls.\\
+
+There are two categories of Cisco NAC products: NAC framework and NAC appliance. The NAC framework uses the existing network infrastructure and third-party software to enforce security policy. The NAC Appliance incorporates NAC functions into an appliance.\\
+
+NAC has three components: Manager, Server, and Agent. NAC Manager defines role-based user access and endpoint security policies. NAC Server (NAS) assesses and enforces security policy compliance. NAC Agent (NAA), which runs on an endpoint device, performs deep inspection of the device's security profile.\\
+
+These are two additional TrustSec Policy enforcement tools for NAC: guest server and profiler. Guest server enforces guest network policy to either NAC appliance or Wireless LAN controller. It also provides the ability to create guest accounts. \\
+
+On the other hand, NAC profiler enables the dynamic discovery, identification, and monitoring of all network-attached endpoints. It has two components: Collector and Server. Profiler server aggregates information from Collector and stores it in a database, then provisions the appropriate access decisions.
+
+\begin{itemize}
+\item Advanced Malware Protection (AMP) d
+\item Email Security Appliance (ESA) = SPAM filtering
+\item Web Security Appliances (WSA) = Blacklisting and URL filtering. WSA is a secure web gateway which combines AMP, application visibility and control, acceptable use policy controls, reporting, and secure mobility functions. 
+\item Network Admission Control (NAC) = Data loss prevention. 
+\item Cisco Cloud Web Security (CWS) is a cloud-based security service that uses web proxies in Cisco’s cloud environment to scan traffic for malware and policy enforcement. Cisco customers can connect to the Cisco CWS service through connectors integrated into four Cisco products: ASA, WSA, ISR G2 routers, and AnyConnect Secure Mobility Client.
+\end{itemize}
+
+
+\section{CAM table attack}
+
+\textbf{CAM table overflow} attacks (also called MAC address overflow attacks) take place by bombarding the switch with fake source MAC addresses until the switch MAC address table is full. When this occurs, the switch treats the frame as an unknown unicast and begins to flood all incoming traffic to all ports. We prevent CAM table overflow using \textbf{port security} on access port.\\
+
+The type of secure address can be Static, or Dynamic, or Sticky. Static secure MAC addresses are manually configured by the administrator and they are stored in both CAM table and running configuration. On the other hand, switches learn Dynamic addresses automatically but only keeps them in CAM table. Because CAM table locates in RAM, Dynamic addresses are removed when the switch restarts. \\
+
+Sticky is the combination of static and dynamic types. Like static addresses, sticky addresses are stored in the address table and running configuration. Sticky learning is dynamic just like Dynamic type. Additionally, the switch converts all learned MAC addresses into sticky addresses. If sticky learning is disabled, the sticky secure MAC addresses remain part of the address table but are removed from the running configuration.
+
+\begin{sexylisting}{Enable port security}
+int g0/0
+	sw mode access
+	sw port-security
+	sw port-security mac-address sticky 
+	end	
+show port-security
+show port-security interface g0/0	
+\end{sexylisting}
+
+
+
+
+A security \textbf{violation} describes a situation when an unknown MAC address attempts to access an interface with port security configured. Whenever a violation occurs, the switch drops all frames associated with malicious MAC addresses. There are three violation modes: Protect, Restrict, and Shutdown. Only Shutdown mode is capable of putting port into error-disabled state. A detection of violation forces both Shutdown and Restrict mode send syslog message and increase violation counter. However, this is not the case for Protect mode.\\
+
+You can bring a port in error-disabled state back to normal by entering \code{shutdown} followed by \code{no shutdown} command. 
+
+\begin{sexylisting}{Additional port security}
+int g0/0
+	sw port-security max 2
+	sw port-security violation mode shutdown
+	sw port-security aging time 10
+	sw port-security aging type inactivity
+	exit
+mac address-table notification	
+\end{sexylisting}
 
 To set the maximum number of MAC addresses allowed on a port use the \code{sw port-security max <value>}.\\
 
-A security \textbf{violation} is created when a station with a MAC address that is not in the address table attempts to access the interface when the table is full. Another example of a situation that creates a security violation is when an address is being used on two secure interfaces in the same VLAN. If a MAC address of a device attached to the port differs from the list of secure addresses, then a port violation occurs, and the port enters the error-disabled state.\\
+We use Port aging to remove secure MAC addresses on a secure port without manually deleting the existing secure MAC addresses. Two types of aging are supported per port: Absolute and Inactivity. Absolute aging deletes an address after the specified time, while Inactivity aging removes ports that is sleeping more than a specified of time.\\
 
-To set the port security violation mode, use the \code{sw port-security violation {protect | restrict | shutdown | shutdown vlan}} interface configuration command. To re-enable an error-disable port, manually re-enable the disabled port by entering the \code{shutdown} and \code{no shutdown} interface configuration commands. Alternatively, the switch could be configured to automatically re-enable an error-disabled port using the \code{errdisable recovery cause psecure-violation} global configuration mode command.\\
+The \textbf{MAC address notification} feature sends SNMP trap whenever a new MAC address is added to, or an old address is deleted from the CAM tables. This feature is only available for dynamic and secure MAC addresses.
 
-Port security aging  remove secure MAC addresses on a secure port without manually deleting the existing secure MAC addresses. Use the \code{sw port-security aging} command to enable or disable static aging for the secure port, or to set the aging time or type. Two types of aging are supported per port:
+\section{VLAN attacks}
 
-\begin{itemize}
-\item Absolute -- The secure addresses on the port are deleted after the specified aging time.
-\item Inactivity -- The secure addresses on the port are deleted only if they are inactive for the specified aging time.
-\end{itemize}
+\subsection{VLAN hopping and double-tagging}
 
-The \textbf{MAC address notification} feature sends SNMP traps to the network management station (NMS) whenever a new MAC address is added to, or an old address is deleted from the forwarding tables. MAC address notifications are generated only for dynamic and secure MAC addresses. Use the \code{mac address-table notification} global configuration command to enable the MAC address notification feature on a switch.
+A \textbf{VLAN hopping attack} enables traffic from one VLAN to be seen by another VLAN without the aid of a router. A VLAN hopping attack can be launched in one of two ways: Spoofing DTP messages or Introducing a rogue switch. Another type of VLAN attack is double-tagging. This attack method adds a hidden 802.1Q tag inside the frame which allows the frame to go to another VLAN. This attack works even if trunk ports are disabled.\\
 
-\section{DTP, trunking and access mode}
-
-A \textbf{VLAN hopping attack} enables traffic from one VLAN to be seen by another VLAN without the aid of a router. A VLAN hopping attack can be launched in one of two ways:
-
-\begin{itemize}
-\item Spoofing DTP messages from the attacking host to cause the switch to enter trunking mode. From here, the attacker can send traffic tagged with the target VLAN, and the switch then delivers the packets to the destination.
-\item Introducing a rogue switch and enabling trunking. The attacker can then access all the VLANs on the victim switch from the rogue switch.
-\end{itemize}
-
-\textbf{Double-tagging} takes advantage of 802.1Q de-encapsulation, in which the attacker adds a hidden 802.1Q tag inside the frame. This tag allows the frame to go to another VLAN. For example, an attacker on VLAN 10 tags a frame for VLAN 10 and inserts an additional tag for VLAN 20.  An important characteristic of the double-encapsulated VLAN hopping attack is that it works even if trunk ports are disabled, as a host typically sends a frame on a segment that is not a trunk link. \\
-
-The best way to prevent basic VLAN hopping attacks:
+The best way to prevent basic these attacks:
 
 \begin{itemize}
 \item Manually enable trunking and access ports
-\item Disable DTP
+\item Disable DTP on trunking ports using the \code{sw non-negotiate}, on non-trunking port using \code{sw mode access}.
+\item Set the native VLAN to be something other than VLAN 1
 \item Be sure that native VLAN is only used for trunk lines.
+\item Disable unused ports and put them in an unused VLAN.
+\item Implement Private VLAN
 \end{itemize}
 
-\section{Priavte VLAN}
+\subsection{Priavte VLAN}
 
-Private VLANs (PVLAN) provide Layer 2 isolation between hosts within the same VLAN. There are three types of PVLAN ports (figure \ref{PVLAN}):
+Private VLANs (PVLAN) provide Layer 2 isolation between hosts within the same VLAN. There are three types of PVLAN ports (figure \ref{PVLAN}): promiscuous, isolated, and community. A promiscuous port (often connected to the router) can talk to everyone. Community ports can talk to ports in the same community and promiscuous ports. An isolated port can only talk to promiscuous ports.
 
-\begin{itemize}
-\item A \textbf{promiscuous} port can talk to everyone. This is often the port connected to the router.
-\item An \textbf{isolated} port can only talk to promiscuous ports. If you want to isolate hosts within the same VLAN, configure them as isolated port.
-\item \textbf{Community} ports can talk to ports in the same community and promiscuous ports.
-\end{itemize}
 
 \begin{figure}[hbtp]
 \caption{PVLANs -- promiscuous ports, isolated ports, community ports}\label{PVLAN}
@@ -58,7 +100,7 @@ Private VLANs (PVLAN) provide Layer 2 isolation between hosts within the same VL
 \includegraphics[scale=0.5]{pictures/PVLAN.PNG}
 \end{figure}
 
-Full PVLAN support is available on 3560 Multiplayer switches or higher. The 2960 Switches only support a part of PVLAN (PVLAN Edge). \\
+%Full PVLAN support is available on 3560 Multiplayer switches or higher. The 2960 Switches only support a part of PVLAN (PVLAN Edge). \\
 
 In creating full PVLAN, you need to create three special VLANs: primary VLAN (goes with the promiscuous ports), isolated VLAN, and community VLAN (can be different communities based on the VLAN number). Look at the figure \ref{PVLANconfig} for sample configuration. In order for PVLAN to work, you need to set VTP mode to transparent. 
 
@@ -97,9 +139,9 @@ exit
 
 If you only have a 2960 series switch and you do not have a multilayer switch, you can use the \code{sw protected} interface configuration command to achieve a similar result. Ports configured with this command is called Protected ports. Hosts connected to Protected ports will not be able to communicate with each other, but can only talk with un-Protected ports. 
 
-\section{DHCP snooping}
+\section{DHCP attacks}
 
-\textbf{DHCP starvation} attack creates a DoS by leasing all available IP addresses. It is easy to mitigate DHCP starvation attacks using port security. \\
+\textbf{DHCP starvation} attack requires an attack tool, such as Gobbler, look at the entire pool of available IP addresses in DHCP and tries to lease them all (DoS attack). It is easy to mitigate DHCP starvation attacks using port security. \\
 
 A \textbf{DHCP spoofing} attack occurs when a rogue DHCP server is connected to the network and provides false IP configuration parameters to legitimate clients. DHCP spoofing attacks can be mitigated using DHCP snooping on trusted ports. The general rule is that ports connected to hosts are untrusted, the other is trusted. Port connected to DHCP server must be trusted, otherwise DHCP service will not work.
 
@@ -178,7 +220,10 @@ Use the \code{spanning-tree portfast bpduguard} default global configuration com
 On a network, there are some switches that should never, under any circumstances, become the STP root bridge. Root Guard provides a way to enforce the placement of root bridges on the network by limiting which switch can become the root bridge. \\
 
 Root guard is deployed on ports that \emph{toward} the unsecure switches (switches that should not be the root bridge). Look at figure \ref{RootLoopGuard}, we don't want S1 to be root bridge, so that F0/1 on both S2 and S3, which are towards S1, should be configured with Root Guard.\\
+
 If a root-guard-enabled port receives BPDUs that are superior to those that the current root bridge is sending, that port is moved to a \emph{root-inconsistent state}. Recovery occurs as soon as the offending device ceases to send superior BPDUs.\\
+
+
 
 \begin{figure}[hbtp]
 \caption{Root and Loop Guard reference topology}\label{RootLoopGuard}
@@ -187,7 +232,9 @@ If a root-guard-enabled port receives BPDUs that are superior to those that the 
 \end{figure}
 
 
-Use the \code{spanning-tree guard root} interface configuration command to configure root guard on an interface. To view Root Guard ports that have received superior BPDUs and are in a root-inconsistent state, use the \code{show spanning-tree inconsistent ports} command.
+Use the \code{spanning-tree guard root} interface configuration command to configure root guard on an interface. To view Root Guard ports that have received superior BPDUs and are in a root-inconsistent state, use the \code{show spanning-tree inconsistent ports} command.\\
+
+Root guard in conjunction with PortFast, and BPDU guard is used to prevent an STP manipulation attack.
 
 \subsection{Loop Guard}
 

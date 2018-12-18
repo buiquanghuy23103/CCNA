@@ -1,19 +1,4 @@
-\chapter{Securing the network infrastructure}
-
-\section{Securing device access}
-
-\subsection{Edge router}
-
-There are many approaches to secure the edge router:
-
-\begin{itemize}
-\item \textbf{Single router approach:}  a single router connects internal LAN to the Internet.  All security policies are configured on this device. This is commonly deployed in small networks such as branch and small office, SOHO sites. The required security features can be supported by ISRs.
-
-\item \textbf{Defense-in-depth approach:} there are three primary layers of defense: the edge router, the firewall, and an internal router that connects to the protected LAN (Figure \ref{DefInDepth}). By default, the firewall denies the initiation of connections from the outside (untrusted) networks. 
-%However, it allows the internal users to establish connections to the untrusted networks and permits the responses to come back through the firewall. It can also perform user authentication.
-
-\item \textbf{DMZ approach:} A variation of the defense-in-depth approach is the  DMZ approach (Figure \ref{DMZ}). The firewall is set up to permit the required connections, such as HTTP, from the outside networks to the public servers in the DMZ. The firewall serves as the primary protection for all devices in the DMZ.
-\end{itemize}
+\chapter{Router security}
 
 Three areas of router security must be maintained:
 
@@ -22,41 +7,23 @@ Three areas of router security must be maintained:
 
 \item \textbf{Operating system security:} Configure the router with the maximum amount of memory possible, Use the latest, stable version of the operating system, Keep a secure copy of router operating system images and router configuration files
 
-\item \textbf{Router Hardening:} Secure administrative control, Disable unnecessary ports, interfaces and services
+\item \textbf{Router Hardening:} Secure administrative access, Disable unnecessary ports, interfaces and services
 \end{itemize}
 
-\begin{figure}[hbtp]
-\caption{Defense-in-depth approach}\label{DefInDepth}
-\centering
-\includegraphics[scale=0.6]{pictures/DefInDepth.PNG}
-\end{figure}
 
-\begin{figure}[hbtp]
-\caption{DMZ approach}\label{DMZ}
-\centering
-\includegraphics[scale=0.5]{pictures/DMZ.PNG}
-\end{figure}
-
-%A router can be accessed for administrative purposes locally or remotely. Local access to a router requires a direct connection to a console port, and using a computer that is running terminal emulation software. The most common remote access method involves allowing SSH, HTTPS, or SNMP connections to the router from a computer. Precautions should be taken when accessing the network remotely:
+\section{Administrative access}
 %
-%\begin{itemize}
-%\item Encrypt all traffic between the administrator computer and the router. Use SSH version 2 and HTTPS.
-%\item Establish a dedicated management network
-%\item Configure a packet filter to allow only the identified administration hosts and preferred protocols to access the router.
-%\item Configure and establish a VPN connection to the local network before connecting to a router management interface.
-%\end{itemize}
+%\paragraph{Type of management access:} 
+%
+%When logging and managing information, the information flow between management hosts and the managed devices can take two paths: In-band (SSH, SNMP, etc.) and Out-of-band (console port). Out-of-band management is appropriate for large enterprise networks, because it remains unaffected by the downed link. In-band management is recommended in smaller networks as a means of achieving a more cost-effective security deployment.
+%
+%\paragraph{Strong password:} 
+%
+%To create a strong password, use a blank space in the password (only password-leading spaces are ignored) or create a phrase made of many words. This is called a \emph{passphrase}. A passphrase is often easier to remember than a complex password and more difficult to guess.
+%
+%\paragraph{Secret Password Algorithms:} 
 
-\subsection{Administrative access}
-
-\paragraph{Type of management access:} 
-
-When logging and managing information, the information flow between management hosts and the managed devices can take two paths: In-band (SSH, SNMP, etc.) and Out-of-band (console port). Out-of-band management is appropriate for large enterprise networks, because it remains unaffected by the downed link. In-band management is recommended in smaller networks as a means of achieving a more cost-effective security deployment.
-
-\paragraph{Strong password:} 
-
-To create a strong password, use a blank space in the password (only password-leading spaces are ignored) or create a phrase made of many words. This is called a \emph{passphrase}. A passphrase is often easier to remember than a complex password and more difficult to guess.
-
-\paragraph{Secret Password Algorithms:} 
+\subsection{Virtual logins}
 
 All passwords in Cisco IOS uses an MD5 hash by default. However, MD5 hashes are no longer considered secure. Therefore, it is now recommended that you configure all passwords using either type 8 \code{sha256} or type 9 \code{scrypt} passwords.
 
@@ -64,9 +31,6 @@ All passwords in Cisco IOS uses an MD5 hash by default. However, MD5 hashes are 
 enable algorithm-type scrypt secret cisco12345
 username Huy algorithm-type scrypt secret cisco12345
 \end{sexylisting}
-
-
-\subsection{Virtual logins}
 
 The following Cisco IOS login enhancements commands increase the security of virtual login connections.
 
@@ -76,45 +40,40 @@ login quite-mode access-class PERMIT-ADMIN
 login delay 10
 login on-access log
 login on-failure log
+end
+show login
+show login failures
 \end{sexylisting}
 
-The \code{login block-for} command can defend against DoS attacks by disabling logins for 60 seconds if more than 5 login failures occur in 15 seconds or less. Specifically, this command operates in two modes: \textbf{Normal} mode and \textbf{Quite} mode. When quiet mode is enabled, all login attempts, including valid administrative access, are not permitted. However, this behavior can be overridden using the \code{login quiet-mode} command with an ACL that identifies the permitted hosts. \\
+The \code{login block-for} command disables logins for 60 seconds if more than 5 login failures occur within 15 seconds. Doing this can defend against DoS attacks. The \code{login delay} command specifies a number of seconds the user must wait between unsuccessful login attempts. The \code{login on-success} and \code{login on-failure} commands generate syslog messages for successful and unsuccessful login attempts. The \code{security auth failure rate} command can be configured to generate a log message when the login failure rate is exceeded.\\
 
-The \code{login delay} command specifies a number of seconds the user must wait between unsuccessful login attempts. The \code{login on-success} and \code{login on-failure} commands generate syslog messages for successful and unsuccessful login attempts. The \code{security auth failure rate} command can be configured to generate a log message when the login failure rate is exceeded.\\
+Note that these login enhancements do \emph{not} apply to console connections and only available if local database is used for authentication. If the lines are configured for password authentication only, then the enhanced login features are not enabled.
 
-Use the \code{show login} command to verify the login block-for command settings and current mode. The \code{show login failures} command displays additional information regarding the failed attempts, such as the IP address from which the failed login attempts originated.\\
+%\subsection{Configuring SSH}
+%
+%There are four requirements the router must meet before configuring SSH:
+%
+%\begin{itemize}
+%\item Runs a Cisco IOS release that supports SSH
+%\item Uses a unique hostname
+%\item Contains the correct domain name of the network
+%\item Configured for local authentication or AAA services
+%\end{itemize}
 
-\textbf{These login enhancements do \emph{not} apply to console connections.} When dealing with console connections, it is assumed that only authorized personnel have physical access to the devices.
-
-\note These login enhancements can only be enabled if the local database is used for authentication for local and remote access. If the lines are configured for password authentication only, then the enhanced login features are not enabled.
-
-\subsection{Configuring SSH}
-
-There are four requirements the router must meet before configuring SSH:
-
-\begin{itemize}
-\item Runs a Cisco IOS release that supports SSH
-\item Uses a unique hostname
-\item Contains the correct domain name of the network
-\item Configured for local authentication or AAA services
-\end{itemize}
-
-The five steps needed to configure a Cisco router to support SSH with local authentication:
-
-\begin{enumerate}
-\item Configure the IP domain name of the network
-\item Create RSA key to encrypt the SSH traffic (Once RSA keys are generated, SSH is automatically enabled)
-\item Ensure that there is a valid local database username entry.
-\item Enable vty inbound SSH sessions using the line vty commands
-\item Verify SSH and display the generated keys
-\end{enumerate}
+%Do the following steps to configure SSH with local authentication:
+%
+%\begin{enumerate}
+%\item Configure the IP domain name of the network
+%\item Create RSA key
+%\item Ensure that there is a valid local database username entry.
+%\item Enable vty inbound SSH sessions using the line vty commands
+%\item Verify SSH and display the generated keys
+%\end{enumerate}
 
 \begin{sexylisting}{Configuring SSH}
 ip domain-name cisco.com
-
 crypto key zeroize rsa
 crypto key generate rsa general-keys modulus 1024
-
 ip ssh version 2
 username Huy privilege 15 algorithm-type scrypt secret cisco12345
 
@@ -122,7 +81,7 @@ line vty 0 4
 	privilege 15
   login local
   transport input ssh
-
+  exit
 ip ssh time-out 90
 ip ssh authentication-retries 2
 
@@ -130,22 +89,17 @@ sh crypto key mypubkey rsa
 sh ssh
 \end{sexylisting}
 
-If there are existing key pairs, it is recommended that they are removed using the \code{crypto key zeroize rsa} command. To verify the status of the client connections, use the \code{sh ssh} command. The default SSH timeouts and authentication parameters can be altered using \code{ip ssh time-out} and \code{ip ssh authentication-retries} commands.
+If there are existing key pairs, it is recommended that they are removed using the \code{crypto key zeroize rsa} command. The default SSH timeouts and authentication parameters can be altered using \code{ip ssh time-out} and \code{ip ssh authentication-retries} commands.
 
-\section{Administrative roles}
+\subsection{Administrative roles}
 
-Cisco IOS software has two methods of providing infrastructure access: privilege level and role-based CLI. Both methods help determine who should be allowed to connect to the device and what that person should be able to do with it. Role-based CLI access provides more granularity and control.
+Cisco IOS software has two methods of providing infrastructure access: privilege level and role-based CLI. Both methods help determine who should be allowed to connect to the device and what that person should be able to do with it.
 
-\subsection{Privilege levels}
+\subsubsection{Privilege levels}
 
-There are 16 privilege levels (0 -- 15) that can be applied to user accounts. Levels 0, 1, and 15 have predefined settings. This leaves levels 2 through 14 available for custom levels of access. Below is the detailed settings of level 1 and 15:
+There are 16 privilege levels (0 -- 15) that can be applied to user accounts. Levels 0, 1, and 15 have predefined settings. Level 1 is the lowest user privileges and allows only commands available at the \verb|router>| prompt. Level 15 provide the user full control.\\
 
-\begin{itemize}
-\item \textbf{Level 1:} User EXEC mode -- The lowest user privileges and allows only user-level commands available at the \verb|router>| prompt.
-\item \textbf{Level 15:} Privileged EXEC mode -- the user has full access to view and change the configuration, including viewing the running the configuration.
-\end{itemize}
-
-The first command shown below configures privilege level 5, so that any level-5 user has access to all the commands available for the level 1 to 4 and the \texttt{ping} command. Remember that not all commands are available for privilege level 5. For example, level-5 users cannot reload the router. To enable access to the reload command, use the command \code{privilege exec level 5 reload}. The second command assigns a privilege level to a specific EXEC mode password. The last assigns privilege level \texttt{5} to user \texttt{SUPPORT}. 
+The user SUPPORT in the following command can execute \texttt{ping} command and all commands available in level 1 to 4. 
 
 \begin{sexylisting}{Privilege level configuration}
 privilege exec level 5 ping 
@@ -162,17 +116,17 @@ The use of privilege levels has its limitations:
 \item Assigning a command with multiple keywords allows access to all commands that use those keywords. For example, allowing access to show ip route allows the user access to all show and show ip commands.
 \end{itemize}
 
-\subsection{Role-based CLI}
+\subsubsection{Role-based CLI}
 
-Role-based CLI enhances the security of the device by defining the set of CLI commands accessible by a specific user. Users only see the CLI commands applicable to the ports and CLI to which they have access. Therefore, the router appears to be less complex, and commands are easier to identify when using the help feature on the device. Role-based CLI provides three types of views that dictate which commands are available:
+Role-based CLI defines a set of CLI commands accessible by a specific user. Role-based CLI provides three types of views:
 
 \begin{itemize}
 \item \textbf{Root view:} Only a root view user can configure a new view and add or remove commands from the existing views.
-\item \textbf{CLI view:} A specific set of commands can be bundled into a CLI view.  A view does not inherit commands from any other view. Additionally, the same commands can be used in multiple views.
-\item \textbf{Superview:} A superview consists of one or more CLI views. Users who are logged into a superview can access all the commands that are configured for any of the CLI views that are part of the superview. Deleting a superview does not delete the associated CLI views, and those views remain available to be assigned to another superview.
+\item \textbf{CLI view:} This view is a set of commands.  A CLI view does not inherit commands from any other view. However, the same commands can be used in multiple views.
+\item \textbf{Superview:} This view is a group of CLI views. Users who are logged into a superview can access all the commands of the member CLI views. Deleting a superview does not delete the associated CLI views, and those views remain available to be assigned to another superview. Commands cannot be configured for a superview. You must be in root view to configure a superview.
 \end{itemize}
 
-\note Commands cannot be configured for a superview. An administrator must add commands to the CLI view and add that CLI view to the superview.
+\note AAA must be enabled before configuring any views.
 
 \begin{sexylisting}{CLI View configuration}
 aaa new-model
@@ -184,10 +138,7 @@ end
 enable view SUPPORT
 \end{sexylisting}
 
-In the above example, the \code{commands exec include} command assigns all \code{show} commands to the EXEC (\code{exec}) mode of the view. To access existing views, enter the \code{enable view view-name} command in user mode and enter the password that was assigned to the custom view. Use the question mark (?) command to verify that the commands available in the view are correct.
-
-\note AAA must be enabled before configuring any views.
-\note There is a variety of specification in the \code{commands} command. In the \code{config-view} mode, type \code{commands ?} to explore.
+In the above example, the \code{commands exec include} command assigns all \code{show} commands to the EXEC (\code{exec}) mode. To access existing views, enter the \code{enable view view-name} command.
 
 \begin{sexylisting}{Superview configuration}
 parser view JR-ADMIN superview
@@ -196,30 +147,27 @@ parser view JR-ADMIN superview
   view VERIFYVIEW
   view REBOOTVIEW
 end
+show parser view all
 \end{sexylisting}
 
-You must be in root view to configure a superview. To confirm that root view is being used, use either the \code{enable view} or \code{enable view root} command. In the above example, more than one CLI view are assigned to the current superview using \code{view} command. To access the superview, use the \code{enable view} command followed by the name of the superview, and provide the password. Use the question mark (?) command to verify that the commands available in the view are correct.\\
+To access the superview, use the \code{enable view} command followed by the name of the superview, and provide the password. From the root view, use the \code{show parser view all} command to see a summary of all views. Notice how the asterisk identifies superviews.
 
-From the root view, use the \code{show parser view all} command to see a summary of all views. Notice how the asterisk identifies superviews.
-
-\section{IOS image and Configuration files}
+\section{IOS security}
 
 \subsection{Backup and restore}
 
-The \textbf{Cisco IOS resilient configuration} feature maintains a secure working copy of the router IOS image file and a copy of the running configuration file. These secure files cannot be removed by the user and are referred to as the primary bootset.\\
+The \textbf{Cisco IOS resilient configuration} feature maintains a secure working copy of the router IOS image file and a copy of the running configuration file. These secure files cannot be removed by the user and are referred to as the primary bootset. To enable Cisco IOS image resilience, use the \code{secure boot-image} command. Once enabled, this feature can only be disabled through a console session. This command functions properly only when the system is configured to run an image from a flash drive with an ATA interface.\\
 
-To secure the IOS image and enable Cisco IOS image resilience, use the \code{secure boot-image} command. Once enabled, this feature can only be disabled through a console session. This command functions properly only when the system is configured to run an image from a flash drive with an ATA interface. Additionally, the running image must be loaded from secured storage. Images that are loaded from a remote location, such as a TFTP server, cannot be secured.\\
-
-To take a snapshot of the router running configuration and securely archive it in persistent storage, use the \code{secure boot-config} global configuration mode command.Use the \code{show secure bootset} command to verify the existence of the archive.\\
+To take a snapshot of the router running configuration and securely archive it in persistent storage, use the \code{secure boot-config} global configuration mode command. Use the \code{show secure bootset} command to verify the existence of the archive.\\
 
 \textbf{Restore a primary bootset} from a secure archive after the router has been tampered with:
 
 \begin{enumerate}
-\item Reload the router using the reload command. If necessary, issue the break sequence to enter ROMmon mode.
-\item From ROMmon mode, enter the dir command to list the contents of the device that contains the secure bootset file.
-\item Boot the router with the secure bootset image using the boot command followed by the flash memory location (e.g. flash0), a colon, and the filename found in Step 2.
+\item Reload the router. During boot process, issue the break sequence to enter ROMmon mode.
+\item From ROMmon mode, enter the \code{dir} command to list the contents of the device that contains the secure bootset file.
+\item Boot the router with the image using the \code{boot}.
 \item Enter global configuration mode and restore the secure configuration to a filename of your choice.
-\item Exit global configuration mode and issue the copy command to copy the rescued configuration file to the running configuration.
+\item Exit global configuration mode and issue the \code{copy} command to copy the rescued configuration file to the running configuration.
 \end{enumerate}
 
 \begin{sexylisting}{Restore a primary bootset}
@@ -237,7 +185,7 @@ Router# copy flash0:rescue-cfg running-config
 
 \subsection{Secure Copy Protocol(SCP)}
 
-The Cisco IOS Resilient feature provides a  secure and authenticated method for copying router configuration or router image files to a remote location, that is \textbf{Secure Copy Protocol (SCP) feature}. SCP relies on SSH and requires that AAA authentication.  The following commands configure the router for server-side SCP with local AAA:
+The Cisco IOS Resilient feature provides a secure and authenticated method for copying router configuration or router image files to a remote location, that is \textbf{Secure Copy Protocol (SCP) feature}. SCP relies on SSH and requires that AAA authentication. 
 
 \begin{sexylisting}{Configure SCP with local AAA}
 ip domain-name cisco.com
@@ -263,14 +211,15 @@ To recover a device with password-recovery disabled, initiate the break sequence
 
 \subsection{Introduction}
 
-The syslog protocol allows networking devices to send their system messages across the network to syslog servers. The syslog server serves as an event message collector. Syslog messages are sent using \textbf{UDP} port \textbf{514}.\\
+The syslog protocol allows networking devices to send their system messages across the network to syslog servers. Syslog messages are sent using \textbf{UDP} port \textbf{514}.\\
 
 Syslog operations include gathering information, selecting which type of information to capture, and redirecting the captured information to a storage location. The logging service stores messages in a logging buffer that is time-limited, and cannot retain the information when a router is rebooted. Syslog does not authenticate or encrypt messages.\\
 
-Syslog messages sent to an internal buffer (RAM) are only viewable through the CLI of the device (console line, terminal line). Alternatively, syslog messages can be sent to an external syslog server. To view syslog messages, a syslog server must be installed on a workstation. One advantage of viewing syslog messages on a syslog server is the ability to perform granular searches through the data. Also, a network administrator can quickly delete unimportant syslog messages from the database.
+Syslog messages can be sent to either CLI or external server. Log messages on CLI are saved in RAM, therefore, they are lost after a reboot. To view syslog messages on an external server, an syslog application must be installed. Using syslog server, administrator can perform searches through the data and delete unimportant syslog messages.
 
 \subsection{Severity level and Facility}
-Cisco devices produce syslog messages as a result of network events. Every syslog message contains a \textbf{severity level} and a \textbf{facility}. The security level can be shown as a number. The smaller the number, the more critical syslog alarms (Table \ref{tab:Syslog}).\\
+
+Every syslog message contains a \textbf{severity level} and a \textbf{facility}. The security level can be shown as a number. The smaller the number, the more critical syslog alarms (Table \ref{tab:Syslog}).\\
 
 \begin{table}[hbtp]
 \centering\caption{Syslog Severity level}\label{tab:Syslog}
@@ -290,11 +239,11 @@ Cisco devices produce syslog messages as a result of network events. Every syslo
 \end{tabular}
 \end{table}
 
-Level 0 -- 4 are error messages. Level 5 notifies system messages such as interface up or down transitions and system restart messages. Level 6 generates messages , for example, when the device is booting. By default, Cisco routers and switches send log messages up to level 6 of severity (levels 0 through 6) to the console.
+Level 0 -- 4 are error messages; Level 5 notifies system messages (interface up or down, system restart); Level 6 generates messages when the device is booting. By default, the severity level of Cisco routers and switches is 6.
 
 \subsection{Message format}
 
-By default, the format of syslog messages on the Cisco IOS Software is as follows:
+Below is an example of syslog messages:
 
 \begin{verbatim}
 seq no: timestamp: %facility-severity-MNEMONIC: description
@@ -321,16 +270,16 @@ The fields contained in the syslog message above are explained in Table \ref{tab
 
 \subsection{Configuration}
 
-By default, log messages do not include a timestamp. The \code{show logging} command displays the default logging service settings.\\
-
 \begin{sexylisting}{Logging service}
 service timestamps log datetime msec
 logging 192.168.1.3
 logging trap 4
 logging source-interface g0/0
+end
+show logging
 \end{sexylisting}
 
-Above is an example showing logging service configuration. The first command enable timestamp to log messages. R1 is configured to send log messages of levels 4 and lower to the syslog server at 192.168.1.3. The source interface is set as the g0/0 interface.
+Above is an example showing logging service configuration. The first command enable timestamp to log messages. Log messages up to level 4 are sent by g0/0 to the syslog server at 192.168.1.3.
 
 \section{SNMP}
 
@@ -340,8 +289,8 @@ Simple Network Management Protocol (SNMP) was developed to allow administrators 
 
 \begin{itemize}
 \item \textbf{SNMP manager}: a part of a network management system (NMS), run SNMP management software. 
-\item \textbf{SNMP agents} (managed node):  responsible for providing access to the MIB which resides on each SNMP client device.
-\item \textbf{MIB} (Management Information Base): store data about the device and operational statistics 
+\item \textbf{SNMP agents} (managed node):  provide access to the MIB
+\item \textbf{MIB} (Management Information Base): reside on each SNMP client device to store data about the device
 \end{itemize}
 
 \tableStart[\caption{SNMP requests}\label{SNMPoperation}]{|l|p{10cm}|}
@@ -354,16 +303,18 @@ Simple Network Management Protocol (SNMP) was developed to allow administrators 
 \tableEnd
 
 
-\paragraph{Polls vs Traps:}
+\paragraph{Polls:}
 
-An NMS periodically \emph{polls} the SNMP agents, which provide information to monitor traffic loads and to verify device configurations. Disadvantages: A delay between the time that an event occurs and the time that it is noticed (via polling) by the NMS; A trade-off between polling frequency and bandwidth usage. SNMP \textit{agent traps} are used to mitigate these disadvantages. SNMP agents send traps to inform the NMS immediately of certain events.
+SNMP manager periodically \emph{polls} the SNMP agents to monitor traffic loads and verify device configurations. This method has two drawbacks: (1) there is delay between the time that an event occurs and the time that it is noticed (via polling), (2) frequent polling consumes significant bandwidth. 
+
+\paragraph{Traps:} \textit{Agent traps} are used to mitigate disadvantages of polling. SNMP agents only send traps to SNMP manager only when events occur.
 
 \paragraph{Community string:}
 
 SNMPv1 and SNMPv2c use community strings as plaintext password to control access to the MIB. There are two types of community strings: Read-only (\textbf{ro}) and Read-write (\textbf{rw}).
 
 \paragraph{Object ID:}
-MIB saves data in variables and organizes them hierarchically. Formally, the MIB defines each variable as an Object ID (OID). OIDs uniquely identify managed objects in the MIB hierarchy (figure \ref{OID-tree}). For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
+MIB saves data in variables, called Object ID (OID), and organizes them hierarchically (figure \ref{OID-tree}). For example, OIDs belonging to Cisco, are numbered as follows: .iso (1).org (3).dod (6).internet (1).private (4).enterprises (1).cisco (9). Therefore the OID is 1.3.6.1.4.1.9.
 
 \begin{figure}[hbtp]
 \caption{OID tree}\label{OID-tree}
@@ -398,20 +349,9 @@ In the above example, the first command creates an SNMP view \code{SNMP-RO} and 
 
 \section{NTP}
 
-\subsection{System clock}
+It is important to synchronize the time across all devices on the network because all aspects of managing, securing, troubleshooting, and planning networks require accurate time-stamping. Typically, the date and time settings on a router or switch can be set manually using \code{clock set} command, or by connecting NTP server via UDP port 123.\\
 
-The software clock on a router or switch starts when the system boots and is the primary source of time for the system. It is important to synchronize the time across all devices on the network because all aspects of managing, securing, troubleshooting, and planning networks require accurate time-stamping. Typically, the date and time settings on a router or switch can be set using one of two methods: 
-
-\begin{itemize}
-\item Manually configure the date and time. For example, \verb|clock set 20:36:00 aug 30 2016|
-\item Configure the NTP
-\end{itemize}
-
-\subsection{Operation}
-
-NTP allows routers on the network to synchronize their time settings with an NTP server. It uses \textbf{UDP} port \textbf{123}. \\
-
-NTP networks use a hierarchical system of time sources. Each level in this hierarchical system is called a \textbf{stratum}. The stratum level is defined as the number of hop counts from the authoritative time source (Figure \ref{NTP}). Smaller stratum numbers indicate that the server is closer to the authorized time source than larger stratum numbers. The max hop count is 15. Stratum 16, the lowest stratum level, indicates that a device is unsynchronized.\\
+NTP networks use a hierarchical system of time sources. Each level in this hierarchical system is called a \textbf{stratum}. Smaller stratum numbers indicate that the server is closer to the authorized time source. Stratum 0 is the authoritative time sources (represented by the clock in the figure \ref{NTP}). Stratum 16, the lowest stratum level, indicates that a device is unsynchronized.\\
 
 \begin{figure}[hbtp]
 \caption{NTP Stratum levels}\label{NTP}
@@ -419,11 +359,7 @@ NTP networks use a hierarchical system of time sources. Each level in this hiera
 \includegraphics[ scale=0.7 ]{pictures/NTP.PNG}
 \end{figure}
 
-Stratum 0 is an NTP network that gets the time from authoritative time sources (represented by the clock in the figure \ref{NTP}). Stratum 1 are directly connected to the authoritative time sources. They act as the primary network time standard. The stratum 2 servers are connected to stratum 1 devices through network connections. Stratum 2 devices, such as NTP clients, synchronize their time using the NTP packets from stratum 1 servers. They can also act as servers for stratum 3 devices.
-
-\subsection{Configuration}
-
-The first command identifies NTP server.  The second command periodically updates the hardware clock with the time learned from NTP. The following commands configure NTP authentication on R1 using key 1 and password NTPpa55. To verify the system clock, use \code{show clock} command. To see if the device is synchronized with the NTP server, use \code{sh ip ntp ass} and \code{sh ntp status}.
+In the below configuration, the first command identifies NTP server.  The second command periodically updates the hardware clock with the time learned from NTP. The next commands configure NTP authentication on R1 using key 1 and password NTPpa55. To verify the system clock, use \code{show clock} command. To see if the device is synchronized with the NTP server, use \code{sh ip ntp ass} and \code{sh ntp status}.
 
 \begin{sexylisting}{NTP authentication}
 ntp server 192.168.1.5
@@ -452,11 +388,7 @@ AutoSecure makes recommendations for fixing security vulnerabilities and then mo
 \item Secure data plane
 \end{enumerate}
 
-Use the \code{auto secure} command to enable the Cisco AutoSecure feature setup. In interactive mode, the router prompts with options to enable and disable services and other security features. This is the \emph{default} mode, but it can also be configured using the \code{auto secure full} command.\\
-
-The non-interactive mode is configured with the \code{auto secure no-interact} command. This will automatically execute the Cisco AutoSecure feature with the recommended Cisco default settings. \\
-
-When the AutoSecure command is initiated, a CLI wizard steps the administrator through the configuration of the device. User input is required. AutoSecure should be used when a router is initially being configured. It is not recommended on production routers.
+Use the \code{auto secure} command to enable the Cisco AutoSecure feature setup. In interactive mode (default), the router prompts with options to enable and disable security features. On the other hand, the non-interactive mode (configured with the \code{auto secure no-interact} command) will automatically execute security features with default settings.
 
 \section{Control plane security}
 
@@ -507,11 +439,7 @@ interface s0/0/0
 Routers must be able to distinguish between data plane, control plane, and management plane packets to treat each packet appropriately:
 
 \begin{itemize}
-\item \textbf{Data plane packets:} always have a transit destination IP address and can be handled by normal destination IP address-based forwarding processes.
+\item \textbf{Data plane packets:} forward packets. Data plane are handled by CEF, which uses the control plane to pre-populate the FIB table. Subsequent packets that flow between same source and destination are forwarded by the data plane based on the information contained in the FIB.
 \item \textbf{Control plane packets:} used for routing protocol (OSPF, EIGRP, BGP, etc.); sent to the router or network device
 \item \textbf{Management plane packets:} used for management and reporting protocol (SSH, SNMP, NTP, etc.)
 \end{itemize}
-
-The vast majority of packets handled by network devices are data plane packets. They are handled by CEF. This forwarding method uses the control plane to pre-populate the FIB table. Subsequent packets that flow between same source and destination are forwarded by the data plane based on the information contained in the FIB.
-%
-%\textbf{Control Plane Policing (CoPP)} is a Cisco IOS feature designed to allow administrators to manage the flow of traffic that is \emph{punted} to the route processor. It protects the route processor on network devices by treating route processor resources as a separate entity with its own interface. Unlike interface ACLs, no effort is wasted investigating data plane packets that will never reach the control plane.

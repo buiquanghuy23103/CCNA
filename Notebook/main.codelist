@@ -21,5 +21,7 @@
 \contentsline {tcolorbox}{\numberline {21}{\ignorespaces Listing 21: CHAP authentication}}{117}{tcb@cnt@sexylisting.21}
 \contentsline {tcolorbox}{\numberline {22}{\ignorespaces Listing 22: PAP authentication}}{118}{tcb@cnt@sexylisting.22}
 \contentsline {tcolorbox}{\numberline {23}{\ignorespaces Listing 23: PPPoE}}{119}{tcb@cnt@sexylisting.23}
-\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: IP SLA example}}{173}{tcb@cnt@sexylisting.24}
-\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Assign a name to a router or switch}}{177}{tcb@cnt@sexylisting.25}
+\contentsline {tcolorbox}{\numberline {24}{\ignorespaces Listing 24: Reflexive ACL Configured at the External Interface}}{155}{tcb@cnt@sexylisting.24}
+\contentsline {tcolorbox}{\numberline {25}{\ignorespaces Listing 25: Dynamic ACL (local database)}}{156}{tcb@cnt@sexylisting.25}
+\contentsline {tcolorbox}{\numberline {26}{\ignorespaces Listing 26: IP SLA example}}{175}{tcb@cnt@sexylisting.26}
+\contentsline {tcolorbox}{\numberline {27}{\ignorespaces Listing 27: Assign a name to a router or switch}}{179}{tcb@cnt@sexylisting.27}
